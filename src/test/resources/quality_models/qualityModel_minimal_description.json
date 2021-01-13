@@ -1,0 +1,68 @@
+{
+	"name": "Test QM",
+	"factors": {
+		"tqi": {
+			"Total Quality": {
+				"description": "Total Quality description"
+			}
+		},
+		"quality_aspects": {
+			"QualityAspect 01": {
+				"description": "QualityAspect 01 description"
+			},
+			"QualityAspect 02": {
+				"description": "QualityAspect 02 description"
+			}
+		},
+		"product_factors": {
+			"ProductFactor 01": {
+				"description": "ProductFactor 01 description",
+				"children": {
+					"Measure 01":{}
+				}
+			},
+			"ProductFactor 02": {
+				"description": "ProductFactor 02 description",
+				"children": {
+					"Measure 02":{}
+				}
+			}
+		}
+	},
+	"measures": {
+		"Measure 01": {
+			"description": "Measure 01 description",
+			"positive": false,
+			"children": {
+				"TST0011": {},
+				"TST0012": {}
+			}
+		},
+		"Measure 02": {
+			"description": "Measure 02 description",
+			"positive": false,
+			"children": {
+				"TST0021": {},
+				"TST0022": {}
+			}
+		}
+	},
+	"diagnostics": {
+		"TST0011": {
+			"description": "Description for TST0011 diagnostic",
+			"toolName": "Test tool"
+		},
+		"TST0012": {
+			"description": "Description for TST0012 diagnostic",
+			"toolName": "Test tool"
+		},
+		"TST0021": {
+			"description": "Description for TST0021 diagnostic",
+			"toolName": "Test tool"
+		},
+		"TST0022": {
+			"description": "Description for TST0022 diagnostic",
+			"toolName": "Test tool"
+		}
+	}
+}

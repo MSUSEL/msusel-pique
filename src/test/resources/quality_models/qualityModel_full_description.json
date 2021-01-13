@@ -1,0 +1,82 @@
+{
+	"name": "Test QM",
+	"factors": {
+		"tqi": {
+			"Total Quality": {
+                "description": "Total Quality description",
+                "children": {
+                    "QA11": {},
+                    "QA12": {}
+                }
+			}
+		},
+		"quality_aspects": {
+			"QA11": {
+                "description": "QualityAspect description",
+                "children": {
+                    "QA21": {},
+                    "QA22": {}
+                }
+			},
+			"QA12": {
+                "description": "QualityAspect description",
+                "children": {
+                    "QA22": {}
+                }
+            },
+            "QA21": {
+                "description": "QualityAspect description",
+                "children": {
+                    "PF11": {}
+                }
+            },
+            "QA22": {
+                "description": "QualityAspect description",
+                "children": {
+                    "PF11": {}
+                }
+			}
+		},
+		"product_factors": {
+			"PF11": {
+                "description": "ProductFactor description",
+                "children": {
+                    "PF21": {}
+                }
+            },
+            "PF12": {
+                "description": "ProductFactor description",
+                "children": {
+                    "PF21": {}
+                }
+            },
+            "PF21": {
+                "description": "ProductFactor description",
+                "children": {
+                    "Measure 01": {}
+                },
+                "eval_strategy": "pique.utility.DemoProductFactorEvaluator"
+			}
+		}
+	},
+	"measures": {
+		"Measure 01": {
+			"description": "Measure description",
+            "positive": false,
+            "children": {
+                "TST0011": {},
+                "TST0012": {}
+            }
+		}
+	},
+	"diagnostics": {
+		"TST0011": {
+			"description": "Description for TST0011 diagnostic",
+			"toolName": "Test tool"
+		},
+		"TST0012": {
+			"description": "Description for TST0012 diagnostic",
+			"toolName": "Test tool"
+		}
+	}
+}

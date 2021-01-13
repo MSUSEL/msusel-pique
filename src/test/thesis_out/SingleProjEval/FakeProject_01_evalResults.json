@@ -1,0 +1,173 @@
+{
+  "name": "Test QM",
+  "additionalData": {
+    "projectName": "FakeProject_01",
+    "projectLinesOfCode": "200"
+  },
+  "global_config": {
+    "benchmark_strategy": "NaiveBenchmarker",
+    "weights_strategy": "NaiveWeighter"
+  },
+  "factors": {
+    "product_factors": {
+      "ProductFactor 01": {
+        "description": "Sample description",
+        "value": 0.005
+      },
+      "ProductFactor 02": {
+        "description": "Sample description",
+        "value": 0.005
+      }
+    },
+    "quality_aspects": {
+      "QualityAspect 01": {
+        "weights": {
+          "ProductFactor 01": 0.5,
+          "ProductFactor 02": 0.5
+        },
+        "description": "Sample description",
+        "value": 0.005
+      },
+      "QualityAspect 02": {
+        "weights": {
+          "ProductFactor 01": 0.5,
+          "ProductFactor 02": 0.5
+        },
+        "description": "Sample description",
+        "value": 0.005
+      }
+    },
+    "tqi": {
+      "Total Quality": {
+        "weights": {
+          "QualityAspect 01": 0.5,
+          "QualityAspect 02": 0.5
+        },
+        "description": "Sample description",
+        "value": 0.005
+      }
+    }
+  },
+  "measures": {
+    "Measure 01": {
+      "positive": false,
+      "normalizer": "pique.evaluation.DefaultNormalizer",
+      "eval_strategy": "pique.evaluation.DefaultMeasureEvaluator",
+      "num_findings": 2,
+      "parents": [
+        "ProductFactor 01"
+      ],
+      "diagnostics": [
+        {
+          "name": "loc",
+          "eval_strategy": "pique.evaluation.LOCDiagnosticEvaluator",
+          "toolName": "Fake LoC Tool",
+          "findings": [
+            {
+              "characterNumber": 0,
+              "lineNumber": 0,
+              "severity": 0,
+              "value": 200.0
+            }
+          ],
+          "description": "Normalizer diagnostic for measure 01",
+          "value": 200.0
+        },
+        {
+          "name": "TST0001",
+          "eval_strategy": "pique.evaluation.DefaultDiagnosticEvaluator",
+          "toolName": "Test tool",
+          "findings": [
+            {
+              "characterNumber": 11,
+              "lineNumber": 111,
+              "severity": 1,
+              "value": 0.0,
+              "filePath": "file/path/f1"
+            }
+          ],
+          "description": "Description for TST0001 diagnostic",
+          "value": 1.0
+        },
+        {
+          "name": "TST0002",
+          "eval_strategy": "pique.evaluation.DefaultDiagnosticEvaluator",
+          "toolName": "Test tool",
+          "findings": [],
+          "description": "Description for TST0002 diagnostic",
+          "value": 0.0
+        }
+      ],
+      "thresholds": [
+        0.0,
+        0.02
+      ],
+      "description": "Sample description",
+      "value": 0.005
+    },
+    "Measure 02": {
+      "positive": false,
+      "normalizer": "pique.evaluation.DefaultNormalizer",
+      "eval_strategy": "pique.evaluation.DefaultMeasureEvaluator",
+      "num_findings": 2,
+      "parents": [
+        "ProductFactor 02"
+      ],
+      "diagnostics": [
+        {
+          "name": "loc",
+          "eval_strategy": "pique.evaluation.LOCDiagnosticEvaluator",
+          "toolName": "Fake LoC Tool",
+          "findings": [
+            {
+              "characterNumber": 0,
+              "lineNumber": 0,
+              "severity": 0,
+              "value": 200.0
+            }
+          ],
+          "description": "Normalizer diagnostic for measure 02",
+          "value": 200.0
+        },
+        {
+          "name": "TST0003",
+          "eval_strategy": "pique.evaluation.DefaultDiagnosticEvaluator",
+          "toolName": "Test tool",
+          "findings": [
+            {
+              "characterNumber": 11,
+              "lineNumber": 111,
+              "severity": 1,
+              "value": 0.0,
+              "filePath": "file/path/f1"
+            }
+          ],
+          "description": "Description for TST0003 diagnostic",
+          "value": 1.0
+        },
+        {
+          "name": "TST0004",
+          "eval_strategy": "pique.evaluation.DefaultDiagnosticEvaluator",
+          "toolName": "Test tool",
+          "findings": [],
+          "description": "Description for TST0004 diagnostic",
+          "value": 0.0
+        },
+        {
+          "name": "TST0005",
+          "eval_strategy": "pique.evaluation.DefaultDiagnosticEvaluator",
+          "toolName": "Test tool",
+          "findings": [],
+          "description": "Description for TST0005 diagnostic",
+          "value": 0.0
+        }
+      ],
+      "thresholds": [
+        0.0,
+        0.02
+      ],
+      "description": "Sample description",
+      "value": 0.005
+    }
+  }
+}

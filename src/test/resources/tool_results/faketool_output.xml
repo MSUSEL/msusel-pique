@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Roslynator>
+  <CodeAnalysis>
+    <Summary>
+      <Diagnostic Id="SCS0004" Title="Certificate Validation has been disabled" Count="1" />
+      <Diagnostic Id="SCS0006" Title="Weak hashing function" Count="1" />
+    </Summary>
+    <Projects>
+      <Project Name="TempProject" FilePath="C:\Users\davidrice3\Desktop\temp\project\TempSolution\TempProject\TempProject.csproj">
+        <Diagnostics>
+          <Diagnostic Id="SCS0004">
+            <Severity>Warning</Severity>
+            <Message>Certificate Validation has been disabled</Message>
+            <FilePath>C:\Users\davidrice3\Desktop\temp\project\TempSolution\TempProject\SecurityCodeScan.cs</FilePath>
+            <Location Line="30" Character="13" />
+          </Diagnostic>
+          <Diagnostic Id="SCS0006">
+            <Severity>Warning</Severity>
+            <Message>Weak hashing function</Message>
+            <FilePath>C:\Users\davidrice3\Desktop\temp\project\TempSolution\TempProject\SecurityCodeScan.cs</FilePath>
+            <Location Line="35" Character="32" />
+          </Diagnostic>
+        </Diagnostics>
+      </Project>
+    </Projects>
+  </CodeAnalysis>
+</Roslynator>

@@ -1,0 +1,118 @@
+{
+	"name": "Test QM",
+	"additionalData": {},
+	"global_config": {
+		"benchmark_strategy": "pique.calibration.NaiveBenchmarker"
+	},
+	"factors": {
+		"tqi": {
+			"Total Quality": {
+				"value": 0.0,
+				"description": "Sample description",
+				"weights": {
+					"QualityAspect 01": 0.5,
+					"QualityAspect 02": 0.5
+				}
+			}
+		},
+		"quality_aspects": {
+			"QualityAspect 01": {
+				"value": 0.0,
+				"description": "Sample description",
+				"weights": {
+					"ProductFactor 01": 0.5,
+					"ProductFactor 02": 0.5
+				}
+			},
+			"QualityAspect 02": {
+				"value": 0.0,
+				"description": "Sample description",
+				"weights": {
+					"ProductFactor 01": 0.5,
+					"ProductFactor 02": 0.5
+				}
+			}
+		},
+		"product_factors": {
+			"ProductFactor 01": {
+				"value": 0.0,
+				"description": "Sample description",
+				"weights": {
+					"Measure 01": 1.0
+				}
+			},
+			"ProductFactor 02": {
+				"value": 0.0,
+				"description": "Sample description",
+				"weights": {
+					"Measure 02": 1.0
+				}
+			}
+		}
+	},
+	"measures": {
+		"Measure 01": {
+			"description": "Sample description",
+			"positive": false,
+			"parents": [
+				"ProductFactor 01"
+			],
+			"thresholds": [
+				0.0,
+				0.02
+			],
+			"diagnostics": [
+				{
+					"name": "loc",
+					"description": "Normalizer diagnostic for measure 01",
+					"eval_strategy": "pique.evaluation.LOCDiagnosticEvaluator",
+					"toolName": "Fake LoC Tool" 
+				},
+				{
+					"name": "TST0001",
+					"description": "Description for TST0001 diagnostic",
+					"toolName": "Test tool"
+				},
+				{
+					"name": "TST0002",
+					"description": "Description for TST0002 diagnostic",
+					"toolName": "Test tool"
+				}
+			]
+		},
+		"Measure 02": {
+			"description": "Sample description",
+			"positive": false,
+			"parents": [
+				"ProductFactor 02"
+			],
+			"thresholds": [
+				0.0,
+				0.02
+			],
+			"diagnostics": [
+				{
+					"name": "loc",
+					"description": "Normalizer diagnostic for measure 02",
+					"eval_strategy": "pique.evaluation.LOCDiagnosticEvaluator",
+					"toolName": "Fake LoC Tool" 
+				},
+				{
+					"name": "TST0003",
+					"description": "Description for TST0003 diagnostic",
+					"toolName": "Test tool"
+				},
+				{
+					"name": "TST0004",
+					"description": "Description for TST0004 diagnostic",
+					"toolName": "Test tool"
+				},
+				{
+					"name": "TST0005",
+					"description": "Description for TST0005 diagnostic",
+					"toolName": "Test tool"
+				}
+			]
+		}
+	}
+}
