@@ -1,0 +1,260 @@
+@startuml
+
+title __MSUSEL-PIQUE's Class Diagram__\n
+
+  namespace pique.analysis {
+    interface pique.analysis.ITool {
+    }
+  }
+  
+
+  namespace pique.analysis {
+    abstract class pique.analysis.Tool {
+    }
+  }
+  
+
+  namespace pique.calibration {
+    interface pique.calibration.IBenchmarker {
+    }
+  }
+  
+
+  namespace pique.calibration {
+    interface pique.calibration.IWeighter {
+    }
+  }
+  
+
+  namespace pique.calibration {
+    class pique.calibration.NaiveBenchmarker {
+    }
+  }
+  
+
+  namespace pique.calibration {
+    class pique.calibration.NaiveWeighter {
+    }
+  }
+  
+
+  namespace pique.calibration {
+    class pique.calibration.WeightResult {
+    }
+  }
+  
+
+  namespace pique.evaluation {
+    class pique.evaluation.BenchmarkMeasureEvaluator {
+    }
+  }
+  
+
+  namespace pique.evaluation {
+    class pique.evaluation.DefaultDiagnosticEvaluator {
+    }
+  }
+  
+
+  namespace pique.evaluation {
+    class pique.evaluation.DefaultFactorEvaluator {
+    }
+  }
+  
+
+  namespace pique.evaluation {
+    class pique.evaluation.DefaultFindingEvaluator {
+    }
+  }
+  
+
+  namespace pique.evaluation {
+    class pique.evaluation.DefaultMeasureEvaluator {
+    }
+  }
+  
+
+  namespace pique.evaluation {
+    class pique.evaluation.DefaultNormalizer {
+    }
+  }
+  
+
+  namespace pique.evaluation {
+    class pique.evaluation.DefaultProductFactorEvaluator {
+    }
+  }
+  
+
+  namespace pique.evaluation {
+    class pique.evaluation.DefaultUtility {
+    }
+  }
+  
+
+  namespace pique.evaluation {
+    abstract class pique.evaluation.Evaluator {
+    }
+  }
+  
+
+  namespace pique.evaluation {
+    interface pique.evaluation.IEvaluator {
+    }
+  }
+  
+
+  namespace pique.evaluation {
+    interface pique.evaluation.INormalizer {
+    }
+  }
+  
+
+  namespace pique.evaluation {
+    interface pique.evaluation.IUtilityFunction {
+    }
+  }
+  
+
+  namespace pique.evaluation {
+    class pique.evaluation.LoCEvaluator {
+    }
+  }
+  
+
+  namespace pique.evaluation {
+    abstract class pique.evaluation.Normalizer {
+    }
+  }
+  
+
+  namespace pique.evaluation {
+    class pique.evaluation.Project {
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.Diagnostic {
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.Finding {
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.Measure {
+    }
+  }
+  
+
+  namespace pique.model {
+    abstract class pique.model.ModelNode {
+    }
+  }
+  
+
+  namespace pique.model {
+    enum NodeType {
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.ProductFactor {
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.QualityAspect {
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.QualityModel {
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.QualityModelExport {
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.QualityModelImport {
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.Tqi {
+    }
+  }
+  
+
+  namespace pique.runnable {
+    class pique.runnable.QualityModelDeriver {
+    }
+  }
+  
+
+  namespace pique.runnable {
+    class pique.runnable.SingleProjectEvaluator {
+    }
+  }
+  
+
+  namespace pique.utility {
+    class pique.utility.FileUtility {
+    }
+  }
+  
+
+  pique.analysis.Tool .up.|> pique.analysis.ITool
+  pique.calibration.NaiveBenchmarker .up.|> pique.calibration.IBenchmarker
+  pique.calibration.NaiveWeighter .up.|> pique.calibration.IWeighter
+  pique.evaluation.BenchmarkMeasureEvaluator -up-|> pique.evaluation.Evaluator
+  pique.evaluation.DefaultDiagnosticEvaluator -up-|> pique.evaluation.Evaluator
+  pique.evaluation.DefaultFactorEvaluator -up-|> pique.evaluation.Evaluator
+  pique.evaluation.DefaultFindingEvaluator -up-|> pique.evaluation.Evaluator
+  pique.evaluation.DefaultMeasureEvaluator -up-|> pique.evaluation.Evaluator
+  pique.evaluation.DefaultNormalizer -up-|> pique.evaluation.Normalizer
+  pique.evaluation.DefaultProductFactorEvaluator -up-|> pique.evaluation.Evaluator
+  pique.evaluation.DefaultUtility .up.|> pique.evaluation.IUtilityFunction
+  pique.evaluation.Evaluator .up.|> pique.evaluation.IEvaluator
+  pique.evaluation.LoCEvaluator -up-|> pique.evaluation.Evaluator
+  pique.evaluation.Normalizer .up.|> pique.evaluation.INormalizer
+  pique.evaluation.Project o-- pique.model.QualityModel : qualityModel
+  pique.model.Diagnostic -up-|> pique.model.ModelNode
+  pique.model.Finding -up-|> pique.model.ModelNode
+  pique.model.Measure -up-|> pique.model.ModelNode
+  pique.model.ModelNode o-- pique.evaluation.IEvaluator : evaluatorObject
+  pique.model.ModelNode o-- pique.evaluation.INormalizer : normalizerObject
+  pique.model.ModelNode o-- pique.evaluation.IUtilityFunction : utilityFunctionObject
+  pique.model.ProductFactor -up-|> pique.model.ModelNode
+  pique.model.QualityAspect -up-|> pique.model.ModelNode
+  pique.model.QualityModel o-- pique.calibration.IBenchmarker : benchmarker
+  pique.model.QualityModel o-- pique.model.Tqi : tqi
+  pique.model.QualityModel o-- pique.calibration.IWeighter : weighter
+  pique.model.QualityModelImport o-- pique.model.QualityModel : qualityModel
+  pique.model.QualityModelImport o-- pique.model.ModelNode : tqi
+  pique.model.Tqi -up-|> pique.model.ModelNode
+  pique.runnable.SingleProjectEvaluator o-- pique.evaluation.Project : project
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml
