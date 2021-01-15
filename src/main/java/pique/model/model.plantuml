@@ -1,0 +1,268 @@
+@startuml
+
+title __MODEL's Class Diagram__\n
+
+  namespace pique.model {
+    class pique.model.Diagnostic {
+        - toolName : String
+        + Diagnostic()
+        + Diagnostic()
+        + Diagnostic()
+        + Diagnostic()
+        + clone()
+        + equals()
+        + getToolName()
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.Finding {
+        - characterNumber : int
+        - filePath : String
+        - lineNumber : int
+        - severity : int
+        + Finding()
+        + Finding()
+        + clone()
+        + getCharacterNumber()
+        + getFilePath()
+        + getLineNumber()
+        + getLocation()
+        + getSeverity()
+        + setCharacterNumber()
+        + setFilePath()
+        + setLineNumber()
+        + setSeverity()
+        - hashName()
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.Measure {
+        - positive : boolean
+        + Measure()
+        + Measure()
+        + Measure()
+        + Measure()
+        + Measure()
+        + Measure()
+        + Measure()
+        + Measure()
+        + clone()
+        + equals()
+        + getEvaluatorObject()
+        + getUtilityFunctionObject()
+        + isPositive()
+        + setEvaluatorObject()
+        + setPositive()
+        + setUtilityFunctionObject()
+    }
+  }
+  
+
+  namespace pique.model {
+    abstract class pique.model.ModelNode {
+        # children : Map<String, ModelNode>
+        # description : String
+        # eval_strategy : String
+        # name : String
+        # normalizer : String
+        # thresholds : Double[]
+        # utility_function : String
+        # value : double
+        # visited : boolean
+        # weights : Map<String, Double>
+        + ModelNode()
+        + ModelNode()
+        + ModelNode()
+        {abstract} + clone()
+        + getAnyChild()
+        + getChild()
+        + getChildren()
+        + getDescription()
+        + getEvaluatorObject()
+        + getName()
+        + getNormalizerObject()
+        + getNumChildren()
+        + getThresholds()
+        + getUtilityFunctionObject()
+        + getValue()
+        + getWeight()
+        + getWeights()
+        + isVisited()
+        + setChild()
+        + setChildren()
+        + setChildren()
+        + setDescription()
+        + setEvaluatorObject()
+        + setName()
+        + setNormalizerObject()
+        + setNormalizerValue()
+        + setThresholds()
+        + setUtilityFunctionObject()
+        + setValue()
+        + setVisited()
+        + setWeight()
+        + setWeights()
+        # evaluate()
+    }
+  }
+  
+
+  namespace pique.model {
+    enum NodeType {
+      DIAGNOSTIC
+      FINDING
+      MEASURE
+      PRODUCT_FACTOR
+      QUALITY_ASPECT
+      TQI
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.ProductFactor {
+        + ProductFactor()
+        + ProductFactor()
+        + ProductFactor()
+        + ProductFactor()
+        + ProductFactor()
+        + clone()
+        + equals()
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.QualityAspect {
+        + QualityAspect()
+        + QualityAspect()
+        + QualityAspect()
+        + QualityAspect()
+        + QualityAspect()
+        + clone()
+        + equals()
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.QualityModel {
+        - name : String
+        + QualityModel()
+        + QualityModel()
+        + QualityModel()
+        + clone()
+        + equals()
+        + getAllQualityModelNodes()
+        + getBenchmarker()
+        + getDiagnostic()
+        + getDiagnostics()
+        + getMeasure()
+        + getMeasures()
+        + getName()
+        + getProductFactor()
+        + getProductFactors()
+        + getQualityAspect()
+        + getQualityAspects()
+        + getTqi()
+        + getWeighter()
+        + setBenchmarker()
+        + setName()
+        + setTqi()
+        + setWeighter()
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.QualityModelExport {
+        - additionalData : Map<String, String>
+        - diagnostics : Map<String, ModelNode>
+        - factors : Map<String, Map<String, ModelNode>>
+        - global_config : Map<String, String>
+        - measures : Map<String, ModelNode>
+        - name : String
+        + QualityModelExport()
+        + exportToJson()
+        + getAdditionalData()
+        + getDiagnostics()
+        + getFactors()
+        + getMeasures()
+        + getName()
+        + setDiagnostics()
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.QualityModelImport {
+        - diagnostics : Map<String, ModelNode>
+        - jsonDiagnostics : JsonObject
+        - jsonFactors : JsonObject
+        - jsonMeasures : JsonObject
+        - jsonProductFactors : JsonObject
+        - jsonQm : JsonObject
+        - jsonQualityAspects : JsonObject
+        - jsonTqi : JsonObject
+        - measures : Map<String, ModelNode>
+        - productFactors : Map<String, ModelNode>
+        - qualityAspects : Map<String, ModelNode>
+        + QualityModelImport()
+        + importQualityModel()
+        - connectNodeEdges()
+        - getEvluatorFromConfiguration()
+        - getNormalizerFromConfiguration()
+        - getThresholdsFromConfiguration()
+        - getUtilityFunctionFromConfiguration()
+        - getWeightsFromConfiguration()
+        - instanceBenchmarkerFromJson()
+        - instanceDiagnosticsFromJson()
+        - instanceMeasuresFromJson()
+        - instanceNameFromJson()
+        - instanceProductFactorsFromJson()
+        - instanceQualityAspectsFromJson()
+        - instanceTqiFromJson()
+        - instanceWeighterFromJson()
+    }
+  }
+  
+
+  namespace pique.model {
+    class pique.model.Tqi {
+        + Tqi()
+        + Tqi()
+        + Tqi()
+        + clone()
+        + equals()
+    }
+  }
+  
+
+  pique.model.Diagnostic -up-|> pique.model.ModelNode
+  pique.model.Finding -up-|> pique.model.ModelNode
+  pique.model.Measure -up-|> pique.model.ModelNode
+  pique.model.ModelNode o-- pique.evaluation.IEvaluator : evaluatorObject
+  pique.model.ModelNode o-- pique.evaluation.INormalizer : normalizerObject
+  pique.model.ModelNode o-- pique.evaluation.IUtilityFunction : utilityFunctionObject
+  pique.model.ProductFactor -up-|> pique.model.ModelNode
+  pique.model.QualityAspect -up-|> pique.model.ModelNode
+  pique.model.QualityModel o-- pique.calibration.IBenchmarker : benchmarker
+  pique.model.QualityModel o-- pique.model.Tqi : tqi
+  pique.model.QualityModel o-- pique.calibration.IWeighter : weighter
+  pique.model.QualityModelImport o-- pique.model.QualityModel : qualityModel
+  pique.model.QualityModelImport o-- pique.model.ModelNode : tqi
+  pique.model.Tqi -up-|> pique.model.ModelNode
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

@@ -127,27 +127,6 @@ public class Measure extends ModelNode {
 	//endregion
 
 
-	//region Getters and setters
-
-	public IEvaluator getEvaluatorObject() {
-		return evaluatorObject;
-	}
-
-	public void setEvaluatorObject(IEvaluator evaluatorObject) {
-		this.evaluatorObject = evaluatorObject;
-	}
-
-	public IUtilityFunction getUtilityFunctionObject() {
-		return utilityFunctionObject;
-	}
-
-	public void setUtilityFunctionObject(IUtilityFunction utilityFunctionObject) {
-		this.utilityFunctionObject = utilityFunctionObject;
-	}
-
-	//endregion
-
-
 	//region Methods
 
 	@Override
