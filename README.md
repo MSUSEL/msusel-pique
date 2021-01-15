@@ -30,10 +30,6 @@ ___
 ## Build Environment
 - Java 8+
 - Maven
-- R 3.6.1 (only needed for model derivation)
-  - with library 'jsonlite'
-  - The version is necessary to work with jsonlite.  This R dependency current exists for legacy sake, but should be depreciated as soon as possible.
-
 ___
 ## Building
 1. Ensure the [Build Environment](#build-environment) requirements are met.
