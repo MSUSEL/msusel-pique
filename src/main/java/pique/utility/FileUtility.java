@@ -114,7 +114,7 @@ public class FileUtility {
             e.printStackTrace();
         }
 
-        throw new RuntimeException("retrun statement in try block was never reached.");
+        throw new RuntimeException("return statement in try block was never reached.");
     }
 
 
