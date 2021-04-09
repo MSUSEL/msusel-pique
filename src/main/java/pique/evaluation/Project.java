@@ -22,10 +22,8 @@
  */
 package pique.evaluation;
 
-import com.google.gson.annotations.Expose;
 import lombok.Getter;
 import lombok.Setter;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 import pique.model.*;
 
@@ -42,8 +40,6 @@ public class Project{
 
 	@Getter @Setter
 	private String name;
-	@Getter @Setter
-	private int linesOfCode;
 	@Getter @Setter
 	private Path path;  // the original path where the sources of the project are stored (with or without the name)
 	@Getter @Setter
@@ -129,10 +125,10 @@ public class Project{
 	public Path exportToJson(Path resultsDir) {
 
 		String fileName = this.getName() + "_evalResults";
-		Pair<String, String> loc = Pair.of("projectLinesOfCode", String.valueOf(getLinesOfCode()));
+		//Pair<String, String> loc = Pair.of("projectLinesOfCode", String.valueOf(getLinesOfCode()));
 		Pair<String, String> name = Pair.of("projectName", getName());
 
-		QualityModelExport qmExport = new QualityModelExport(getQualityModel(), loc, name);
+		QualityModelExport qmExport = new QualityModelExport(getQualityModel(), name);
 		return qmExport.exportToJson(fileName, resultsDir);
 	}
 

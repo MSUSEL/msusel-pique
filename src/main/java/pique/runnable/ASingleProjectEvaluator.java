@@ -1,31 +1,9 @@
-/**
- * MIT License
- * Copyright (c) 2019 Montana State University Software Engineering Labs
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 package pique.runnable;
 
 import org.apache.commons.io.FilenameUtils;
-import pique.model.Diagnostic;
 import pique.analysis.ITool;
 import pique.evaluation.Project;
+import pique.model.Diagnostic;
 import pique.model.QualityModel;
 import pique.model.QualityModelImport;
 
@@ -34,20 +12,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+
 /**
  * Behavioral class responsible for running TQI evaluation of a single project
  * in a language agnostic way.  It is the responsibility of extending projects
- * (e.g. qatch-csharp) to provide the language specific tools.
+ * (e.g. pique-csharp) to provide the language specific tools.
  */
-// TODO (1.0): turn into static methods (maybe unless logger problems)
-public class SingleProjectEvaluator {
-
-    private Project project;
-
-    //region Get / Set
-    public Project getEvaluatedProject() {
-        return project;
-    }
+public abstract class ASingleProjectEvaluator {
+    protected Project project;
 
     /**
      * Entry point for running single project evaluation. The library assumes the user has extended Qatch
@@ -65,8 +37,7 @@ public class SingleProjectEvaluator {
      * @return
      *      The path to the produced quality analysis file on the hard disk.
      */
-    public Path runEvaluator(Path projectDir, Path resultsDir, Path qmLocation, Set<ITool> tools) {
-
+    public Path runEvaluator(Path projectDir, Path resultsDir, Path qmLocation, Set<ITool> tools){
         // Initialize data structures
         initialize(projectDir, resultsDir, qmLocation);
         QualityModelImport qmImport = new QualityModelImport(qmLocation);
@@ -83,15 +54,6 @@ public class SingleProjectEvaluator {
             allDiagnostics.putAll(runTool(projectDir, tool));
         });
 
-        // Run LOC tool to set lines of code
-        int linesOfCode = (int)allDiagnostics.get("loc").getValue();
-        // TODO (1.0): need to rethink loc, normalizer, evaluator interactions for benchmark repository
-        //  interactions
-        project.setLinesOfCode(linesOfCode);
-        project.getQualityModel().getMeasures().values().forEach(measure -> {
-            measure.getNormalizerObject().setNormalizerValue(linesOfCode);
-        });
-
         // Apply tool results to Project object
         project.updateDiagnosticsWithFindings(allDiagnostics);
 
@@ -99,6 +61,7 @@ public class SingleProjectEvaluator {
 
         // Create a file of the results and return its path
         return project.exportToJson(resultsDir);
+
     }
 
 
@@ -112,7 +75,7 @@ public class SingleProjectEvaluator {
      * @param qmLocation
      *      Path to the quality model file. Must exist.
      */
-    private void initialize(Path projectDir, Path resultsDir, Path qmLocation) {
+    protected void initialize(Path projectDir, Path resultsDir, Path qmLocation) {
         if (!projectDir.toFile().exists()) {
             throw new IllegalArgumentException("Invalid projectDir path given.");
         }
@@ -138,7 +101,7 @@ public class SingleProjectEvaluator {
      *      A mapping of (Key: property name, Value: measure object) where the measure objects contain the
      *      static analysis findings for that measure.
      */
-    private Map<String, Diagnostic> runTool(Path projectDir, ITool tool) {
+    protected Map<String, Diagnostic> runTool(Path projectDir, ITool tool) {
 
         // (1) run static analysis tool
         // TODO: turn this into a temp file that always deletes on/before program exit
@@ -158,7 +121,7 @@ public class SingleProjectEvaluator {
      *      weight and threshold instances.
      */
     // TODO (1.0) Update once basic tests passing
-    private void validatePreEvaluationState(Project project) {
+    protected void validatePreEvaluationState(Project project) {
         QualityModel projectQM = project.getQualityModel();
 
         if (projectQM.getTqi().getWeights() == null) {
@@ -171,11 +134,7 @@ public class SingleProjectEvaluator {
                 throw new RuntimeException("The project's quality model does not have any weights instantiated to its characteristic node");
             }
 
-//            characteristic.getChildren().values().forEach(productFactor -> {
-//                if (productFactor.getMeasure().getThresholds() == null) {
-//                    throw new RuntimeException("The project's quality model does not have any thresholds instantiated to its measure node.");
-//                }
-//            });
         });
     }
+
 }

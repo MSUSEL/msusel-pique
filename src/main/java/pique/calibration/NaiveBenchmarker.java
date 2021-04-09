@@ -87,15 +87,6 @@ public class NaiveBenchmarker implements IBenchmarker {
                 allDiagnostics.putAll(tool.parseAnalysis(analysisOutput));
             });
 
-            // Run LOC tool to set lines of code
-            int linesOfCode = (int)allDiagnostics.get("loc").getValue();
-            // TODO (1.0): need to rethink loc, normalizer, evaluator interactions for benchmark repository
-            //  interactions
-            project.setLinesOfCode(linesOfCode);
-            project.getQualityModel().getMeasures().values().forEach(measure -> {
-                measure.getNormalizerObject().setNormalizerValue(linesOfCode);
-            });
-
             // Apply collected diagnostics (containing findings) to the project
             allDiagnostics.forEach((diagnosticName, diagnostic) -> {
                 project.addFindings(diagnostic);
