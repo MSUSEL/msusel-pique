@@ -6,10 +6,12 @@ import pique.evaluation.Project;
 import pique.model.Diagnostic;
 import pique.model.QualityModel;
 import pique.model.QualityModelImport;
+import pique.utility.PiqueProperties;
 
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 
@@ -20,6 +22,8 @@ import java.util.Set;
  */
 public abstract class ASingleProjectEvaluator {
     protected Project project;
+
+    protected final Properties properties = PiqueProperties.getProperties();
 
     /**
      * Entry point for running single project evaluation. The library assumes the user has extended Qatch

@@ -39,17 +39,21 @@ public class DefaultUtility implements IUtilityFunction {
         if (thresholds == null) return 0.0;
 
         if (!positive) {
-            if (inValue <= thresholds[0]) return 1.0;
-            else if (inValue >= thresholds[1]) return  0.0;
-            else {
+            if (inValue <= thresholds[0]) {
+                return 1.0;
+            } else if (inValue >= thresholds[1]) {
+                return 0.0;
+            }else {
                 return 1 - linearInterpolationTwoPoints(inValue, thresholds);
             }
         }
 
         else {
-            if (inValue <= thresholds[0]) return 0.0;
-            else if (inValue >= thresholds[1]) return  1.0;
-            else {
+            if (inValue <= thresholds[0]) {
+                return 0.0;
+            } else if (inValue >= thresholds[1]) {
+                return  1.0;
+            } else {
                 return linearInterpolationTwoPoints(inValue, thresholds);
             }
         }
