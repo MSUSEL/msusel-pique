@@ -31,7 +31,6 @@
     <groupId>edu.montana.gsoc.msusel</groupId>
     <artifactId>msusel-parent</artifactId>
     <version>1.1.1</version>
-    <relativePath>../msusel-parent/pom.xml</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -48,6 +47,7 @@
   </properties>
 
   <dependencies>
+
     <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -156,4 +156,38 @@
       </plugins>
     </pluginManagement>
   </build>
+
+
+  <repositories>
+    <repository>
+      <id>msusel-maven-repo</id>
+      <name>msusel-maven-repo</name>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+
+      <url>https://raw.github.com/MSUSEL/msusel-maven-repo/releases</url>
+    </repository>
+    <repository>
+      <id>snapshot</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>synergian-repo</id>
+      <url>https://raw.github.com/synergian/wagon-git/releases</url>
+    </pluginRepository>
+  </pluginRepositories>
+  <distributionManagement>
+    <repository>
+      <id>msusel-maven-repo</id>
+      <name>msusel-maven-repo</name>
+      <url>git:releases://git@github.com:MSUSEL/msusel-maven-repo.git</url>
+    </repository>
+  </distributionManagement>
+
 </project>
