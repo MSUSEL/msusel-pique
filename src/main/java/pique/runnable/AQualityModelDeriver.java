@@ -26,15 +26,28 @@ import pique.analysis.ITool;
 import pique.calibration.IBenchmarker;
 import pique.calibration.IWeighter;
 import pique.calibration.WeightResult;
+import pique.evaluation.Project;
 import pique.model.Measure;
 import pique.model.ModelNode;
 import pique.model.QualityModel;
+import pique.model.QualityModelImport;
+import pique.utility.PiqueProperties;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 public abstract class AQualityModelDeriver {
+
+    protected Project project;
+    protected final Properties properties = PiqueProperties.getProperties();
+
+    protected QualityModel qualityModelDesign;
+    protected Set<ITool> tools;
+    protected Path benchmarkRepository;
+    protected String projectRootFlag;
 
     public QualityModel deriveModel(QualityModel qmDesign, Set<ITool> tools, Path benchmarkRepository, String projectRootFlag) {
 
