@@ -29,10 +29,12 @@ public class DefaultProductFactorEvaluator extends Evaluator {
 
     @Override
     public double evaluate(ModelNode inNode) {
-
-        // TODO (1.0): Temporarly making assumption strictly one measure connected to each Product Factor (easy to
-        //  support beyond this)
-        return inNode.getAnyChild().getValue();
+        double weightedSum = 0.0;
+        for (ModelNode child : inNode.getChildren().values()) {
+            weightedSum += child.getValue();
+        }
+        weightedSum = weightedSum / inNode.getChildren().size();
+        return weightedSum;
     }
 
 }
