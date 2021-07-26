@@ -164,6 +164,17 @@ public class QualityModelImport {
             // Add the specified children to the ModelNode
             ModelNode rootNode = allModelNodes.get(targetNodeName);
             childrenNames.forEach(name -> rootNode.setChild(allModelNodes.get(name)));
+
+            //else we are in the compact JSON file, and the children aren't available but the weights contain child information in it.
+        } else if (targetNodeValues.get("weights") != null) {
+            List<String> childrenNames = new ArrayList<>();
+
+            JsonObject children = targetNodeValues.get("weights").getAsJsonObject();
+            children.entrySet().forEach(childJsonElement -> childrenNames.add(childJsonElement.getKey()));
+
+            // Add the specified children to the ModelNode
+            ModelNode rootNode = allModelNodes.get(targetNodeName);
+            childrenNames.forEach(name -> rootNode.setChild(allModelNodes.get(name)));
         }
 
         // Otherwise, assume fully connected using the node type below it (e.g. if targetNodeJson is of type

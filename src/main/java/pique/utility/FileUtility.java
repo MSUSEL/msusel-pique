@@ -22,6 +22,8 @@
  */
 package pique.utility;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
@@ -52,7 +54,7 @@ public class FileUtility {
      * @return
      * 		The path of the exported object as a json file.
      */
-    public static Path exportObjectToJson(Object object, Path outputDirectory, String fileName) {
+    public static Path exportObjectToJson(Object object, Path outputDirectory, String fileName, ExclusionStrategy exclusionStrategy) {
 
         // ensure target path directory exists
         outputDirectory.toFile().mkdirs();
@@ -64,6 +66,7 @@ public class FileUtility {
         Gson gson = new GsonBuilder()
                 .disableHtmlEscaping()
                 .excludeFieldsWithoutExposeAnnotation()
+                .addSerializationExclusionStrategy(exclusionStrategy)
                 .setPrettyPrinting()
                 .create();
 
@@ -81,6 +84,7 @@ public class FileUtility {
 
         return fileOut.toPath();
     }
+
 
 
     /**

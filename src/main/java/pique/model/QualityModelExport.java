@@ -26,6 +26,7 @@ import com.google.gson.annotations.Expose;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
+import pique.utility.DefaultExclusionStrategy;
 import pique.utility.FileUtility;
 
 import java.nio.file.Path;
@@ -120,6 +121,6 @@ public class QualityModelExport {
      * 		The path of the exported model file.
      */
     public Path exportToJson(String fileName, Path outputDirectory) {
-        return FileUtility.exportObjectToJson(this, outputDirectory, fileName);
+        return FileUtility.exportObjectToJson(this, outputDirectory, fileName, new DefaultExclusionStrategy());
     }
 }
