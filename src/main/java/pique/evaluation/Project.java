@@ -123,12 +123,21 @@ public class Project{
 	 * 		The path of the project json file.
 	 */
 	public Path exportToJson(Path resultsDir) {
+		return exportToJson(resultsDir, false);
+	}
 
+	public Path exportToJson(Path resultsDir, boolean compactExport){
 		String fileName = this.getName() + "_evalResults";
 		//Pair<String, String> loc = Pair.of("projectLinesOfCode", String.valueOf(getLinesOfCode()));
 		Pair<String, String> name = Pair.of("projectName", getName());
 
-		QualityModelExport qmExport = new QualityModelExport(getQualityModel(), name);
+		QualityModelExport qmExport;
+		if (compactExport){
+			fileName = this.getName() + "_compact_evalResults";
+			qmExport = new QualityModelCompactExport(getQualityModel(), name);
+		}else{
+			qmExport = new QualityModelExport(getQualityModel(), name);
+		}
 		return qmExport.exportToJson(fileName, resultsDir);
 	}
 
