@@ -45,17 +45,17 @@ public class QualityModelExport {
 
     /// Fields ///
     @Getter @Expose
-    private String name;
+    protected String name;
     @Getter @Expose
-    private Map<String, String> additionalData = new HashMap<>();
+    protected Map<String, String> additionalData = new HashMap<>();
     @Expose
-    private Map<String, String> global_config = new HashMap<>();
+    protected Map<String, String> global_config = new HashMap<>();
     @Getter @Expose
-    private Map<String, Map<String, ModelNode>> factors = new HashMap<>();
+    protected Map<String, Map<String, ModelNode>> factors = new HashMap<>();
     @Getter @Expose
-    private Map<String, ModelNode> measures = new HashMap<>();
+    protected Map<String, ModelNode> measures = new HashMap<>();
     @Getter @Setter @Expose
-    private Map<String, ModelNode> diagnostics = new HashMap<>();
+    protected Map<String, ModelNode> diagnostics = new HashMap<>();
 
 
     /// Constructor
@@ -63,9 +63,9 @@ public class QualityModelExport {
     public QualityModelExport(QualityModel qualityModel, Pair<String, String>... optional) {
 
         // Setup
-        getFactors().put("tqi", new HashMap<>());
-        getFactors().put("quality_aspects", new HashMap<>());
-        getFactors().put("product_factors", new HashMap<>());
+        factors.put("tqi", new HashMap<>());
+        factors.put("quality_aspects", new HashMap<>());
+        factors.put("product_factors", new HashMap<>());
 
         // Basic info
         this.name = qualityModel.getName();
@@ -73,25 +73,41 @@ public class QualityModelExport {
         this.global_config.put("weights_strategy", qualityModel.getWeighter().getName());
         if (optional.length > 0 ) { for (Pair<String, String> entry : optional) { additionalData.put(entry.getKey(), entry.getValue()); }}
 
+        fillTQI(qualityModel);
+        fillQualityAspects(qualityModel);
+        fillProductFactors(qualityModel);
+        fillMeasures(qualityModel);
+        fillDiagnostics(qualityModel);
+    }
+
+    public void fillTQI(QualityModel qualityModel){
         // factors::tqi
         ModelNode tqi = qualityModel.getTqi();
-        getFactors().get("tqi").put(tqi.getName(), tqi);
+        factors.get("tqi").put(tqi.getName(), tqi);
+    }
 
+    public void fillQualityAspects(QualityModel qualityModel){
         // factors::quality_aspects
         Map<String, ModelNode> qualityAspects = qualityModel.getQualityAspects();
-        getFactors().get("quality_aspects").putAll(qualityAspects);
+        factors.get("quality_aspects").putAll(qualityAspects);
+    }
 
+    public void fillProductFactors(QualityModel qualityModel){
         // factors::product_factors
         Map<String, ModelNode> productFactors = qualityModel.getProductFactors();
-        getFactors().get("product_factors").putAll(productFactors);
+        factors.get("product_factors").putAll(productFactors);
+    }
 
+    public void fillMeasures(QualityModel qualityModel){
         // measures
         Map<String, ModelNode> measures = qualityModel.getMeasures();
-        getMeasures().putAll(measures);
+        this.measures.putAll(measures);
+    }
 
+    public void fillDiagnostics(QualityModel qualityModel){
         // diagnostics
         Map<String, ModelNode> diagnostics = qualityModel.getDiagnostics();
-        getDiagnostics().putAll(diagnostics);
+        this.diagnostics.putAll(diagnostics);
     }
 
     /// Methods ///
