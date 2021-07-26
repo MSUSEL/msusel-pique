@@ -20,23 +20,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package pique.model;
+package pique.utility;
 
-import lombok.Getter;
-import org.apache.commons.lang3.tuple.Pair;
-import pique.utility.ChildlessExclusionStrategy;
-import pique.utility.FileUtility;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 
-import java.nio.file.Path;
+public class DefaultExclusionStrategy implements ExclusionStrategy {
 
-public class QualityModelCompactExport extends QualityModelExport {
-
-    public QualityModelCompactExport(QualityModel qualityModel, Pair<String, String>... optional) {
-        super(qualityModel, optional);
+    @Override
+    public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+        return false;
     }
 
     @Override
-    public Path exportToJson(String fileName, Path outputDirectory) {
-        return FileUtility.exportObjectToJson(this, outputDirectory, fileName, new ChildlessExclusionStrategy());
+    public boolean shouldSkipClass(Class<?> aClass) {
+        return false;
     }
 }

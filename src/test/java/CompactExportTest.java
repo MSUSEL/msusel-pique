@@ -20,10 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 import org.junit.Before;
 import org.junit.Test;
 import pique.model.QualityModel;
 import pique.model.QualityModelCompactExport;
+import pique.model.QualityModelExport;
 import pique.model.QualityModelImport;
 
 import java.nio.file.Paths;
@@ -44,10 +46,13 @@ public class CompactExportTest {
     }
 
     @Test
-    public void testOutput(){
+    public void testCompactExport(){
         // regular output is working.
         QualityModelCompactExport qualityModelCompactExport = new QualityModelCompactExport(qualityModel);
         qualityModelCompactExport.exportToJson("compact_output", Paths.get("src/test/out/"));
+
+        QualityModelExport qualityModelExport = new QualityModelExport(qualityModel);
+        qualityModelExport.exportToJson("regular_output", Paths.get("src/test/out/"));
     }
 
 }

@@ -20,23 +20,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package pique.model;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import pique.model.QualityModel;
+import pique.model.QualityModelCompactExport;
+import pique.model.QualityModelExport;
+import pique.model.QualityModelImport;
 
-import lombok.Getter;
-import org.apache.commons.lang3.tuple.Pair;
-import pique.utility.ChildlessExclusionStrategy;
-import pique.utility.FileUtility;
+import java.nio.file.Paths;
 
-import java.nio.file.Path;
+import static org.junit.Assert.assertEquals;
 
-public class QualityModelCompactExport extends QualityModelExport {
+public class CompactImportTest {
 
-    public QualityModelCompactExport(QualityModel qualityModel, Pair<String, String>... optional) {
-        super(qualityModel, optional);
+    private QualityModel qualityModel;
+
+    public CompactImportTest(){
+
     }
 
-    @Override
-    public Path exportToJson(String fileName, Path outputDirectory) {
-        return FileUtility.exportObjectToJson(this, outputDirectory, fileName, new ChildlessExclusionStrategy());
+    @Before
+    public void testImport(){
+        QualityModelImport qmImport = new QualityModelImport(Paths.get("src/test/out/compact_output.json"));
+        qualityModel = qmImport.importQualityModel();
     }
+
+    @Test
+    public void test(){
+        QualityModelExport compactExport = new QualityModelCompactExport(qualityModel);
+        compactExport.exportToJson("afterImportCompact", Paths.get("src/test/out/"));
+
+        QualityModelExport fullExport = new QualityModelExport(qualityModel);
+        fullExport.exportToJson("afterImportFull", Paths.get("src/test/out/"));
+
+    }
+
+
+
 }
