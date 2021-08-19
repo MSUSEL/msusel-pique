@@ -22,18 +22,20 @@
  */
 package pique.evaluation;
 
+import java.math.BigDecimal;
+
 import pique.model.ModelNode;
 
 // TODO (1.0): Documentation
 public class DefaultProductFactorEvaluator extends Evaluator {
 
     @Override
-    public double evaluate(ModelNode inNode) {
-        double weightedSum = 0.0;
+    public BigDecimal evaluate(ModelNode inNode) {
+        BigDecimal weightedSum = new BigDecimal("0.0");
         for (ModelNode child : inNode.getChildren().values()) {
-            weightedSum += child.getValue();
+            weightedSum.add(child.getValue());
         }
-        weightedSum = weightedSum / inNode.getChildren().size();
+        weightedSum = weightedSum.divide(new BigDecimal(""+ inNode.getChildren().size()));
         return weightedSum;
     }
 

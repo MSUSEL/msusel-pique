@@ -26,6 +26,7 @@ import com.google.gson.annotations.Expose;
 import lombok.Getter;
 import pique.evaluation.*;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,14 +81,14 @@ public class Diagnostic extends ModelNode {
     }
 
     public Diagnostic(String id, String description, String toolName, IEvaluator evaluator, INormalizer normalizer,
-                      IUtilityFunction utilityFunction, Map<String, Double> weights, Double[] thresholds) {
+                      IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds) {
         super(id, description, evaluator, normalizer, utilityFunction, weights, thresholds);
         this.toolName = toolName;
     }
 
     // Used for cloning
-    public Diagnostic(double value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
-                   IUtilityFunction utilityFunction, Map<String, Double> weights, Double[] thresholds, Map<String,
+    public Diagnostic(BigDecimal value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
+                   IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
             ModelNode> children) {
         super(value, name, description, evaluator, normalizer, utilityFunction, weights, thresholds, children);
     }

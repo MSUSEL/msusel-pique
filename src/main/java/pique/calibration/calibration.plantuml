@@ -38,7 +38,7 @@ title __CALIBRATION's Class Diagram__\n
   namespace pique.calibration {
     class pique.calibration.WeightResult {
         - name : String
-        - weights : Map<String, Double>
+        - weights : Map<String, BigDecimal>
         + WeightResult()
         + getName()
         + getWeights()

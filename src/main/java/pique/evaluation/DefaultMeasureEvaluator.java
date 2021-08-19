@@ -22,6 +22,8 @@
  */
 package pique.evaluation;
 
+import java.math.BigDecimal;
+
 import pique.model.Measure;
 import pique.model.ModelNode;
 
@@ -33,13 +35,15 @@ public class DefaultMeasureEvaluator extends Evaluator {
      * Note: for measure metrics, this will likely be different functionality and should be overridden as so.
      */
     @Override
-    public double evaluate(ModelNode inNode) {
+    public BigDecimal evaluate(ModelNode inNode) {
         Measure node = (Measure)inNode;
 
         // Sum values of child diagnostics
-        double value = node.getChildren().values().stream()
-                .mapToDouble(ModelNode::getValue)
-                .sum();
+        BigDecimal value = new BigDecimal("0.0");
+    	
+    	for (ModelNode x : node.getChildren().values()) {
+    		value.add(x.getValue());
+    	}
 
         // Normalize
         value = node.getNormalizerObject().normalize(value);

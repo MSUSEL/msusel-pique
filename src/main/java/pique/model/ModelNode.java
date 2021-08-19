@@ -30,6 +30,7 @@ import pique.evaluation.IEvaluator;
 import pique.evaluation.INormalizer;
 import pique.evaluation.IUtilityFunction;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +44,7 @@ public abstract class ModelNode {
     @Getter @Setter @Expose
     protected String name;
     @Setter @Expose
-    protected double value;  // the value this node evaluates to
+    protected BigDecimal value;  // the value this node evaluates to
     @Getter @Setter @Expose
     protected String description;
     // TODO: eventually consider new tree object that combines properties and their weight instead of relying on
@@ -51,9 +52,9 @@ public abstract class ModelNode {
     @Getter @Expose
     protected Map<String, ModelNode> children = new HashMap<>();
     @Getter @Setter @Expose
-    protected Map<String, Double> weights = new HashMap<>();
+    protected Map<String, BigDecimal> weights = new HashMap<>();
     @Getter @Setter @Expose
-    protected Double[] thresholds;
+    protected BigDecimal[] thresholds;
     @Expose
     protected String eval_strategy;
     @Expose
@@ -86,7 +87,7 @@ public abstract class ModelNode {
     }
 
     public ModelNode(String name, String description, IEvaluator evaluatorObject, INormalizer normalizerObject,
-                     IUtilityFunction utilityFunctionObject, Map<String, Double> weights, Double[] thresholds) {
+                     IUtilityFunction utilityFunctionObject, Map<String, BigDecimal> weights, BigDecimal[] thresholds) {
         this.name = name;
         this.description = description;
         this.evaluatorObject = evaluatorObject;
@@ -103,8 +104,8 @@ public abstract class ModelNode {
     /**
      * Constructor for cloning.
      */
-    public ModelNode(double value, String name, String description, IEvaluator evaluatorObject, INormalizer normalizerObject,
-                     IUtilityFunction utilityFunctionObject, Map<String, Double> weights, Double[] thresholds, Map<String,
+    public ModelNode(BigDecimal value, String name, String description, IEvaluator evaluatorObject, INormalizer normalizerObject,
+                     IUtilityFunction utilityFunctionObject, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
             ModelNode> children) {
         this.value = value;
         this.name = name;
@@ -148,27 +149,27 @@ public abstract class ModelNode {
         children.forEach(element -> getChildren().putIfAbsent(element.getName(), element));
     }
 
-    public void setNormalizerValue(double value) {
+    public void setNormalizerValue(BigDecimal value) {
         getNormalizerObject().setNormalizerValue(value);
     }
 
     public int getNumChildren() { return getChildren().size(); }
 
-    public double getValue() {
+    public BigDecimal getValue() {
         evaluate();
         return this.value;
     }
 
-    public double getWeight(String modelNodeName) {
+    public BigDecimal getWeight(String modelNodeName) {
         try {
             return weights.get(modelNodeName);
         }
         // TODO (1.0): Some redesign needed to better handle quality model description where there are not yet weights,
         //  values, etc...
-        catch (NullPointerException e) { return 0.0; }
+        catch (NullPointerException e) { return new BigDecimal("0.0"); }
     }
 
-    public void setWeight(String modelNodeName, double value) {
+    public void setWeight(String modelNodeName, BigDecimal value) {
         this.weights.put(modelNodeName, value);
     }
 

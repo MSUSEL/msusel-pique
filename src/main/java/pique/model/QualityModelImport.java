@@ -35,6 +35,7 @@ import pique.evaluation.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -249,13 +250,13 @@ public class QualityModelImport {
         }
     }
 
-    private Double[] getThresholdsFromConfiguration(JsonObject jsonQmNode) {
+    private BigDecimal[] getThresholdsFromConfiguration(JsonObject jsonQmNode) {
         if (jsonQmNode.get("thresholds") != null && jsonQmNode.get("thresholds").getAsJsonArray().size() > 0) {
 
             JsonArray jsonThresholds = jsonQmNode.getAsJsonArray("thresholds");
-            Double[] thresholds = new Double[jsonThresholds.size()];
+            BigDecimal[] thresholds = new BigDecimal[jsonThresholds.size()];
             for (int i = 0; i < thresholds.length; i++) {
-                thresholds[i] = jsonThresholds.get(i).getAsDouble();
+                thresholds[i] = jsonThresholds.get(i).getAsBigDecimal();
             }
 
             return thresholds;
@@ -280,13 +281,13 @@ public class QualityModelImport {
         }
     }
 
-    private Map<String, Double> getWeightsFromConfiguration(JsonObject jsonQmNode) {
+    private Map<String, BigDecimal> getWeightsFromConfiguration(JsonObject jsonQmNode) {
         if (jsonQmNode.get("weights") != null) {
 
-            Map<String, Double> weightNames = new HashMap<>();
+            Map<String, BigDecimal> weightNames = new HashMap<>();
             JsonObject jsonWeights = jsonQmNode.getAsJsonObject("weights");
             jsonWeights.entrySet().forEach(jsonWeight -> {
-                weightNames.put(jsonWeight.getKey(), jsonWeight.getValue().getAsDouble());
+                weightNames.put(jsonWeight.getKey(), jsonWeight.getValue().getAsBigDecimal());
             });
 
             return weightNames;
@@ -341,8 +342,8 @@ public class QualityModelImport {
             IEvaluator evaluator = getEvluatorFromConfiguration(jsonDiagnostic, "diagnostic");
             INormalizer normalizer = getNormalizerFromConfiguration(jsonDiagnostic);
             IUtilityFunction utilityFunction = getUtilityFunctionFromConfiguration(jsonDiagnostic);
-            Map<String, Double> weights = getWeightsFromConfiguration(jsonDiagnostic);
-            Double[] thresholds = getThresholdsFromConfiguration(jsonDiagnostic);
+            Map<String, BigDecimal> weights = getWeightsFromConfiguration(jsonDiagnostic);
+            BigDecimal[] thresholds = getThresholdsFromConfiguration(jsonDiagnostic);
 
             // Instance the diagnostic
             Diagnostic d = new Diagnostic(diagnosticName, diagnosticDescription, diagnosticToolName,
@@ -391,8 +392,8 @@ public class QualityModelImport {
             IEvaluator evaluator = getEvluatorFromConfiguration(jsonMeasure, "measure");
             INormalizer normalizer = getNormalizerFromConfiguration(jsonMeasure);
             IUtilityFunction utilityFunction = getUtilityFunctionFromConfiguration(jsonMeasure);
-            Map<String, Double> weights = getWeightsFromConfiguration(jsonMeasure);
-            Double[] thresholds = getThresholdsFromConfiguration(jsonMeasure);
+            Map<String, BigDecimal> weights = getWeightsFromConfiguration(jsonMeasure);
+            BigDecimal[] thresholds = getThresholdsFromConfiguration(jsonMeasure);
 
             // TODO (1.0): Support optional normalizer
             // Instance the measure
@@ -444,8 +445,8 @@ public class QualityModelImport {
             IEvaluator evaluator = getEvluatorFromConfiguration(valueObj, "productfactor");
             INormalizer normalizer = getNormalizerFromConfiguration(valueObj);
             IUtilityFunction utilityFunction = getUtilityFunctionFromConfiguration(valueObj);
-            Map<String, Double> weights = getWeightsFromConfiguration(valueObj);
-            Double[] thresholds = getThresholdsFromConfiguration(valueObj);
+            Map<String, BigDecimal> weights = getWeightsFromConfiguration(valueObj);
+            BigDecimal[] thresholds = getThresholdsFromConfiguration(valueObj);
 
             // Instance the product factor
             ProductFactor pf = new ProductFactor(pfName, pfDescription, evaluator, normalizer, utilityFunction,
@@ -487,8 +488,8 @@ public class QualityModelImport {
             IEvaluator evaluator = getEvluatorFromConfiguration(valueObj, "qualityaspect");
             INormalizer normalizer = getNormalizerFromConfiguration(valueObj);
             IUtilityFunction utilityFunction = getUtilityFunctionFromConfiguration(valueObj);
-            Map<String, Double> weights = getWeightsFromConfiguration(valueObj);
-            Double[] thresholds = getThresholdsFromConfiguration(valueObj);
+            Map<String, BigDecimal> weights = getWeightsFromConfiguration(valueObj);
+            BigDecimal[] thresholds = getThresholdsFromConfiguration(valueObj);
 
             // Instance the quality aspect
             QualityAspect qa = new QualityAspect(qaName, qaDescription, evaluator, normalizer, utilityFunction,
@@ -525,8 +526,8 @@ public class QualityModelImport {
         IEvaluator evaluator = getEvluatorFromConfiguration(tqiValues, "factor");
         INormalizer normzlier = getNormalizerFromConfiguration(tqiValues);
         IUtilityFunction utilityFunction = getUtilityFunctionFromConfiguration(tqiValues);
-        Map<String, Double> weights = getWeightsFromConfiguration(tqiValues);
-        Double[] thresholds = getThresholdsFromConfiguration(tqiValues);
+        Map<String, BigDecimal> weights = getWeightsFromConfiguration(tqiValues);
+        BigDecimal[] thresholds = getThresholdsFromConfiguration(tqiValues);
 
         return new Tqi(tqiName, tqiDescription, evaluator, normzlier, utilityFunction, weights, thresholds);
     }

@@ -22,15 +22,17 @@
  */
 package pique.evaluation;
 
+import java.math.BigDecimal;
+
 import pique.model.Finding;
 import pique.model.ModelNode;
 
 public class DefaultFindingEvaluator extends Evaluator {
 
     @Override
-    public double evaluate(ModelNode inNode) {
+    public BigDecimal evaluate(ModelNode inNode) {
         Finding node = (Finding)inNode;
-        return node.getSeverity();
+        return new BigDecimal(""+ node.getSeverity());
     }
 
 }

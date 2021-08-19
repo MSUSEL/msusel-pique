@@ -22,6 +22,8 @@
  */
 package pique.evaluation;
 
+import java.math.BigDecimal;
+
 import lombok.Setter;
 
 public abstract class Normalizer implements INormalizer {
@@ -29,7 +31,7 @@ public abstract class Normalizer implements INormalizer {
     protected String name = this.getClass().getSimpleName();
 
     @Setter
-    protected double normalizerValue = 1.0;
+    protected BigDecimal normalizerValue = new BigDecimal("1.0");
 
     @Override
     public String getName() { return this.getClass().getCanonicalName();

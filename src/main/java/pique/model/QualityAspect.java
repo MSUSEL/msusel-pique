@@ -24,6 +24,7 @@ package pique.model;
 
 import pique.evaluation.*;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,16 +43,16 @@ public class QualityAspect extends ModelNode {
     }
 
     public QualityAspect(String name, String description, IEvaluator evaluator, INormalizer normalizer,
-                         IUtilityFunction utilityFunction, Map<String, Double> weights, Double[] thresholds) {
+                         IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds) {
         super(name, description, evaluator, normalizer, utilityFunction, weights, thresholds);
     }
 
-    public QualityAspect(String name, String description, Map<String, Double> weights) {
+    public QualityAspect(String name, String description, Map<String, BigDecimal> weights) {
         super(name, description, new DefaultFactorEvaluator(), new DefaultNormalizer());
         this.weights = weights;
     }
 
-    public QualityAspect(String name, String description, Map<String, Double> weights,
+    public QualityAspect(String name, String description, Map<String, BigDecimal> weights,
                          Map<String, ModelNode> productFactors) {
         super(name, description, new DefaultFactorEvaluator(), new DefaultNormalizer());
         this.weights = weights;
@@ -59,8 +60,8 @@ public class QualityAspect extends ModelNode {
     }
 
     // Used for cloning
-    public QualityAspect(double value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
-               IUtilityFunction utilityFunction, Map<String, Double> weights, Double[] thresholds, Map<String,
+    public QualityAspect(BigDecimal value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
+               IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
             ModelNode> children) {
         super(value, name, description, evaluator, normalizer, utilityFunction, weights, thresholds, children);
     }

@@ -69,11 +69,11 @@ title __MODEL's Class Diagram__\n
         # eval_strategy : String
         # name : String
         # normalizer : String
-        # thresholds : Double[]
+        # thresholds : BigDecimal[]
         # utility_function : String
-        # value : double
+        # value : BigDecimal
         # visited : boolean
-        # weights : Map<String, Double>
+        # weights : Map<String, BigDecimal>
         + ModelNode()
         + ModelNode()
         + ModelNode()

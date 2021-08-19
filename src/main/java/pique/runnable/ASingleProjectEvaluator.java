@@ -30,6 +30,7 @@ import pique.model.QualityModel;
 import pique.model.QualityModelImport;
 import pique.utility.PiqueProperties;
 
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +84,7 @@ public abstract class ASingleProjectEvaluator {
         // Apply tool results to Project object
         project.updateDiagnosticsWithFindings(allDiagnostics);
 
-        double tqiValue = project.evaluateTqi();
+        BigDecimal tqiValue = project.evaluateTqi();
 
         // Create a file of the results and return its path
         return project.exportToJson(resultsDir);
