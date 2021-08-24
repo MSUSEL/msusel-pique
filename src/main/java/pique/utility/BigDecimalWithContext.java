@@ -25,6 +25,12 @@ package pique.utility;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+/**
+ * This is a BigDecimal extension that automatically sets the precision of the BigDecimal using a MathContext object.
+ * @author Andrew
+ *
+ *
+ */
 public class BigDecimalWithContext extends BigDecimal{
 
 	private static final Integer precision=10;
