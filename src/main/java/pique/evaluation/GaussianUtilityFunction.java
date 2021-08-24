@@ -24,6 +24,8 @@ package pique.evaluation;
 
 import com.sun.scenario.effect.impl.state.GaussianShadowState;
 
+import pique.utility.BigDecimalWithContext;
+
 import java.math.BigDecimal;
 
 import org.apache.commons.math3.analysis.function.Gaussian;
@@ -43,11 +45,11 @@ public class GaussianUtilityFunction implements IUtilityFunction {
     public BigDecimal utilityFunction(BigDecimal inValue, BigDecimal[] thresholds, boolean positive) {
 
     	// Note: we have to use Doubles here due to the Gaussian function taking Double as input. 
-    	// We would have to implement a BigDecimal Guassian to use BigDecimals in this function
+    	// We would have to implement a BigDecimal Guassian to use BigDecimal in this function
     	
         // If no thresholds yet, currently dealing with a non-derived model. Just return 0.
         if (thresholds == null) {
-            return new BigDecimal("0.0");
+            return new BigDecimalWithContext("0.0");
         }
         //calculate mean as average between thresholds
         Double mean = (thresholds[0].doubleValue() + thresholds[1].doubleValue()) / 2.0;
@@ -58,7 +60,7 @@ public class GaussianUtilityFunction implements IUtilityFunction {
         Gaussian function = new Gaussian(mean, sigma);
         Double output = function.value(inValue.doubleValue());
 
-        return new BigDecimal("" + output);
+        return new BigDecimalWithContext("" + output);
 
     }
 }

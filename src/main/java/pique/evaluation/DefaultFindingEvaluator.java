@@ -26,13 +26,14 @@ import java.math.BigDecimal;
 
 import pique.model.Finding;
 import pique.model.ModelNode;
+import pique.utility.BigDecimalWithContext;
 
 public class DefaultFindingEvaluator extends Evaluator {
 
     @Override
     public BigDecimal evaluate(ModelNode inNode) {
         Finding node = (Finding)inNode;
-        return new BigDecimal(""+ node.getSeverity());
+        return new BigDecimalWithContext(""+ node.getSeverity());
     }
 
 }

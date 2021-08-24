@@ -25,6 +25,7 @@ package pique.evaluation;
 import java.math.BigDecimal;
 
 import pique.model.ModelNode;
+import pique.utility.BigDecimalWithContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 //TODO (1.0): Documentation
@@ -36,7 +37,7 @@ public class DefaultFactorEvaluator extends Evaluator {
         // TODO (1.0): Some redesign needed to better handle quality model description where there are not yet weights,
         //  values, etc...
 
-        BigDecimal outValue = new BigDecimal("0.0");
+        BigDecimal outValue = new BigDecimalWithContext("0.0");
 
         // Apply weighted sums
         for (ModelNode child : inNode.getChildren().values()) {

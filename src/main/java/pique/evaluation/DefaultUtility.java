@@ -46,6 +46,8 @@ package pique.evaluation;
 
 import java.math.BigDecimal;
 
+import pique.utility.BigDecimalWithContext;
+
 // TODO (1.0): default utility function
 public class    DefaultUtility implements IUtilityFunction {
 
@@ -60,23 +62,23 @@ public class    DefaultUtility implements IUtilityFunction {
         //  instancing quality models and "Project" objects
 
         // If no thresholds yet, currently dealing with a non-derived model. Just return 0.
-        if (thresholds == null) return new BigDecimal("0.0");
+        if (thresholds == null) return new BigDecimalWithContext("0.0");
 
         if (!positive) {
             if (inValue.compareTo(thresholds[0]) <= 0  ) {//inValue <= thresholds[0]
-            	return new BigDecimal("1.0");
+            	return new BigDecimalWithContext("1.0");
             } else if (inValue.compareTo(thresholds[1]) >= 0) {//inValue >= thresholds[1]
-            	return new BigDecimal("0.0");
+            	return new BigDecimalWithContext("0.0");
             }else {
-                return new BigDecimal("1.0").subtract(linearInterpolationTwoPoints(inValue, thresholds));
+                return new BigDecimalWithContext("1.0").subtract(linearInterpolationTwoPoints(inValue, thresholds));
             }
         }
 
         else {
             if (inValue.compareTo(thresholds[0]) <= 0  ) {//inValue <= thresholds[0]
-            	return new BigDecimal("0.0");
+            	return new BigDecimalWithContext("0.0");
             } else if (inValue.compareTo(thresholds[1]) >= 0) {//inValue >= thresholds[1]
-            	return new BigDecimal("1.0");
+            	return new BigDecimalWithContext("1.0");
             } else {
                 return linearInterpolationTwoPoints(inValue, thresholds);
             }

@@ -24,12 +24,14 @@ package pique.evaluation;
 
 import java.math.BigDecimal;
 
+import pique.utility.BigDecimalWithContext;
+
 // TODO (1.0): Documentation
 public class DefaultNormalizer extends Normalizer {
 
     @Override
     public BigDecimal normalize(BigDecimal inValue) {
-        if (this.normalizerValue.compareTo(new BigDecimal("0.0"))==0) {
+        if (this.normalizerValue.compareTo(new BigDecimalWithContext("0.0"))==0) {
             throw new RuntimeException("Normalizer value was not set to a non-zero value before attempting normalization");
         }
         return inValue.divide(this.normalizerValue);

@@ -23,6 +23,7 @@
 import org.junit.Test;
 import pique.evaluation.DefaultUtility;
 import pique.evaluation.GaussianUtilityFunction;
+import pique.utility.BigDecimalWithContext;
 
 import static org.junit.Assert.assertEquals;
 
@@ -39,10 +40,10 @@ public class GaussianUtilityTest {
 
     @Test
     public void testGaussianUtilityFunction(){
-        BigDecimal[] simpleThresholds = new BigDecimal[]{new BigDecimal(3), new BigDecimal(7)};
-        BigDecimal positiveResult = gaussianUtility.utilityFunction(new BigDecimal("7"), simpleThresholds, true);
-        BigDecimal positiveResult2 = gaussianUtility.utilityFunction(new BigDecimal("3"), simpleThresholds, true);
-        BigDecimal positiveResult3 = gaussianUtility.utilityFunction(new BigDecimal("5"), simpleThresholds, true);
+        BigDecimal[] simpleThresholds = new BigDecimalWithContext[]{new BigDecimalWithContext(3), new BigDecimalWithContext(7)};
+        BigDecimal positiveResult = gaussianUtility.utilityFunction(new BigDecimalWithContext("7"), simpleThresholds, true);
+        BigDecimal positiveResult2 = gaussianUtility.utilityFunction(new BigDecimalWithContext("3"), simpleThresholds, true);
+        BigDecimal positiveResult3 = gaussianUtility.utilityFunction(new BigDecimalWithContext("5"), simpleThresholds, true);
         assertEquals(0.1209, positiveResult.doubleValue(), 0.005);
         assertEquals(0.1209, positiveResult2.doubleValue(), 0.005);
         assertEquals(0.1994, positiveResult3.doubleValue(), 0.005);

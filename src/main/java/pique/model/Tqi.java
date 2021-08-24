@@ -23,6 +23,7 @@
 package pique.model;
 
 import pique.evaluation.*;
+import pique.utility.BigDecimalWithContext;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -70,8 +71,8 @@ public class Tqi extends ModelNode {
         Map<String, ModelNode> clonedChildren = new HashMap<>();
         getChildren().forEach((k, v) -> clonedChildren.put(k, v.clone()));
 
-        return new Tqi(getValue(), getName(), getDescription(), getEvaluatorObject(), getNormalizerObject(), getUtilityFunctionObject()
-                , getWeights(), getThresholds(), clonedChildren);
+        return new Tqi(getValue(), getName(), getDescription(), getEvaluatorObject(), getNormalizerObject(), getUtilityFunctionObject(),
+                 getWeights(), getThresholds(), clonedChildren);
     }
 
     @Override

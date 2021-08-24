@@ -25,13 +25,14 @@ package pique.evaluation;
 import java.math.BigDecimal;
 
 import lombok.Setter;
+import pique.utility.BigDecimalWithContext;
 
 public abstract class Normalizer implements INormalizer {
 
     protected String name = this.getClass().getSimpleName();
 
     @Setter
-    protected BigDecimal normalizerValue = new BigDecimal("1.0");
+    protected BigDecimal normalizerValue = new BigDecimalWithContext("1.0");
 
     @Override
     public String getName() { return this.getClass().getCanonicalName();

@@ -101,7 +101,7 @@ title __EVALUATION's Class Diagram__\n
   namespace pique.evaluation {
     abstract class pique.evaluation.Normalizer {
         # name : String
-        # normalizerValue : BigDecimal
+        # normalizerValue : BigDecimalWithContext
         + getName()
         + setNormalizerValue()
     }

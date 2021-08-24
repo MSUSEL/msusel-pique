@@ -69,11 +69,11 @@ title __MODEL's Class Diagram__\n
         # eval_strategy : String
         # name : String
         # normalizer : String
-        # thresholds : BigDecimal[]
+        # thresholds : BigDecimalWithContext[]
         # utility_function : String
-        # value : BigDecimal
+        # value : BigDecimalWithContext
         # visited : boolean
-        # weights : Map<String, BigDecimal>
+        # weights : Map<String, BigDecimalWithContext>
         + ModelNode()
         + ModelNode()
         + ModelNode()

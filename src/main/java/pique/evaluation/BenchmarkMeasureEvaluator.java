@@ -25,6 +25,7 @@ package pique.evaluation;
 import java.math.BigDecimal;
 
 import pique.model.ModelNode;
+import pique.utility.BigDecimalWithContext;
 
 /**
  * Evaluator used during benchmark repository analysis
@@ -36,7 +37,7 @@ public class BenchmarkMeasureEvaluator extends Evaluator {
      */
     @Override
     public BigDecimal evaluate(ModelNode inNode) {
-    	BigDecimal rawSum = new BigDecimal("0.0");
+    	BigDecimalWithContext rawSum = new BigDecimalWithContext("0.0");
     	
     	for (ModelNode x : inNode.getChildren().values()) {
     		rawSum.add(x.getValue());

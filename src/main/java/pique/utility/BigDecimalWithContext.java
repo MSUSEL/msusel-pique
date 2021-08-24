@@ -20,24 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package pique.evaluation;
+package pique.utility;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
-import pique.model.ModelNode;
-import pique.utility.BigDecimalWithContext;
+public class BigDecimalWithContext extends BigDecimal{
 
-// TODO (1.0): Documentation
-public class DefaultProductFactorEvaluator extends Evaluator {
-
-    @Override
-    public BigDecimal evaluate(ModelNode inNode) {
-    	BigDecimal weightedSum = new BigDecimalWithContext("0.0");
-        for (ModelNode child : inNode.getChildren().values()) {
-            weightedSum.add(child.getValue());
-        }
-        weightedSum = weightedSum.divide(new BigDecimalWithContext(""+ inNode.getChildren().size()));
-        return weightedSum;
-    }
+	private static final Integer precision=10;
+	public static final MathContext mc = new MathContext(precision);
+	
+	public BigDecimalWithContext(int x) {
+		super(""+x,mc);
+	}
+	
+	public BigDecimalWithContext(double x) {
+		super(""+x,mc);
+	}
+	
+	public BigDecimalWithContext(String x) {
+		super(x,mc);
+	}
 
 }

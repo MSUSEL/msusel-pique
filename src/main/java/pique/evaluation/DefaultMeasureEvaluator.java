@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 
 import pique.model.Measure;
 import pique.model.ModelNode;
+import pique.utility.BigDecimalWithContext;
 
 // TODO (1.0) Documentation
 public class DefaultMeasureEvaluator extends Evaluator {
@@ -39,7 +40,7 @@ public class DefaultMeasureEvaluator extends Evaluator {
         Measure node = (Measure)inNode;
 
         // Sum values of child diagnostics
-        BigDecimal value = new BigDecimal("0.0");
+        BigDecimal value = new BigDecimalWithContext("0.0");
     	
     	for (ModelNode x : node.getChildren().values()) {
     		value.add(x.getValue());

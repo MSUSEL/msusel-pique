@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 
 import pique.model.Diagnostic;
 import pique.model.ModelNode;
+import pique.utility.BigDecimalWithContext;
 
 // TODO (1.0) Documentation
 public class DefaultDiagnosticEvaluator extends Evaluator {
@@ -34,7 +35,7 @@ public class DefaultDiagnosticEvaluator extends Evaluator {
     public BigDecimal evaluate(ModelNode inNode) {
         Diagnostic node = (Diagnostic)inNode;
         
-        BigDecimal rawSum = new BigDecimal("0.0");
+        BigDecimal rawSum = new BigDecimalWithContext("0.0");
     	
     	for (ModelNode x : inNode.getChildren().values()) {
     		rawSum.add(x.getValue());

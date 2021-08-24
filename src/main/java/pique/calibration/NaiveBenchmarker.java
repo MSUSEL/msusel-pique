@@ -28,6 +28,7 @@ import pique.evaluation.Project;
 import pique.model.Diagnostic;
 import pique.model.Measure;
 import pique.model.QualityModel;
+import pique.utility.BigDecimalWithContext;
 import pique.utility.FileUtility;
 
 import java.math.BigDecimal;
@@ -46,7 +47,7 @@ public class NaiveBenchmarker implements IBenchmarker {
      * @param tools               The collection of static analysis tools needed to audio the benchmark repository
      * @param projectRootFlag     Option flag to target the static analysis tools
      * @return A dictionary of [ Key: {@link pique.model.ModelNode} name, Value: thresholds ] where
-     * thresholds is a size = 2 array of BigDecimal[] containing the lowest and highest value
+     * thresholds is a size = 2 array of BigDecimalWithContext[] containing the lowest and highest value
      * seen for the given measure (after normalization).
      */
     @Override
@@ -122,7 +123,7 @@ public class NaiveBenchmarker implements IBenchmarker {
         // Identify the lowest and highest of each measure value
         Map<String, BigDecimal[]> measureThresholds = new HashMap<>();
         measureBenchmarkData.forEach((measureName, measureValues) -> {
-            measureThresholds.putIfAbsent(measureName, new BigDecimal[2]);
+            measureThresholds.putIfAbsent(measureName, new BigDecimalWithContext[2]);
             measureThresholds.get(measureName)[0] = Collections.min(measureValues);
             measureThresholds.get(measureName)[1] = Collections.max(measureValues);
 
