@@ -43,7 +43,7 @@ public class DefaultMeasureEvaluator extends Evaluator {
         BigDecimal value = new BigDecimalWithContext("0.0");
     	
     	for (ModelNode x : node.getChildren().values()) {
-    		value.add(x.getValue());
+    		value = value.add(x.getValue());
     	}
 
         // Normalize

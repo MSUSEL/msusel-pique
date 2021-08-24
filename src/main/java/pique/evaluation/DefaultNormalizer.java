@@ -34,6 +34,6 @@ public class DefaultNormalizer extends Normalizer {
         if (this.normalizerValue.compareTo(new BigDecimalWithContext("0.0"))==0) {
             throw new RuntimeException("Normalizer value was not set to a non-zero value before attempting normalization");
         }
-        return inValue.divide(this.normalizerValue);
+        return inValue.divide(this.normalizerValue,BigDecimalWithContext.getMC());
     }
 }

@@ -86,7 +86,7 @@ public class    DefaultUtility implements IUtilityFunction {
     }
 
     private BigDecimal linearInterpolationTwoPoints(BigDecimal inValue, BigDecimal[] thresholds) {
-        return (inValue.subtract(thresholds[0])).divide((thresholds[1].subtract(thresholds[0]))); 
+        return (inValue.subtract(thresholds[0])).divide((thresholds[1].subtract(thresholds[0])),BigDecimalWithContext.getMC()); 
     }
 
 }

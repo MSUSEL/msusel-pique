@@ -41,7 +41,7 @@ public class DefaultFactorEvaluator extends Evaluator {
 
         // Apply weighted sums
         for (ModelNode child : inNode.getChildren().values()) {
-            outValue.add(child.getValue().multiply(inNode.getWeight(child.getName())));
+            outValue = outValue.add(child.getValue().multiply(inNode.getWeight(child.getName()),BigDecimalWithContext.getMC()));
         }
 
         return outValue;

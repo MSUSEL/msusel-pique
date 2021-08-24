@@ -38,7 +38,7 @@ public class DefaultDiagnosticEvaluator extends Evaluator {
         BigDecimal rawSum = new BigDecimalWithContext("0.0");
     	
     	for (ModelNode x : inNode.getChildren().values()) {
-    		rawSum.add(x.getValue());
+    		rawSum = rawSum.add(x.getValue());
     	}
         return rawSum;
     }

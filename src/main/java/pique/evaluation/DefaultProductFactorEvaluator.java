@@ -34,9 +34,9 @@ public class DefaultProductFactorEvaluator extends Evaluator {
     public BigDecimal evaluate(ModelNode inNode) {
     	BigDecimal weightedSum = new BigDecimalWithContext("0.0");
         for (ModelNode child : inNode.getChildren().values()) {
-            weightedSum.add(child.getValue());
+            weightedSum = weightedSum.add(child.getValue());
         }
-        weightedSum = weightedSum.divide(new BigDecimalWithContext(""+ inNode.getChildren().size()));
+        weightedSum = weightedSum.divide(new BigDecimalWithContext(""+ inNode.getChildren().size()),BigDecimalWithContext.getMC());
         return weightedSum;
     }
 

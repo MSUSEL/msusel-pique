@@ -24,17 +24,19 @@ package pique.utility;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
 /**
  * This is a BigDecimal extension that automatically sets the precision of the BigDecimal using a MathContext object.
+ * Uses HALF_UP rounding mode.
  * @author Andrew
  *
  *
  */
 public class BigDecimalWithContext extends BigDecimal{
 
-	private static final Integer precision=10;
-	public static final MathContext mc = new MathContext(precision);
+	private static final Integer precision=25;
+	public static final MathContext mc = new MathContext(precision,RoundingMode.HALF_UP);
 	
 	public BigDecimalWithContext(int x) {
 		super(""+x,mc);
@@ -47,5 +49,10 @@ public class BigDecimalWithContext extends BigDecimal{
 	public BigDecimalWithContext(String x) {
 		super(x,mc);
 	}
+	
+	public static MathContext getMC() {
+		return mc;
+	}
+
 
 }

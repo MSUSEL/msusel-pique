@@ -37,10 +37,10 @@ public class BenchmarkMeasureEvaluator extends Evaluator {
      */
     @Override
     public BigDecimal evaluate(ModelNode inNode) {
-    	BigDecimalWithContext rawSum = new BigDecimalWithContext("0.0");
+    	BigDecimal rawSum = new BigDecimalWithContext("0.0");
     	
     	for (ModelNode x : inNode.getChildren().values()) {
-    		rawSum.add(x.getValue());
+    		rawSum = rawSum.add(x.getValue());
     	}
     	
         return inNode.getNormalizerObject().normalize(rawSum);

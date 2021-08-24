@@ -33,7 +33,7 @@ public class DefaultFindingEvaluator extends Evaluator {
     @Override
     public BigDecimal evaluate(ModelNode inNode) {
         Finding node = (Finding)inNode;
-        return new BigDecimalWithContext(""+ node.getSeverity());
+        return new BigDecimalWithContext(node.getSeverity());
     }
 
 }
