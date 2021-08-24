@@ -38,7 +38,7 @@ public class LinearInterpolationTest {
 
     @Test
     public void testPositive(){
-        BigDecimal[] simpleThresholds = new BigDecimal[]{new BigDecimal(5), new BigDecimal(7)};
+        BigDecimal[] simpleThresholds = new BigDecimal[]{new BigDecimal("5"), new BigDecimal("7")};
         BigDecimal positiveResult = linearInterpolationUtility.utilityFunction(new BigDecimal("6"), simpleThresholds, true);
         assertEquals(0.5, positiveResult.doubleValue(), 0.005);
 

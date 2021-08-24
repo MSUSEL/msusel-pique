@@ -43,7 +43,7 @@ public class    DefaultUtility implements IUtilityFunction {
         if (!positive) {
             if (inValue.compareTo(thresholds[0]) <= 0  ) {//inValue <= thresholds[0]
             	return new BigDecimal("1.0");
-            } else if (inValue.compareTo(thresholds[0]) >= 0) {//inValue >= thresholds[1]
+            } else if (inValue.compareTo(thresholds[1]) >= 0) {//inValue >= thresholds[1]
             	return new BigDecimal("0.0");
             }else {
                 return new BigDecimal("1.0").subtract(linearInterpolationTwoPoints(inValue, thresholds));
@@ -53,7 +53,7 @@ public class    DefaultUtility implements IUtilityFunction {
         else {
             if (inValue.compareTo(thresholds[0]) <= 0  ) {//inValue <= thresholds[0]
             	return new BigDecimal("0.0");
-            } else if (inValue.compareTo(thresholds[0]) >= 0) {//inValue >= thresholds[1]
+            } else if (inValue.compareTo(thresholds[1]) >= 0) {//inValue >= thresholds[1]
             	return new BigDecimal("1.0");
             } else {
                 return linearInterpolationTwoPoints(inValue, thresholds);
