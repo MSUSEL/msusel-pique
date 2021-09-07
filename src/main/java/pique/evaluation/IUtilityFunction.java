@@ -22,6 +22,8 @@
  */
 package pique.evaluation;
 
+import java.math.BigDecimal;
+
 public interface IUtilityFunction {
 
     /**
@@ -36,6 +38,6 @@ public interface IUtilityFunction {
      * @return
      *      The value of inValue after applying the utility function
      */
-    double utilityFunction(double inValue, Double[] thresholds, boolean positive);
+    BigDecimal utilityFunction(BigDecimal inValue, BigDecimal[] thresholds, boolean positive);
 
 }

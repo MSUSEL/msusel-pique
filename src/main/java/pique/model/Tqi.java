@@ -23,7 +23,9 @@
 package pique.model;
 
 import pique.evaluation.*;
+import pique.utility.BigDecimalWithContext;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,19 +40,19 @@ public class Tqi extends ModelNode {
 
     // Constructor
 
-    public Tqi(String name, String description, Map<String, Double> weights) {
+    public Tqi(String name, String description, Map<String, BigDecimal> weights) {
         super(name, description, new DefaultFactorEvaluator(), new DefaultNormalizer());
         this.weights = (weights == null) ? new HashMap<>() : weights;
     }
 
     public Tqi(String name, String description, IEvaluator evaluator, INormalizer normalizer,
-               IUtilityFunction utilityFunction, Map<String, Double> weights, Double[] thresholds) {
+               IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds) {
         super(name, description, evaluator, normalizer, utilityFunction, weights, thresholds);
     }
 
     // Used for cloning
-    public Tqi(double value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
-               IUtilityFunction utilityFunction, Map<String, Double> weights, Double[] thresholds, Map<String,
+    public Tqi(BigDecimal value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
+               IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
             ModelNode> children) {
         super(value, name, description, evaluator, normalizer, utilityFunction, weights, thresholds, children);
     }
@@ -69,8 +71,8 @@ public class Tqi extends ModelNode {
         Map<String, ModelNode> clonedChildren = new HashMap<>();
         getChildren().forEach((k, v) -> clonedChildren.put(k, v.clone()));
 
-        return new Tqi(getValue(), getName(), getDescription(), getEvaluatorObject(), getNormalizerObject(), getUtilityFunctionObject()
-                , getWeights(), getThresholds(), clonedChildren);
+        return new Tqi(getValue(), getName(), getDescription(), getEvaluatorObject(), getNormalizerObject(), getUtilityFunctionObject(),
+                 getWeights(), getThresholds(), clonedChildren);
     }
 
     @Override

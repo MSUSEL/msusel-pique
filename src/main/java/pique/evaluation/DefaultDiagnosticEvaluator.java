@@ -22,18 +22,25 @@
  */
 package pique.evaluation;
 
+import java.math.BigDecimal;
+
 import pique.model.Diagnostic;
 import pique.model.ModelNode;
+import pique.utility.BigDecimalWithContext;
 
 // TODO (1.0) Documentation
 public class DefaultDiagnosticEvaluator extends Evaluator {
 
     @Override
-    public double evaluate(ModelNode inNode) {
+    public BigDecimal evaluate(ModelNode inNode) {
         Diagnostic node = (Diagnostic)inNode;
-        return node.getChildren().values().stream()
-                .mapToDouble(ModelNode::getValue)
-                .sum();
+        
+        BigDecimal rawSum = new BigDecimalWithContext("0.0");
+    	
+    	for (ModelNode x : inNode.getChildren().values()) {
+    		rawSum = rawSum.add(x.getValue());
+    	}
+        return rawSum;
     }
 
 }

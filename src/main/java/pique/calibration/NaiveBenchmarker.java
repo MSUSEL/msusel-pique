@@ -28,8 +28,10 @@ import pique.evaluation.Project;
 import pique.model.Diagnostic;
 import pique.model.Measure;
 import pique.model.QualityModel;
+import pique.utility.BigDecimalWithContext;
 import pique.utility.FileUtility;
 
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -45,11 +47,11 @@ public class NaiveBenchmarker implements IBenchmarker {
      * @param tools               The collection of static analysis tools needed to audio the benchmark repository
      * @param projectRootFlag     Option flag to target the static analysis tools
      * @return A dictionary of [ Key: {@link pique.model.ModelNode} name, Value: thresholds ] where
-     * thresholds is a size = 2 array of Double[] containing the lowest and highest value
+     * thresholds is a size = 2 array of BigDecimalWithContext[] containing the lowest and highest value
      * seen for the given measure (after normalization).
      */
     @Override
-    public Map<String, Double[]> deriveThresholds(Path benchmarkRepository, QualityModel qmDescription, Set<ITool> tools,
+    public Map<String, BigDecimal[]> deriveThresholds(Path benchmarkRepository, QualityModel qmDescription, Set<ITool> tools,
                                                   String projectRootFlag) {
 
         // Collect root paths of each benchmark project
@@ -104,11 +106,11 @@ public class NaiveBenchmarker implements IBenchmarker {
         }
 
         // Map all values audited for each measure
-        Map<String, ArrayList<Double>> measureBenchmarkData = new HashMap<>();
+        Map<String, ArrayList<BigDecimal>> measureBenchmarkData = new HashMap<>();
         projects.forEach(p -> {
             p.getQualityModel().getMeasures().values().forEach(m -> {
                         if (!measureBenchmarkData.containsKey(m.getName())) {
-                            measureBenchmarkData.put(m.getName(), new ArrayList<Double>() {{
+                            measureBenchmarkData.put(m.getName(), new ArrayList<BigDecimal>() {{
                                 add(m.getValue());
                             }});
                         } else {
@@ -119,9 +121,9 @@ public class NaiveBenchmarker implements IBenchmarker {
         });
 
         // Identify the lowest and highest of each measure value
-        Map<String, Double[]> measureThresholds = new HashMap<>();
+        Map<String, BigDecimal[]> measureThresholds = new HashMap<>();
         measureBenchmarkData.forEach((measureName, measureValues) -> {
-            measureThresholds.putIfAbsent(measureName, new Double[2]);
+            measureThresholds.putIfAbsent(measureName, new BigDecimalWithContext[2]);
             measureThresholds.get(measureName)[0] = Collections.min(measureValues);
             measureThresholds.get(measureName)[1] = Collections.max(measureValues);
 

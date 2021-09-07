@@ -23,8 +23,11 @@
 import org.junit.Test;
 import pique.evaluation.DefaultUtility;
 import pique.evaluation.GaussianUtilityFunction;
+import pique.utility.BigDecimalWithContext;
 
 import static org.junit.Assert.assertEquals;
+
+import java.math.BigDecimal;
 
 public class GaussianUtilityTest {
 
@@ -37,12 +40,12 @@ public class GaussianUtilityTest {
 
     @Test
     public void testGaussianUtilityFunction(){
-        Double[] simpleThresholds = new Double[]{new Double(3), new Double(7)};
-        double positiveResult = gaussianUtility.utilityFunction(7, simpleThresholds, true);
-        double positiveResult2 = gaussianUtility.utilityFunction(3, simpleThresholds, true);
-        double positiveResult3 = gaussianUtility.utilityFunction(5, simpleThresholds, true);
-        assertEquals(0.1209, positiveResult, 0.005);
-        assertEquals(0.1209, positiveResult2, 0.005);
-        assertEquals(0.1994, positiveResult3, 0.005);
+        BigDecimal[] simpleThresholds = new BigDecimalWithContext[]{new BigDecimalWithContext(3), new BigDecimalWithContext(7)};
+        BigDecimal positiveResult = gaussianUtility.utilityFunction(new BigDecimalWithContext("7"), simpleThresholds, true);
+        BigDecimal positiveResult2 = gaussianUtility.utilityFunction(new BigDecimalWithContext("3"), simpleThresholds, true);
+        BigDecimal positiveResult3 = gaussianUtility.utilityFunction(new BigDecimalWithContext("5"), simpleThresholds, true);
+        assertEquals(0.1209, positiveResult.doubleValue(), 0.005);
+        assertEquals(0.1209, positiveResult2.doubleValue(), 0.005);
+        assertEquals(0.1994, positiveResult3.doubleValue(), 0.005);
     }
 }

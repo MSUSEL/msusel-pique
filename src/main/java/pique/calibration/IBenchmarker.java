@@ -25,6 +25,7 @@ package pique.calibration;
 import pique.analysis.ITool;
 import pique.model.QualityModel;
 
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
@@ -50,7 +51,7 @@ public interface IBenchmarker {
      * @return
      *      A dictionary of [ Key: {@link pique.model.ModelNode} name, Value: thresholds ]
      */
-    Map<String, Double[]> deriveThresholds(Path benchmarkRepository, QualityModel qmDescription, Set<ITool> tools,
+    Map<String, BigDecimal[]> deriveThresholds(Path benchmarkRepository, QualityModel qmDescription, Set<ITool> tools,
                                            String projectRootFlag);
 
     /**

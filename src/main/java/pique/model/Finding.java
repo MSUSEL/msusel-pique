@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.Setter;
 import pique.evaluation.*;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -65,8 +66,8 @@ public class Finding extends ModelNode {
     }
 
     // Used for cloning
-    public Finding(double value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
-                   IUtilityFunction utilityFunction, Map<String, Double> weights, Double[] thresholds, Map<String,
+    public Finding(BigDecimal value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
+                   IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
             ModelNode> children, String filePath, int lineNumber, int characterNumber, int severity) {
         super(value, name, description, evaluator, normalizer, utilityFunction, weights, thresholds, children);
         this.filePath = filePath;

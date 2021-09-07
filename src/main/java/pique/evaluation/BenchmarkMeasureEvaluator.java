@@ -22,7 +22,10 @@
  */
 package pique.evaluation;
 
+import java.math.BigDecimal;
+
 import pique.model.ModelNode;
+import pique.utility.BigDecimalWithContext;
 
 /**
  * Evaluator used during benchmark repository analysis
@@ -33,11 +36,13 @@ public class BenchmarkMeasureEvaluator extends Evaluator {
      * Return the sum of this node's children normalized
      */
     @Override
-    public double evaluate(ModelNode inNode) {
-        double rawSum = inNode.getChildren().values().stream()
-                .mapToDouble(ModelNode::getValue)
-                .sum();
-
+    public BigDecimal evaluate(ModelNode inNode) {
+    	BigDecimal rawSum = new BigDecimalWithContext("0.0");
+    	
+    	for (ModelNode x : inNode.getChildren().values()) {
+    		rawSum = rawSum.add(x.getValue());
+    	}
+    	
         return inNode.getNormalizerObject().normalize(rawSum);
     }
 }

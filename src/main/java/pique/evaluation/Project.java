@@ -27,6 +27,7 @@ import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 import pique.model.*;
 
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -109,7 +110,7 @@ public class Project{
 	}
 
 
-	public double evaluateTqi() {
+	public BigDecimal evaluateTqi() {
 		return getQualityModel().getTqi().getValue();
 	}
 

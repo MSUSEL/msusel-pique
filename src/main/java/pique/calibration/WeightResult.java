@@ -25,6 +25,7 @@ package pique.calibration;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public class WeightResult {
     private String name;  // the name of the ModelNode object these weights apply to
 
     @Getter @Setter
-    private Map<String, Double> weights;  // weight mapping of {Key: incoming weight ModelNode name, Value: weight value}
+    private Map<String, BigDecimal> weights;  // weight mapping of {Key: incoming weight ModelNode name, Value: weight value}
 
 
     // Constructor
@@ -52,7 +53,7 @@ public class WeightResult {
         this.weights = new HashMap<>();
     }
 
-    public void setWeight(String weightName, Double value) {
+    public void setWeight(String weightName, BigDecimal value) {
         getWeights().put(weightName, value);
     }
 }

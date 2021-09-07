@@ -20,24 +20,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package pique.evaluation;
+package pique.utility;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
-import pique.model.ModelNode;
-import pique.utility.BigDecimalWithContext;
+/**
+ * This is a BigDecimal extension that automatically sets the precision of the BigDecimal using a MathContext object.
+ * Uses HALF_UP rounding mode.
+ * @author Andrew
+ *
+ *
+ */
+public class BigDecimalWithContext extends BigDecimal{
 
-// TODO (1.0): Documentation
-public class DefaultProductFactorEvaluator extends Evaluator {
+	private static final Integer precision=25;
+	public static final MathContext mc = new MathContext(precision,RoundingMode.HALF_UP);
+	
+	public BigDecimalWithContext(int x) {
+		super(""+x,mc);
+	}
+	
+	public BigDecimalWithContext(double x) {
+		super(""+x,mc);
+	}
+	
+	public BigDecimalWithContext(String x) {
+		super(x,mc);
+	}
+	
+	public static MathContext getMC() {
+		return mc;
+	}
 
-    @Override
-    public BigDecimal evaluate(ModelNode inNode) {
-    	BigDecimal weightedSum = new BigDecimalWithContext("0.0");
-        for (ModelNode child : inNode.getChildren().values()) {
-            weightedSum = weightedSum.add(child.getValue());
-        }
-        weightedSum = weightedSum.divide(new BigDecimalWithContext(""+ inNode.getChildren().size()),BigDecimalWithContext.getMC());
-        return weightedSum;
-    }
 
 }

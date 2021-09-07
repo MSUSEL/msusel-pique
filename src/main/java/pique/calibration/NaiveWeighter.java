@@ -24,7 +24,9 @@ package pique.calibration;
 
 import pique.model.ModelNode;
 import pique.model.QualityModel;
+import pique.utility.BigDecimalWithContext;
 
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
@@ -54,7 +56,7 @@ public class NaiveWeighter implements IWeighter {
         return this.getClass().getCanonicalName();
     }
 
-    private double averageWeight(ModelNode currentNode) {
-        return 1.0 / (double)currentNode.getChildren().size();
+    private BigDecimal averageWeight(ModelNode currentNode) {
+        return new BigDecimalWithContext("1.0").divide(new BigDecimalWithContext(""+currentNode.getChildren().size()));
     }
 }

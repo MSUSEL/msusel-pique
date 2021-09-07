@@ -24,6 +24,7 @@ package pique.model;
 
 import pique.evaluation.*;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public class ProductFactor extends ModelNode {
 	}
 
 	public ProductFactor(String name, String description, IEvaluator evaluator, INormalizer normalizer,
-						 IUtilityFunction utilityFunction, Map<String, Double> weights, Double[] thresholds) {
+						 IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds) {
 		super(name, description, evaluator, normalizer, utilityFunction, weights, thresholds);
 	}
 
@@ -51,8 +52,8 @@ public class ProductFactor extends ModelNode {
 	}
 
 	// Used for cloning
-	public ProductFactor(double value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
-						 IUtilityFunction utilityFunction, Map<String, Double> weights, Double[] thresholds, Map<String,
+	public ProductFactor(BigDecimal value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
+						 IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
 			ModelNode> children) {
 		super(value, name, description, evaluator, normalizer, utilityFunction, weights, thresholds, children);
 	}

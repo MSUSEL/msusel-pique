@@ -27,6 +27,7 @@ import lombok.Getter;
 import lombok.Setter;
 import pique.evaluation.*;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,7 +69,7 @@ public class Measure extends ModelNode {
 	}
 
 	public Measure(String name, String description, IEvaluator evaluator, INormalizer normalizer,
-				   IUtilityFunction utilityFunction, Map<String, Double> weights, Double[] thresholds,
+				   IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds,
 				   boolean positive) {
 		super(name, description, evaluator, normalizer, utilityFunction, weights, thresholds);
 		this.positive = positive;
@@ -82,7 +83,7 @@ public class Measure extends ModelNode {
 	}
 
 	public Measure(String name, String description, INormalizer normalizer, boolean positive,
-				   Map<String, ModelNode> diagnostics, Double[] thresholds) {
+				   Map<String, ModelNode> diagnostics, BigDecimal[] thresholds) {
 		super(name, description, new DefaultMeasureEvaluator(), normalizer);
 		this.positive = positive;
 		this.children = diagnostics;
@@ -90,7 +91,7 @@ public class Measure extends ModelNode {
 	}
 
 	public Measure(String name, String description, boolean positive, INormalizer normalizer,
-				   Map<String, ModelNode> diagnostics, Double[] thresholds) {
+				   Map<String, ModelNode> diagnostics, BigDecimal[] thresholds) {
 		super(name, description, new DefaultMeasureEvaluator(), normalizer);
 		this.positive = positive;
 		this.children = diagnostics;
@@ -99,7 +100,7 @@ public class Measure extends ModelNode {
 
 
 	public Measure(String name, String description, INormalizer normalizer, boolean positive,
-				   Map<String, ModelNode> diagnostics, Double[] thresholds, IEvaluator evaluator) {
+				   Map<String, ModelNode> diagnostics, BigDecimal[] thresholds, IEvaluator evaluator) {
 		super(name, description, evaluator, normalizer);
 		this.positive = positive;
 		this.children = diagnostics;
@@ -107,7 +108,7 @@ public class Measure extends ModelNode {
 	}
 
 	public Measure(String name, String description, INormalizer normalizer, boolean positive,
-				   Map<String, ModelNode> diagnostics, Double[] thresholds, IEvaluator evaluator,
+				   Map<String, ModelNode> diagnostics, BigDecimal[] thresholds, IEvaluator evaluator,
 				   IUtilityFunction utilityFunction)
 	{
 		super(name, description, evaluator, normalizer);
@@ -118,8 +119,8 @@ public class Measure extends ModelNode {
 	}
 
 	// Used for cloning
-	public Measure(double value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
-						 IUtilityFunction utilityFunction, Map<String, Double> weights, Double[] thresholds, Map<String,
+	public Measure(BigDecimal value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
+						 IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
 			ModelNode> children) {
 		super(value, name, description, evaluator, normalizer, utilityFunction, weights, thresholds, children);
 	}
