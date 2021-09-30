@@ -162,12 +162,7 @@ public abstract class ModelNode {
     }
 
     public BigDecimal getWeight(String modelNodeName) {
-        try {
-            return weights.get(modelNodeName);
-        }
-        // TODO (1.0): Some redesign needed to better handle quality model description where there are not yet weights,
-        //  values, etc...
-        catch (NullPointerException e) { return new BigDecimalWithContext("0.0"); }
+    	return weights.getOrDefault(modelNodeName, new BigDecimalWithContext("0.0"));
     }
 
     public void setWeight(String modelNodeName, BigDecimal value) {
