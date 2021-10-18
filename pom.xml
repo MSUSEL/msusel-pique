@@ -36,7 +36,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>msusel-pique</artifactId>
   <packaging>jar</packaging>
-  <version>0.9.1</version>
+  <version>0.9.2</version>
   <name>msusel-pique</name>
   <description>MSU PIQUE quality framework</description>
   <url>https://msusel.github.io</url>
@@ -95,6 +95,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-math3</artifactId>
       <version>3.6.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.jbytecode</groupId>
+      <artifactId>RCaller</artifactId>
+      <version>3.0.2</version>
     </dependency>
 
   </dependencies>
