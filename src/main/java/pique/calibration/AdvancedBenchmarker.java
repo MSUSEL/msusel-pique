@@ -36,105 +36,21 @@ import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.*;
 
-public class AdvancedBenchmarker implements IBenchmarker {
-
-
-    /*****
-     * @Derek - This is a major code duplication from NaiveBenchmarker, mostly because we want to get GAMUtility functions up and running quickly
-     * To refactor in the future, I think we will need to refactor the deriveThresholds method so that all the boilerplate code is in separate methods.
-     * I don't really have time to do this now, but moreso we want to get GAMs up and running quickly.
-     */
-
-    /**
-     * Derive thesholds for all {@link Measure} nodes using a naive approach:
-     * (1) threshold[0] = the lowest value seen for the {@link Measure}
-     * (2) threshold[1] = the highest value seen for the {@link Measure}
-     *
-     * @param benchmarkRepository The root directory containing the items to be used for benchmarking
-     * @param qmDescription       The quality model description file
-     * @param tools               The collection of static analysis tools needed to audio the benchmark repository
-     * @param projectRootFlag     Option flag to target the static analysis tools
-     * @return A dictionary of [ Key: {@link pique.model.ModelNode} name, Value: thresholds ] where
-     * thresholds is a size = 2 array of BigDecimalWithContext[] containing the lowest and highest value
-     * seen for the given measure (after normalization).
-     */
+public class AdvancedBenchmarker extends AbstractBenchmarker implements IBenchmarker {
     @Override
-    public Map<String, BigDecimal[]> deriveThresholds(Path benchmarkRepository, QualityModel qmDescription, Set<ITool> tools,
-                                                      String projectRootFlag) {
+    public String getName() {
+        return this.getClass().getCanonicalName();
+    }
 
-        // Collect root paths of each benchmark project
-        Set<Path> projectRoots = FileUtility.multiProjectCollector(benchmarkRepository, projectRootFlag);
-        ArrayList<Project> projects = new ArrayList<>();
-
-        System.out.println("* Beginning repository benchmark analysis");
-        System.out.println(projectRoots.size() + " projects to analyze.\n");
-
-        int totalProjects = projectRoots.size();
-        int counter = 0;
-
-        for (Path projectPath : projectRoots) {
-
-            counter++;
-
-            // Clone the QM
-            // TODO (1.0): Currently need to use .clone() for benchmark repository quality model sharing. This will be
-            //  confusing and problematic to people not using the default benchmarker.
-            QualityModel clonedQM = qmDescription.clone();
-
-            // Instantiate new project object
-            Project project = new Project(projectPath.getFileName().toString(), projectPath, clonedQM);
-
-            // TODO: temp fix
-            // Set measures to not use a utility function during their node evaluation
-            project.getQualityModel().getMeasures().values().forEach(measure -> {
-                measure.setEvaluatorObject(new BenchmarkMeasureEvaluator());
-            });
-
-            // Run the static analysis tools process
-            Map<String, Diagnostic> allDiagnostics = new HashMap<>();
-            tools.forEach(tool -> {
-                Path analysisOutput = tool.analyze(projectPath);
-                allDiagnostics.putAll(tool.parseAnalysis(analysisOutput));
-            });
-
-            // Apply collected diagnostics (containing findings) to the project
-            allDiagnostics.forEach((diagnosticName, diagnostic) -> {
-                project.addFindings(diagnostic);
-            });
-
-            // Evaluate project up to Measure level (normalize does happen first)
-            project.evaluateMeasures();
-
-            // Add new project (with tool findings information included) to the list
-            projects.add(project);
-
-            // Print information
-            System.out.println("\n\tFinished analyzing project " + project.getName());
-            System.out.println("\t" + counter + " of " + totalProjects + " analyzed.\n");
-        }
-
-        // Map all values audited for each measure
-        Map<String, ArrayList<BigDecimal>> measureBenchmarkData = new HashMap<>();
-        projects.forEach(p -> {
-            p.getQualityModel().getMeasures().values().forEach(m -> {
-                    if (!measureBenchmarkData.containsKey(m.getName())) {
-                        measureBenchmarkData.put(m.getName(), new ArrayList<BigDecimal>() {{
-                            add(m.getValue());
-                        }});
-                    } else {
-                        measureBenchmarkData.get(m.getName()).add(m.getValue());
-                    }
-                }
-            );
-        });
-
-        // might need refactorign in the future, I am not sure why I can't just use measureBenchmarkData, but this is waht David did...
+	@Override
+	public Map<String, BigDecimal[]> calculateThresholds(Map<String, ArrayList<BigDecimal>> measureBenchmarkData) {
+		// might need refactorign in the future, I am not sure why I can't just use measureBenchmarkData, but this is waht David did...
         //I just removed the min and max (which is present in NaiveBenchmarker) and put in the full set of benchmark data.
         Map<String, BigDecimal[]> measureThresholds = new HashMap<>();
         measureBenchmarkData.forEach((measureName, measureValues) -> {
 
             int measureValuesSize = measureBenchmarkData.get(measureName).size();
-            measureThresholds.putIfAbsent(measureName, new BigDecimalWithContext[measureValuesSize]);
+            measureThresholds.putIfAbsent(measureName, new BigDecimal[measureValuesSize]);
             for (int i = 0; i < measureValuesSize; i++) {
                 measureThresholds.get(measureName)[i] = measureBenchmarkData.get(measureName).get(i);
             }
@@ -142,10 +58,5 @@ public class AdvancedBenchmarker implements IBenchmarker {
         });
 
         return measureThresholds;
-    }
-
-    @Override
-    public String getName() {
-        return this.getClass().getCanonicalName();
-    }
+	}
 }
