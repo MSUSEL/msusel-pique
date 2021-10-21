@@ -71,7 +71,9 @@ public abstract class AbstractBenchmarker implements IBenchmarker {
             Map<String, Diagnostic> allDiagnostics = new HashMap<>();
             tools.forEach(tool -> {
                 Path analysisOutput = tool.analyze(projectPath);
-                allDiagnostics.putAll(tool.parseAnalysis(analysisOutput));
+                Map<String, Diagnostic> parsedOutput = tool.parseAnalysis(analysisOutput);
+                if (parsedOutput!=null)  allDiagnostics.putAll(parsedOutput);
+                else System.err.println(tool.getName() + " failed to run. Ignoring this and continuing the benchmarking process.");
             });
 
             // Apply collected diagnostics (containing findings) to the project
