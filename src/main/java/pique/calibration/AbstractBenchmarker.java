@@ -41,16 +41,32 @@ public abstract class AbstractBenchmarker implements IBenchmarker {
 
         // Collect root paths of each benchmark project
         Set<Path> projectRoots = this.CollectProjectPaths(benchmarkRepository, projectRootFlag);
-        ArrayList<Project> projects = new ArrayList<>();
+        
 
         System.out.println("* Beginning repository benchmark analysis");
         System.out.println(projectRoots.size() + " projects to analyze.\n");
 
+        ArrayList<Project> projects = analyzeProjects(projectRoots, qmDescription, tools);
+
+        // Map all values audited for each measure
+        Map<String, ArrayList<BigDecimal>> measureBenchmarkData = mapMeasureValues(projects);
+        
+        Map<String, BigDecimal[]> measureThresholds = calculateThresholds(measureBenchmarkData);
+        return measureThresholds;
+    }
+    
+    /**
+     * Given a set of paths, a qm description, and a set of tools, return a list of projects with the tools run on them.
+     * @param projectRoots The paths of the projects to run the tools on
+     * @param qmDescription a description of the quality model
+     * @param tools A set of tools to run on the projects.
+     * @return A list of projects with tools evaluated and findings attached.
+     */
+    protected ArrayList<Project> analyzeProjects(Set<Path> projectRoots, QualityModel qmDescription, Set<ITool> tools) {
+    	ArrayList<Project> projects = new ArrayList<Project>();
         int totalProjects = projectRoots.size();
         int counter = 0;
-
-        for (Path projectPath : projectRoots) {
-
+    	for (Path projectPath : projectRoots) {
             counter++;
 
             // Clone the QM
@@ -68,14 +84,8 @@ public abstract class AbstractBenchmarker implements IBenchmarker {
             });
 
             // Run the static analysis tools process
-            Map<String, Diagnostic> allDiagnostics = new HashMap<>();
-            tools.forEach(tool -> {
-                Path analysisOutput = tool.analyze(projectPath);
-                Map<String, Diagnostic> parsedOutput = tool.parseAnalysis(analysisOutput);
-                if (parsedOutput!=null)  allDiagnostics.putAll(parsedOutput);
-                else System.err.println(tool.getName() + " failed to run. Ignoring this and continuing the benchmarking process.");
-            });
-
+            Map<String, Diagnostic> allDiagnostics = runToolsOnTarget(tools, projectPath);
+            
             // Apply collected diagnostics (containing findings) to the project
             allDiagnostics.forEach((diagnosticName, diagnostic) -> {
                 project.addFindings(diagnostic);
@@ -91,9 +101,35 @@ public abstract class AbstractBenchmarker implements IBenchmarker {
             System.out.println("\n\tFinished analyzing project " + project.getName());
             System.out.println("\t" + counter + " of " + totalProjects + " analyzed.\n");
         }
+    	return projects;
+    }
+    
+    /**
+     * given a set of tools and a Path, run the tools on the Path and return a Map of Strings to Diagnostics with attached
+     * findings
+     * @param tools The tools to run
+     * @param projectPath The Path to run the tools on
+     * @return A Map of Strings to Diagnostics that have findings attached.
+     */
+    protected Map<String, Diagnostic> runToolsOnTarget(Set<ITool> tools, Path projectPath) {
+    	Map<String, Diagnostic> allDiagnostics = new HashMap<String,Diagnostic>();
+        tools.forEach(tool -> {
+            Path analysisOutput = tool.analyze(projectPath);
+            Map<String, Diagnostic> parsedOutput = tool.parseAnalysis(analysisOutput);
+            if (parsedOutput!=null)  allDiagnostics.putAll(parsedOutput);
+            else System.err.println(tool.getName() + " failed to run. Ignoring this and continuing the benchmarking process.");
+        });
+        return allDiagnostics;
+    }
 
-        // Map all values audited for each measure
-        Map<String, ArrayList<BigDecimal>> measureBenchmarkData = new HashMap<>();
+    /**
+     * Given a list of projects, create a map of strings to a list of all values that a specific 
+     * measure takes on across the projects.
+     * @param projects The projects to take measure values from.
+     * @return A map that takes measure names and maps them to a list of values that the measure takes on in the projects.
+     */
+	protected Map<String, ArrayList<BigDecimal>> mapMeasureValues(ArrayList<Project> projects) {
+    	Map<String, ArrayList<BigDecimal>> measureBenchmarkData = new HashMap<>();
         projects.forEach(p -> {
             p.getQualityModel().getMeasures().values().forEach(m -> {
                         if (!measureBenchmarkData.containsKey(m.getName())) {
@@ -106,9 +142,7 @@ public abstract class AbstractBenchmarker implements IBenchmarker {
                     }
             );
         });
-        
-        Map<String, BigDecimal[]> measureThresholds = calculateThresholds(measureBenchmarkData);
-        return measureThresholds;
+        return measureBenchmarkData;
     }
     
     /**
