@@ -20,28 +20,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
-   * MIT License
- * Copyright (c) 2019 Montana State University Software Engineering Labs
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 package pique.calibration;
 
 import java.io.File;
@@ -85,12 +63,17 @@ public class MeanSDBenchmarker extends AbstractBenchmarker implements IBenchmark
         return measureThresholds;
 	}
     
+    @Override
+    public String getName() {
+        return this.getClass().getCanonicalName();
+    }
+    
     /**
      * Take mean of a BigDecimal ArrayList
      * @param measureValues The ArrayList<BigDecimal> to take the mean of
      * @return mean value of the passed parameter
      */
-    private static BigDecimal mean(ArrayList<BigDecimal> measureValues) {
+    private BigDecimal mean(ArrayList<BigDecimal> measureValues) {
     	BigDecimal sum = new BigDecimal("0.0");
         for (int i = 0; i < measureValues.size(); i++) {
             sum = sum.add(measureValues.get(i));
@@ -103,7 +86,7 @@ public class MeanSDBenchmarker extends AbstractBenchmarker implements IBenchmark
      * @param measureValues values of BigDecimals
      * @return Standard deviation of the passed BigDecimals
      */
-    private static BigDecimal calculateSD(ArrayList<BigDecimal> measureValues)
+    private BigDecimal calculateSD(ArrayList<BigDecimal> measureValues)
     {
     	BigDecimal sum = new BigDecimal("0.0"), standardDeviation = new BigDecimal("0.0");
         int length = measureValues.size();
@@ -129,13 +112,9 @@ public class MeanSDBenchmarker extends AbstractBenchmarker implements IBenchmark
         standardDeviation = sqrt(standardDeviation,BigDecimalWithContext.getMC().getPrecision());
         return standardDeviation;
     }
+
     
-    @Override
-    public String getName() {
-        return this.getClass().getCanonicalName();
-    }
-    
-    private static BigDecimal sqrt(BigDecimal A, final int SCALE) {
+    private BigDecimal sqrt(BigDecimal A, final int SCALE) {
         BigDecimal x0 = new BigDecimal("0");
         BigDecimal x1 = new BigDecimal(Math.sqrt(A.doubleValue()));
         while (!x0.equals(x1)) {
