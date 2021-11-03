@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import pique.evaluation.DefaultUtility;
 import pique.evaluation.GAMUtilityFunction;
@@ -28,10 +28,11 @@ import pique.utility.BigDecimalWithContext;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.BitSet;
 
-import static org.junit.Assert.assertEquals;
-
+/**
+ * ignoring test because this class was used for GAM testing/research purposes
+ */
+@Ignore
 public class GAMUtilityTest {
 
     private GAMUtilityFunction GAMUtility;
