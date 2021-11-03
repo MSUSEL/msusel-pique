@@ -40,6 +40,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 public abstract class AQualityModelDeriver {
 
     protected Project project;
@@ -49,9 +51,11 @@ public abstract class AQualityModelDeriver {
     protected Set<ITool> tools;
     protected Path benchmarkRepository;
     protected String projectRootFlag;
-
+    
+    
+    
     public QualityModel deriveModel(QualityModel qmDesign, Set<ITool> tools, Path benchmarkRepository, String projectRootFlag) {
-
+    	
         // (1) Derive thresholds
         IBenchmarker benchmarker = qmDesign.getBenchmarker();
         Map<String, BigDecimal[]> measureNameThresholdMappings = benchmarker.deriveThresholds(
