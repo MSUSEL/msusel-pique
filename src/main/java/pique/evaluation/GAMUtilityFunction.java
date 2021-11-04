@@ -102,6 +102,9 @@ public class GAMUtilityFunction implements IUtilityFunction {
             //super hack to get better image resolution. code is literally startPlot() expanded, available here:
             // https://github.com/jbytecode/rcaller/blob/master/RCaller/src/main/java/com/github/rcaller/rstuff/RCode.java
             //I just copy-pasted the code with different png params to make larger images. lol.
+
+            /* Uncomment me to print to file. 
+
             File f = this.plotSize(GraphicsType.png, code);
             System.out.println("Plot will be saved to: " + f);
             code.addRCode("par(mfrow = c(1,2))");
@@ -109,18 +112,8 @@ public class GAMUtilityFunction implements IUtilityFunction {
             code.addRCode("plot(myHist, xlab=\"Number of Findings\")");
             code.addRCode("dev.off()");
 
-
-            /*
-            File f = code.startPlot();
-            System.out.println("Plot will be saved to: " + f);
-            //code.addRCode("dev.new(width=1280,height=720,unit=\"px\")");
-            code.addRCode("par(mfrow = c(1,2))");
-            code.addRCode("plot(scores,fitted(gam_out),type=\"l\",ylab=\"Density of Findings\",xlab=\"Number of Findings\")");
-            code.addRCode("plot(myHist, xlab=\"Number of Findings\")");
-            //code.addRCode("dev.off()");
-            code.endPlot();
-
              */
+
         }catch (Exception e){
             e.printStackTrace();
         }
