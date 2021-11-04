@@ -20,28 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package pique.utility;
+package pique.evaluation;
 
-import java.io.FileReader;
-import java.util.Properties;
+import java.math.BigDecimal;
 
-public class PiqueProperties {
+import pique.evaluation.Normalizer;
+import pique.utility.BigDecimalWithContext;
 
-	public static Properties getProperties(){
+public class NoNormalizer extends Normalizer {
 
-        Properties prop = new Properties();
-        try {
-            prop.load(new FileReader("src/main/resources/pique-properties.properties"));
 
-        }catch(Exception e){
-        	try {
-        		prop.load(new FileReader("pique-properties.properties")); // this is the case when running from the .jar version of pique
-        	}
-        	catch(Exception e2){
-        		e.printStackTrace();
-        		e2.printStackTrace();
-        	}
-        }
-        return prop;
+	/**
+	 * We do not normalize, hence this returns a value of 1 always, resulting in no normalization.
+	 */
+    @Override
+    public BigDecimal normalize(BigDecimal v) {
+        return new BigDecimalWithContext(1.0);
     }
+
 }
