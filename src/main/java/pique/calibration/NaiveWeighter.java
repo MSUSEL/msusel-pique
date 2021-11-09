@@ -57,6 +57,6 @@ public class NaiveWeighter implements IWeighter {
     }
 
     private BigDecimal averageWeight(ModelNode currentNode) {
-        return new BigDecimalWithContext("1.0").divide(new BigDecimalWithContext(""+currentNode.getChildren().size()));
+        return new BigDecimalWithContext("1.0").divide(new BigDecimalWithContext(""+currentNode.getChildren().size()),BigDecimalWithContext.getMC());
     }
 }
