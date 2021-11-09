@@ -22,8 +22,6 @@
  */
 package pique.evaluation;
 
-import com.sun.scenario.effect.impl.state.GaussianShadowState;
-
 import pique.utility.BigDecimalWithContext;
 
 import java.math.BigDecimal;
