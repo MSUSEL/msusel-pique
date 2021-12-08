@@ -28,20 +28,18 @@ import java.util.Properties;
 public class PiqueProperties {
 
 	public static Properties getProperties(){
-
-        Properties prop = new Properties();
+		String propPath = "src/main/resources/pique-properties.properties";
+		return getProperties(propPath);
+    }
+	
+	public static Properties getProperties(String propPath) {
+		Properties prop = new Properties();
         try {
-            prop.load(new FileReader("src/main/resources/pique-properties.properties"));
+            prop.load(new FileReader(propPath));
 
         }catch(Exception e){
-        	try {
-        		prop.load(new FileReader("pique-properties.properties")); // this is the case when running from the .jar version of pique
-        	}
-        	catch(Exception e2){
-        		e.printStackTrace();
-        		e2.printStackTrace();
-        	}
+    		e.printStackTrace();
         }
         return prop;
-    }
+	}
 }
