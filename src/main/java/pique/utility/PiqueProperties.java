@@ -22,26 +22,35 @@
  */
 package pique.utility;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Properties;
 
 public class PiqueProperties {
+	
 
 	public static Properties getProperties(){
-
-        Properties prop = new Properties();
-        try {
-            prop.load(new FileReader("src/main/resources/pique-properties.properties"));
-
-        }catch(Exception e){
-        	try {
-        		prop.load(new FileReader("pique-properties.properties")); // this is the case when running from the .jar version of pique
-        	}
-        	catch(Exception e2){
-        		e.printStackTrace();
-        		e2.printStackTrace();
-        	}
-        }
-        return prop;
+		String propPath = "src/main/resources/pique-properties.properties";
+		Properties props = new Properties();
+		try {
+			props = getProperties(propPath);
+		}
+		catch(Exception e){
+			propPath = "./pique-properties.properties";
+			try {
+				props = getProperties(propPath);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+				e.printStackTrace();
+			} 
+		}
+		return props;
     }
+	
+	public static Properties getProperties(String propPath) throws FileNotFoundException, IOException {
+		Properties prop = new Properties();
+        prop.load(new FileReader(propPath));
+        return prop;
+	}
 }
