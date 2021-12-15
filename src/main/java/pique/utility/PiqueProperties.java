@@ -50,6 +50,7 @@ public class PiqueProperties {
 	
 	public static Properties getProperties(String propPath) throws FileNotFoundException, IOException {
 		Properties prop = new Properties();
+		System.out.println("propPath");
         prop.load(new FileReader(propPath));
         return prop;
 	}
