@@ -2,14 +2,12 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class OrientationTest {
+public class PracticeTest {
 
-    public OrientationTest() {
-    }
+    public PracticeTest() {}
 
     @Test
-    public void test1() {
+    public void compareNums() {
         assertEquals(1,1);
     }
-
 }
