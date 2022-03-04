@@ -39,6 +39,16 @@ import java.util.stream.Stream;
 
 public class GAMUtilityFunction implements IUtilityFunction {
 
+    // Adds additional info in the RPlot file name to be able to identify file
+    String r_file_code;
+
+    public GAMUtilityFunction() {
+        this.r_file_code = "";
+    }
+
+    public GAMUtilityFunction(String vulnerability) {
+        this.r_file_code = vulnerability.replaceAll(" ", "");
+    }
 
     /**
      * Apply a utility function given an input value and thresholds
@@ -142,7 +152,7 @@ public class GAMUtilityFunction implements IUtilityFunction {
     private File plotSize(GraphicsType type, RCode code) throws IOException {
         TempFileService tempFileService = new TempFileService();
         //File f = File.createTempFile("RPlot", "." + type.name());
-        File f = tempFileService.createTempFile("RPlot", "." + type.name());
+        File f = tempFileService.createTempFile("RPlot" + this.r_file_code, "." + type.name());
         switch (type) {
             case png:
                 code.addRCode("png(\"" + f.toString().replace("\\", "/") + "\",width=1280,height=720)");

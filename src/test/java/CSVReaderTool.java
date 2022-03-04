@@ -21,24 +21,30 @@ public class CSVReaderTool {
     // This is basically an "arrayed" version of the csv file minus the first row and first column.
     private int[][] values;
 
-    public CSVReaderTool() {
-    }
-
     /**
-     * Sets the reader's csv-file-to-be-processed to a specific file.
+     * Constructor sets the reader's csv-file-to-be-processed to a specific file.
      *
-     * @param file_name: file path of csv file
+     * @param file_name File path of csv file
      */
-    private void setCSVFile(String file_name) {
+    public CSVReaderTool(String file_name) {
         this.csv_file = new File(file_name);
     }
 
     /**
+     * Get the column names for the csv file.
+     *
+     * @return String array of column names in the csv.
+     */
+    public String[] getColNames() {
+        return this.col_names;
+    }
+
+    /**
      * Sets up the instance arrays that we will be indexing from to create the graphs.
+     *
      * @throws FileNotFoundException
      */
-    private void setArrays() throws FileNotFoundException {
-        Scanner scan = new Scanner(this.csv_file);
+    public void setArrays() throws FileNotFoundException {
 
         // Create column name array
         this.createColNameArray();
@@ -50,7 +56,8 @@ public class CSVReaderTool {
     }
 
     /**
-     * Creates and populates the vulnerability array for the csv file.
+     * Creates and populates the column name array for the csv file.
+     *
      * @throws FileNotFoundException
      */
     private void createColNameArray() throws FileNotFoundException {
@@ -60,19 +67,20 @@ public class CSVReaderTool {
         String[] header_elements = header_line.split(",");
 
         // Remove one for the initial empty cell in the csv file.
-        int num_of_vulnerabilities = header_elements.length - 1;
+        int num_of_cols = header_elements.length - 1;
 
         // Initialize column name array
-        this.col_names = new String[num_of_vulnerabilities];
+        this.col_names = new String[num_of_cols];
 
         // Populate column name array
-        for (int i = 1; i < num_of_vulnerabilities + 1; i++) {
+        for (int i = 1; i < num_of_cols + 1; i++) {
             this.col_names[i-1] = header_elements[i];
         }
     }
 
     /**
-     * Creates and populates the found in array for the csv file.
+     * Creates and populates the row name array for the csv file.
+     *
      * @throws FileNotFoundException
      */
     private void createRowNameArray() throws FileNotFoundException {
@@ -101,6 +109,11 @@ public class CSVReaderTool {
         }
     }
 
+    /**
+     * Creates and populates the values array for the csv file.
+     *
+     * @throws FileNotFoundException
+     */
     private void createValuesArray() throws FileNotFoundException {
         // Initialize values array
         this.values = new int[this.row_names.length][this.col_names.length];
@@ -120,9 +133,32 @@ public class CSVReaderTool {
 
     }
 
+    /**
+     * Extracts all the values in a column and returns them in an array.
+     *
+     * @param target_col_name The name of the column you want to extract values from.
+     *
+     * @return Int array of extracted column values for the specified column.
+     */
+    public int[] extractOneColumnValues(String target_col_name) {
+        int[] column_values = new int[this.row_names.length];
+
+        for (int i = 0; i < this.col_names.length; i++) {
+            if (this.col_names[i].equals(target_col_name)) {
+                for (int j = 0; j < this.row_names.length; j++) {
+                    column_values[j] = this.values[j][i];
+                }
+            }
+        }
+
+        return column_values;
+    }
+
     public static void main(String[] args) throws FileNotFoundException {
-        CSVReaderTool reader = new CSVReaderTool();
-        reader.setCSVFile("./src/test/java/pique-bin-full.csv");
+        CSVReaderTool reader = new CSVReaderTool("./src/test/java/pique-csharp-sec-full.csv");
         reader.setArrays();
+        for (String col : reader.col_names) {
+            reader.extractOneColumnValues(col);
+        }
     }
 }

@@ -26,6 +26,7 @@ import pique.evaluation.DefaultUtility;
 import pique.evaluation.GAMUtilityFunction;
 import pique.utility.BigDecimalWithContext;
 
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
@@ -77,6 +78,103 @@ public class GAMUtilityTest {
 //        assertEquals(0.1209, positiveResult.doubleValue(), 0.005);
 //        assertEquals(0.1209, positiveResult2.doubleValue(), 0.005);
 //        assertEquals(0.1994, positiveResult3.doubleValue(), 0.005);
+    }
+
+    /**
+     * Creates the GAM charts for all the vulnerabilities
+     * in the PIQUE bin and PIQUE c# csv files.
+     *
+     * Note: I'm fairly certain if you try to create a graph
+     * with a column of only zeroes, then the R code runs into
+     * some errors. So it only creates graphs for columns that
+     * contain at least one non-zero value.
+     *
+     * @throws FileNotFoundException
+     */
+    @Test
+    public void createGraphs() throws FileNotFoundException {
+        // PIQUE bin csv
+        CSVReaderTool reader1 = new CSVReaderTool("./src/test/java/pique-bin-full.csv");
+        reader1.setArrays();
+
+        // Create graphs for every vulnerability in PIQUE bin csv
+        for (String vulnerability : reader1.getColNames()) {
+            int[] vals1 = reader1.extractOneColumnValues(vulnerability);
+            for (int i = 0; i < vals1.length; i++) {
+                if (vals1[i] != 0) {
+                    createChart(vals1, vulnerability);
+                    break;
+                }
+            }
+        }
+
+        // -----------------------------------------------------------------------------------------------
+
+        // PIQUE c# csv
+        CSVReaderTool reader2 = new CSVReaderTool("./src/test/java/pique-csharp-sec-full.csv");
+        reader2.setArrays();
+
+        // Create graphs for every vulnerability in PIQUE bin csv
+        for (String vulnerability : reader1.getColNames()) {
+            int[] vals2 = reader2.extractOneColumnValues(vulnerability);
+            for (int i = 0; i < vals2.length; i++) {
+                if (vals2[i] != 0) {
+                    createChart(vals2, vulnerability);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Creates the GAM charts for the vulnerabilities.
+     *
+     * @param intVals The occurrences of a certain vulnerability.
+     */
+    public void createChart(int[] intVals, String vulnerability) {
+        this.GAMUtility = new GAMUtilityFunction(vulnerability);
+        BigDecimal[] gamValues = getBigDecimal(intVals);
+
+        double[] quartiles = quartiles(Arrays.stream(intVals).asDoubleStream().toArray());
+
+        BigDecimal meanEvaluation = new BigDecimalWithContext(Arrays.stream(intVals).average().getAsDouble());
+        BigDecimal q1Evaluation = new BigDecimalWithContext(quartiles[0]);
+        BigDecimal q2Evaluation = new BigDecimalWithContext(quartiles[1]);
+        BigDecimal q3Evaluation = new BigDecimalWithContext(quartiles[2]);
+
+        BigDecimal meanGAMResult = GAMUtility.utilityFunction(meanEvaluation, gamValues, true);
+        BigDecimal q1GAMResult = GAMUtility.utilityFunction(q1Evaluation, gamValues, true);
+        BigDecimal q2GAMResult = GAMUtility.utilityFunction(q2Evaluation, gamValues, true);
+        BigDecimal q3GAMResult = GAMUtility.utilityFunction(q3Evaluation, gamValues, true);
+
+
+        int min = Arrays.stream(intVals).min().getAsInt();
+        int max = Arrays.stream(intVals).max().getAsInt();
+
+        BigDecimal[] linearInterpValues = getBigDecimal(new int[]{min, max});
+
+        BigDecimal meanLinearInterpResult = defaultUtility.utilityFunction(meanEvaluation, linearInterpValues, true);
+        BigDecimal q1LinearInterpResult = defaultUtility.utilityFunction(q1Evaluation, linearInterpValues, true);
+        BigDecimal q2LinearInterpResult = defaultUtility.utilityFunction(q2Evaluation, linearInterpValues, true);
+        BigDecimal q3LinearInterpResult = defaultUtility.utilityFunction(q3Evaluation, linearInterpValues, true);
+
+        System.out.println("Data stats");
+        System.out.println("\tMean: " + meanEvaluation);
+        System.out.println("\tQ1: " + q1Evaluation);
+        System.out.println("\tQ2 (Median): " + q2Evaluation);
+        System.out.println("\tQ3: " + q3Evaluation);
+
+
+        System.out.println("GAM results");
+        System.out.println("\tMean: " + meanGAMResult);
+        System.out.println("\tQ1: " + q1GAMResult);
+        System.out.println("\tQ2 (Median): " + q2GAMResult);
+        System.out.println("\tQ3: " + q3GAMResult);
+        System.out.println("Linear Interp results");
+        System.out.println("\tMean: " + meanLinearInterpResult);
+        System.out.println("\tQ1: " + q1LinearInterpResult);
+        System.out.println("\tQ2 (Median): " + q2LinearInterpResult);
+        System.out.println("\tQ3: " + q3LinearInterpResult);
     }
 
     /**
