@@ -153,12 +153,4 @@ public class CSVReaderTool {
 
         return column_values;
     }
-
-    public static void main(String[] args) throws FileNotFoundException {
-        CSVReaderTool reader = new CSVReaderTool("./src/test/java/pique-csharp-sec-full.csv");
-        reader.setArrays();
-        for (String col : reader.col_names) {
-            reader.extractOneColumnValues(col);
-        }
-    }
 }
