@@ -119,7 +119,6 @@ public class GAMUtilityTest {
             int[] vals2 = csharp_reader.extractOneColumnValues(vulnerability);
             for (int i = 0; i < vals2.length; i++) {
                 if (vals2[i] != 0) {
-                    System.out.println(vulnerability);
                     createChart(vals2, "CSharp",vulnerability);
                     break;
                 }
