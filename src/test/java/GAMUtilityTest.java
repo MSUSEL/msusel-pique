@@ -94,15 +94,15 @@ public class GAMUtilityTest {
     @Test
     public void createGraphs() throws FileNotFoundException {
         // PIQUE bin csv
-        CSVReaderTool reader1 = new CSVReaderTool("./src/test/java/pique-bin-full.csv");
-        reader1.setArrays();
+        CSVReaderTool bin_reader = new CSVReaderTool("./src/test/java/pique-bin-full.csv");
+        bin_reader.setArrays();
 
         // Create graphs for every vulnerability in PIQUE bin csv
-        for (String vulnerability : reader1.getColNames()) {
-            int[] vals1 = reader1.extractOneColumnValues(vulnerability);
+        for (String vulnerability : bin_reader.getColNames()) {
+            int[] vals1 = bin_reader.extractOneColumnValues(vulnerability);
             for (int i = 0; i < vals1.length; i++) {
                 if (vals1[i] != 0) {
-                    createChart(vals1, vulnerability);
+                    createChart(vals1, "Binary", vulnerability);
                     break;
                 }
             }
@@ -110,16 +110,17 @@ public class GAMUtilityTest {
 
         // -----------------------------------------------------------------------------------------------
 
-        // PIQUE c# csv
-        CSVReaderTool reader2 = new CSVReaderTool("./src/test/java/pique-csharp-sec-full.csv");
-        reader2.setArrays();
+        // PIQUE C# csv
+        CSVReaderTool csharp_reader = new CSVReaderTool("./src/test/java/pique-csharp-sec-full.csv");
+        csharp_reader.setArrays();
 
-        // Create graphs for every vulnerability in PIQUE bin csv
-        for (String vulnerability : reader1.getColNames()) {
-            int[] vals2 = reader2.extractOneColumnValues(vulnerability);
+        // Create graphs for every vulnerability in PIQUE C# csv
+        for (String vulnerability : csharp_reader.getColNames()) {
+            int[] vals2 = csharp_reader.extractOneColumnValues(vulnerability);
             for (int i = 0; i < vals2.length; i++) {
                 if (vals2[i] != 0) {
-                    createChart(vals2, vulnerability);
+                    System.out.println(vulnerability);
+                    createChart(vals2, "CSharp",vulnerability);
                     break;
                 }
             }
@@ -131,8 +132,8 @@ public class GAMUtilityTest {
      *
      * @param intVals The occurrences of a certain vulnerability.
      */
-    public void createChart(int[] intVals, String vulnerability) {
-        this.GAMUtility = new GAMUtilityFunction(vulnerability);
+    public void createChart(int[] intVals, String language, String vulnerability) {
+        this.GAMUtility = new GAMUtilityFunction(language, vulnerability);
         BigDecimal[] gamValues = getBigDecimal(intVals);
 
         double[] quartiles = quartiles(Arrays.stream(intVals).asDoubleStream().toArray());
