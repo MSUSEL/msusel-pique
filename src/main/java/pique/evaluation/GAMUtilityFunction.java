@@ -47,11 +47,11 @@ public class GAMUtilityFunction implements IUtilityFunction {
     }
 
     public GAMUtilityFunction(String vulnerability) {
-        this.r_file_code = vulnerability.replaceAll(" ", "_");
+        this.r_file_code = vulnerability.replaceAll(" ", "_") + "_";
     }
 
     public GAMUtilityFunction(String language,String vulnerability) {
-        this.r_file_code = language.replaceAll(" ", "_") + "_" + vulnerability.replaceAll(" ", "_");
+        this.r_file_code = language.replaceAll(" ", "_") + "_" + vulnerability.replaceAll(" ", "_") + "_";
     }
 
     /**
