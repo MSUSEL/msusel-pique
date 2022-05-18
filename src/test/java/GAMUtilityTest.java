@@ -20,6 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import pique.evaluation.DefaultUtility;
@@ -43,6 +44,13 @@ public class GAMUtilityTest {
         defaultUtility = new DefaultUtility();
     }
 
+
+    @Before
+    public void readFindings(){
+        //input file
+        //parse file
+        //call scanColumn()
+    }
 
     /***
      * To make this functional in an acceptance testing light I made changes to

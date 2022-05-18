@@ -103,7 +103,6 @@ public class GAMUtilityFunction implements IUtilityFunction {
             // https://github.com/jbytecode/rcaller/blob/master/RCaller/src/main/java/com/github/rcaller/rstuff/RCode.java
             //I just copy-pasted the code with different png params to make larger images. lol.
 
-            /* Uncomment me to print to file. 
 
             File f = this.plotSize(GraphicsType.png, code);
             System.out.println("Plot will be saved to: " + f);
@@ -112,7 +111,7 @@ public class GAMUtilityFunction implements IUtilityFunction {
             code.addRCode("plot(myHist, xlab=\"Number of Findings\")");
             code.addRCode("dev.off()");
 
-             */
+
 
         }catch (Exception e){
             e.printStackTrace();

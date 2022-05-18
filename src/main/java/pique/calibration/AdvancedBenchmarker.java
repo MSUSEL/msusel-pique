@@ -52,6 +52,7 @@ public class AdvancedBenchmarker extends AbstractBenchmarker implements IBenchma
             int measureValuesSize = measureBenchmarkData.get(measureName).size();
             measureThresholds.putIfAbsent(measureName, new BigDecimal[measureValuesSize]);
             for (int i = 0; i < measureValuesSize; i++) {
+                //lol need to fix this: TODO: fixme.
                 measureThresholds.get(measureName)[i] = measureBenchmarkData.get(measureName).get(i);
             }
 
