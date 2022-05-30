@@ -46,7 +46,7 @@ import java.util.Set;
 public abstract class ASingleProjectEvaluator {
     protected Project project;
 
-    protected final Properties properties = PiqueProperties.getProperties();
+    protected Properties properties;
 
     /**
      * Entry point for running single project evaluation. The library assumes the user has extended Qatch

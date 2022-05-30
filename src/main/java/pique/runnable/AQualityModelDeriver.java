@@ -45,7 +45,7 @@ import org.apache.log4j.Logger;
 public abstract class AQualityModelDeriver {
 
     protected Project project;
-    protected final Properties properties = PiqueProperties.getProperties();
+    protected Properties properties;
 
     protected QualityModel qualityModelDesign;
     protected Set<ITool> tools;
