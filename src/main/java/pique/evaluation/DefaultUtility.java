@@ -49,7 +49,7 @@ import java.math.BigDecimal;
 import pique.utility.BigDecimalWithContext;
 
 // TODO (1.0): default utility function
-public class    DefaultUtility implements IUtilityFunction {
+public class DefaultUtility implements IUtilityFunction {
 
     /**
      * Apply linear interpolation to a 2-threshold array represeting the min and max values seen.

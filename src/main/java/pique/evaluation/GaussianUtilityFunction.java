@@ -55,7 +55,7 @@ public class GaussianUtilityFunction implements IUtilityFunction {
         //calculate sigma as difference between mean and threshold
         Double sigma = mean.doubleValue() - thresholds[0].doubleValue();
 
-        Gaussian function = new Gaussian(mean, sigma);
+            Gaussian function = new Gaussian(mean, sigma);
         Double output = function.value(inValue.doubleValue());
 
         return new BigDecimalWithContext("" + output);
