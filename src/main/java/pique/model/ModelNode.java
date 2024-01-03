@@ -61,7 +61,7 @@ public abstract class ModelNode {
     @Expose
     protected String normalizer;
     @Expose
-    protected String utility_function;
+    protected UtilityFunction utility_function;
 
     @Getter @Setter
     protected IEvaluator evaluatorObject;
@@ -84,7 +84,8 @@ public abstract class ModelNode {
 
         this.eval_strategy    = evaluatorObject.getClass().getCanonicalName();
         this.normalizer       = normalizerObject.getClass().getCanonicalName();
-        this.utility_function = utilityFunctionObject.getClass().getCanonicalName();
+        //backwards compatibility fix
+        this.utility_function = convertStringUtilityFunction(utilityFunctionObject.getClass().getCanonicalName());
     }
 
     public ModelNode(String name, String description, IEvaluator evaluatorObject, INormalizer normalizerObject,
@@ -99,7 +100,7 @@ public abstract class ModelNode {
 
         this.eval_strategy    = evaluatorObject.getClass().getCanonicalName();
         this.normalizer       = normalizerObject.getClass().getCanonicalName();
-        this.utility_function = utilityFunctionObject.getClass().getCanonicalName();
+        this.utility_function = convertStringUtilityFunction(utilityFunctionObject.getClass().getCanonicalName());
     }
 
     /**
@@ -120,10 +121,24 @@ public abstract class ModelNode {
 
         this.eval_strategy    = evaluatorObject.getClass().getCanonicalName();
         this.normalizer       = normalizerObject.getClass().getCanonicalName();
-        this.utility_function = utilityFunctionObject.getClass().getCanonicalName();
+        this.utility_function = convertStringUtilityFunction(utilityFunctionObject.getClass().getCanonicalName());
     }
-
     //endregion
+
+
+    /***
+     * Method to convert the old way of serializing utility functions (via string for the name) to a wrapper object that contains more information regarding the utility function
+     *
+     * @param utilityFunctionName old name
+     *
+     * @return converted object
+     */
+    public UtilityFunction convertStringUtilityFunction(String utilityFunctionName){
+        //TODO
+        return new UtilityFunction();
+
+
+    }
 
 
     //region Getters and setters
