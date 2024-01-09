@@ -37,8 +37,16 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class GAMUtilityFunction implements IUtilityFunction {
+public class GAMUtilityFunction extends UtilityFunction {
 
+    public GAMUtilityFunction(){
+        super("pique.evaluation.GAMUtilityFunction", "Utility function based on a Generalized Additive Model.");
+    }
+
+
+    public GAMUtilityFunction(String name, String description) {
+        super(name, description);
+    }
 
     /**
      * Apply a utility function given an input value and thresholds

@@ -23,7 +23,6 @@
 package pique.model;
 
 import pique.evaluation.*;
-import pique.utility.BigDecimalWithContext;
 
 import java.math.BigDecimal;
 import java.util.HashMap;

@@ -25,10 +25,7 @@ package pique.model;
 import com.google.gson.annotations.Expose;
 import lombok.Getter;
 import lombok.Setter;
-import pique.evaluation.DefaultUtility;
-import pique.evaluation.IEvaluator;
-import pique.evaluation.INormalizer;
-import pique.evaluation.IUtilityFunction;
+import pique.evaluation.*;
 import pique.utility.BigDecimalWithContext;
 
 import java.math.BigDecimal;
@@ -60,32 +57,35 @@ public abstract class ModelNode {
     protected String eval_strategy;
     @Expose
     protected String normalizer;
+
     @Expose
-    protected UtilityFunction utility_function;
+    @Getter @Setter
+    protected IUtilityFunction utilityFunctionObject;
 
     @Getter @Setter
     protected IEvaluator evaluatorObject;
     @Getter @Setter
     protected INormalizer normalizerObject;
-    @Getter @Setter
-    protected IUtilityFunction utilityFunctionObject;
 
     @Getter @Setter
     protected boolean visited = false;      // Use for BFS traversal
 
     // Constructor
 
-    public ModelNode(String name, String description, IEvaluator evaluatorObject, INormalizer normalizerObject) {
+
+    public ModelNode(String name, String description){
+
+    }
+
+    public ModelNode(String name, String description, IUtilityFunction utilityFunctionObject, IEvaluator evaluatorObject, INormalizer normalizerObject) {
         this.name = name;
         this.description = description;
         this.evaluatorObject = evaluatorObject;
         this.normalizerObject = normalizerObject;
-        this.utilityFunctionObject = new DefaultUtility();
+        this.utilityFunctionObject = utilityFunctionObject;
 
         this.eval_strategy    = evaluatorObject.getClass().getCanonicalName();
         this.normalizer       = normalizerObject.getClass().getCanonicalName();
-        //backwards compatibility fix
-        this.utility_function = convertStringUtilityFunction(utilityFunctionObject.getClass().getCanonicalName());
     }
 
     public ModelNode(String name, String description, IEvaluator evaluatorObject, INormalizer normalizerObject,
@@ -100,7 +100,6 @@ public abstract class ModelNode {
 
         this.eval_strategy    = evaluatorObject.getClass().getCanonicalName();
         this.normalizer       = normalizerObject.getClass().getCanonicalName();
-        this.utility_function = convertStringUtilityFunction(utilityFunctionObject.getClass().getCanonicalName());
     }
 
     /**
@@ -121,25 +120,8 @@ public abstract class ModelNode {
 
         this.eval_strategy    = evaluatorObject.getClass().getCanonicalName();
         this.normalizer       = normalizerObject.getClass().getCanonicalName();
-        this.utility_function = convertStringUtilityFunction(utilityFunctionObject.getClass().getCanonicalName());
     }
     //endregion
-
-
-    /***
-     * Method to convert the old way of serializing utility functions (via string for the name) to a wrapper object that contains more information regarding the utility function
-     *
-     * @param utilityFunctionName old name
-     *
-     * @return converted object
-     */
-    public UtilityFunction convertStringUtilityFunction(String utilityFunctionName){
-        //TODO
-        return new UtilityFunction();
-
-
-    }
-
 
     //region Getters and setters
 

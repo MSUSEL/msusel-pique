@@ -31,7 +31,6 @@ import pique.calibration.IWeighter;
 import pique.calibration.NaiveBenchmarker;
 import pique.calibration.NaiveWeighter;
 import pique.evaluation.*;
-import pique.utility.BigDecimalWithContext;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -203,7 +202,7 @@ public class QualityModelImport {
         }
     }
 
-    private IEvaluator getEvluatorFromConfiguration(JsonObject jsonQmNode, String nodeTypeQm) {
+    private IEvaluator getEvaluatorFromConfiguration(JsonObject jsonQmNode, String nodeTypeQm) {
         if (jsonQmNode.get("eval_strategy") != null) {
             String fullClassName = jsonQmNode.get("eval_strategy").getAsString();
             try {
@@ -231,7 +230,7 @@ public class QualityModelImport {
                 case "product_factor":
                     return new DefaultProductFactorEvaluator();
                 default:
-                    throw new RuntimeException("switch statement did not match nodeTypeQm parameter.");
+                    throw new RuntimeException("Quality Model Importer failed to match node type spelling.");
             }
         }
     }
@@ -340,7 +339,7 @@ public class QualityModelImport {
             String diagnosticName = entry.getKey();
             String diagnosticDescription = jsonDiagnostic.get("description").getAsString();
             String diagnosticToolName = jsonDiagnostic.get("toolName").getAsString();
-            IEvaluator evaluator = getEvluatorFromConfiguration(jsonDiagnostic, "diagnostic");
+            IEvaluator evaluator = getEvaluatorFromConfiguration(jsonDiagnostic, "diagnostic");
             INormalizer normalizer = getNormalizerFromConfiguration(jsonDiagnostic);
             IUtilityFunction utilityFunction = getUtilityFunctionFromConfiguration(jsonDiagnostic);
             Map<String, BigDecimal> weights = getWeightsFromConfiguration(jsonDiagnostic);
@@ -390,7 +389,7 @@ public class QualityModelImport {
             String measureName = entry.getKey();
             String measureDescription = jsonMeasure.get("description").getAsString();
             boolean positive = jsonMeasure.getAsJsonPrimitive("positive").getAsBoolean();
-            IEvaluator evaluator = getEvluatorFromConfiguration(jsonMeasure, "measure");
+            IEvaluator evaluator = getEvaluatorFromConfiguration(jsonMeasure, "measure");
             INormalizer normalizer = getNormalizerFromConfiguration(jsonMeasure);
             IUtilityFunction utilityFunction = getUtilityFunctionFromConfiguration(jsonMeasure);
             Map<String, BigDecimal> weights = getWeightsFromConfiguration(jsonMeasure);
@@ -443,7 +442,7 @@ public class QualityModelImport {
             JsonObject valueObj = jsonProductFactor.getValue().getAsJsonObject();
             String pfName = jsonProductFactor.getKey();
             String pfDescription = valueObj.get("description").getAsString();
-            IEvaluator evaluator = getEvluatorFromConfiguration(valueObj, "productfactor");
+            IEvaluator evaluator = getEvaluatorFromConfiguration(valueObj, "productfactor");
             INormalizer normalizer = getNormalizerFromConfiguration(valueObj);
             IUtilityFunction utilityFunction = getUtilityFunctionFromConfiguration(valueObj);
             Map<String, BigDecimal> weights = getWeightsFromConfiguration(valueObj);
@@ -486,7 +485,7 @@ public class QualityModelImport {
             JsonObject valueObj = entry.getValue().getAsJsonObject();
             String qaName = entry.getKey();
             String qaDescription = valueObj.get("description").getAsString();
-            IEvaluator evaluator = getEvluatorFromConfiguration(valueObj, "qualityaspect");
+            IEvaluator evaluator = getEvaluatorFromConfiguration(valueObj, "qualityaspect");
             INormalizer normalizer = getNormalizerFromConfiguration(valueObj);
             IUtilityFunction utilityFunction = getUtilityFunctionFromConfiguration(valueObj);
             Map<String, BigDecimal> weights = getWeightsFromConfiguration(valueObj);
@@ -524,7 +523,7 @@ public class QualityModelImport {
 
         String tqiName = tqiEntry.getKey();
         String tqiDescription = tqiValues.get("description").getAsString();
-        IEvaluator evaluator = getEvluatorFromConfiguration(tqiValues, "factor");
+        IEvaluator evaluator = getEvaluatorFromConfiguration(tqiValues, "factor");
         INormalizer normzlier = getNormalizerFromConfiguration(tqiValues);
         IUtilityFunction utilityFunction = getUtilityFunctionFromConfiguration(tqiValues);
         Map<String, BigDecimal> weights = getWeightsFromConfiguration(tqiValues);

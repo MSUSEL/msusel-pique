@@ -28,8 +28,16 @@ import java.math.BigDecimal;
 
 import org.apache.commons.math3.analysis.function.Gaussian;
 
-public class GaussianUtilityFunction implements IUtilityFunction {
+public class GaussianUtilityFunction extends UtilityFunction {
 
+
+    public GaussianUtilityFunction() {
+        super("pique.evaluation.GaussianUtilityFunction", "Basic GaussianUtility function that fills a Gaussian distribution based on two threshold values (min and max)");
+    }
+
+    public GaussianUtilityFunction(String name, String description) {
+        super(name, description);
+    }
 
     /**
      * Apply a utility function given an input value and thresholds

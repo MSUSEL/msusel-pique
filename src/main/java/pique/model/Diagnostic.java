@@ -60,6 +60,7 @@ public class Diagnostic extends ModelNode {
     // Constructors
 
     public Diagnostic(String id, String description, String toolName) {
+        //constructor for when a utility function is not supplied.
         super(id, description, new DefaultDiagnosticEvaluator(), new DefaultNormalizer());
         this.toolName = toolName;
     }

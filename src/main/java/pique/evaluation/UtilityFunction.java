@@ -1,18 +1,20 @@
-package pique.model;
+package pique.evaluation;
 
 
 import com.google.gson.annotations.Expose;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /***
  * Basically a data class to hold information pertinent to utility functions.
  */
-public class UtilityFunction {
+public abstract class UtilityFunction implements IUtilityFunction{
+
+    @Expose
+    @Getter @Setter
+    private String name;
 
     @Expose
     @Getter @Setter
@@ -47,38 +49,28 @@ public class UtilityFunction {
 
 
     /***
-     * empty constructor, delete if never used
+     * basic constructor to build object in model building run, object will be filled as other data is calculated and fed to it.
+     * Other data will come from benchmark and evaluate phase.
+     *
+     * Initializing other attributes because I do want them output to a built model json file.
+     *
      */
-    public UtilityFunction(){
-
+    public UtilityFunction(String name, String description){
+        this.name = name;
+        this.description = description;
     }
 
-    /***
-     * Constructor to supply what we have implemented at this moment in time (12/26/2023)
-     *
-     * @param benchmarkTag
-     * @param description
-     * @param utilityFunctionImageURIs
-     */
-    public UtilityFunction(String benchmarkTag, String description, HashMap<String, String> utilityFunctionImageURIs) {
-        this.benchmarkTag = benchmarkTag;
+    public UtilityFunction(String name, String description, String benchmarkTag, HashMap<String, String> utilityFunctionImageURIs) {
+        this.name = name;
         this.description = description;
+        this.benchmarkTag = benchmarkTag;
         this.utilityFunctionImageURIs = utilityFunctionImageURIs;
     }
 
-    /***
-     * full constructor with all fields, just to have it :)
-     *
-     * @param benchmarkTag
-     * @param description
-     * @param utilityFunctionImageURIs
-     * @param benchmarkQualityMetrics
-     * @param utilityFunctionQualityMetrics
-     * @param sensitivityAnalysisResults
-     */
-    public UtilityFunction(String benchmarkTag, String description, HashMap<String, String> utilityFunctionImageURIs, HashMap<String, String> benchmarkQualityMetrics, HashMap<String, String> utilityFunctionQualityMetrics, HashMap<String, String> sensitivityAnalysisResults) {
-        this.benchmarkTag = benchmarkTag;
+    public UtilityFunction(String name, String description, String benchmarkTag, HashMap<String, String> utilityFunctionImageURIs, HashMap<String, String> benchmarkQualityMetrics, HashMap<String, String> utilityFunctionQualityMetrics, HashMap<String, String> sensitivityAnalysisResults) {
+        this.name = name;
         this.description = description;
+        this.benchmarkTag = benchmarkTag;
         this.utilityFunctionImageURIs = utilityFunctionImageURIs;
         this.benchmarkQualityMetrics = benchmarkQualityMetrics;
         this.utilityFunctionQualityMetrics = utilityFunctionQualityMetrics;

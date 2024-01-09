@@ -49,8 +49,16 @@ import java.math.BigDecimal;
 import pique.utility.BigDecimalWithContext;
 
 // TODO (1.0): default utility function
-public class DefaultUtility implements IUtilityFunction {
+public class DefaultUtility extends UtilityFunction {
 
+
+    public DefaultUtility(){
+        super("pique.evaluation.DefaultUtility", "Simple linear utility function based on min and max of threshold data");
+    }
+
+    public DefaultUtility(String name, String description){
+        super(name, description);
+    }
     /**
      * Apply linear interpolation to a 2-threshold array represeting the min and max values seen.
      * TODO: Investigate genericising this formula to n dimensions
