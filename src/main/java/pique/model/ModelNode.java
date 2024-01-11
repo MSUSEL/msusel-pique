@@ -53,39 +53,32 @@ public abstract class ModelNode {
     protected Map<String, BigDecimal> weights = new HashMap<>();
     @Getter @Setter @Expose
     protected BigDecimal[] thresholds;
+
+
     @Expose
-    protected String eval_strategy;
+    @Getter @Setter
+    protected IEvaluator evaluatorObject;
+
     @Expose
-    protected String normalizer;
+    @Getter @Setter
+    protected INormalizer normalizerObject;
 
     @Expose
     @Getter @Setter
     protected IUtilityFunction utilityFunctionObject;
 
     @Getter @Setter
-    protected IEvaluator evaluatorObject;
-    @Getter @Setter
-    protected INormalizer normalizerObject;
-
-    @Getter @Setter
     protected boolean visited = false;      // Use for BFS traversal
 
     // Constructor
 
-
-    public ModelNode(String name, String description){
-
-    }
-
-    public ModelNode(String name, String description, IUtilityFunction utilityFunctionObject, IEvaluator evaluatorObject, INormalizer normalizerObject) {
+    public ModelNode(String name, String description, IEvaluator evaluatorObject, INormalizer normalizerObject) {
         this.name = name;
         this.description = description;
         this.evaluatorObject = evaluatorObject;
         this.normalizerObject = normalizerObject;
-        this.utilityFunctionObject = utilityFunctionObject;
+        this.utilityFunctionObject = new ProbabilityDensityFunctionUtilityFunction();
 
-        this.eval_strategy    = evaluatorObject.getClass().getCanonicalName();
-        this.normalizer       = normalizerObject.getClass().getCanonicalName();
     }
 
     public ModelNode(String name, String description, IEvaluator evaluatorObject, INormalizer normalizerObject,
@@ -97,9 +90,6 @@ public abstract class ModelNode {
         this.utilityFunctionObject = utilityFunctionObject;
         if (weights != null) this.weights = weights;
         if (thresholds != null) this.thresholds = thresholds;
-
-        this.eval_strategy    = evaluatorObject.getClass().getCanonicalName();
-        this.normalizer       = normalizerObject.getClass().getCanonicalName();
     }
 
     /**
@@ -107,7 +97,7 @@ public abstract class ModelNode {
      */
     public ModelNode(BigDecimal value, String name, String description, IEvaluator evaluatorObject, INormalizer normalizerObject,
                      IUtilityFunction utilityFunctionObject, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
-            ModelNode> children) {
+        ModelNode> children) {
         this.value = value;
         this.name = name;
         this.description = description;
@@ -117,9 +107,6 @@ public abstract class ModelNode {
         this.weights = weights;
         this.thresholds = thresholds;
         this.children = children;
-
-        this.eval_strategy    = evaluatorObject.getClass().getCanonicalName();
-        this.normalizer       = normalizerObject.getClass().getCanonicalName();
     }
     //endregion
 

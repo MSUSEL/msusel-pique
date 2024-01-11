@@ -2,6 +2,8 @@ package outputTests;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import pique.evaluation.DefaultDiagnosticEvaluator;
+import pique.evaluation.IEvaluator;
 import pique.evaluation.ProbabilityDensityFunctionUtilityFunction;
 import pique.evaluation.UtilityFunction;
 import pique.utility.DefaultExclusionStrategy;
@@ -25,9 +27,7 @@ public class UtilityFunctionOutputTests {
      */
     @BeforeClass
     public static void buildUtilityFunctionModelBuild(){
-        String name = "name";
-        String description = "a description for the name of the uility function";
-        buildUtilityFunction = new ProbabilityDensityFunctionUtilityFunction(name, description);
+        buildUtilityFunction = new ProbabilityDensityFunctionUtilityFunction();
         FileUtility.exportObjectToJson(buildUtilityFunction, Paths.get("src/test/out/"), "buildUtilityFunctionOutputTest.json", new DefaultExclusionStrategy());
     }
 
@@ -38,10 +38,8 @@ public class UtilityFunctionOutputTests {
      */
     @BeforeClass
     public static void fillUtilityFunctionModelBenchmark(){
-        String name = "name";
-        String description = "a description for the name of the utility function";
         //building the model.
-        buildUtilityFunction = new ProbabilityDensityFunctionUtilityFunction(name, description);
+        buildUtilityFunction = new ProbabilityDensityFunctionUtilityFunction();
         HashMap<String, String> utilityFunctionImageURIs = new HashMap<>();
         utilityFunctionImageURIs.put("imageURIDescription1", "/image/uri/image1.json");
         buildUtilityFunction.setUtilityFunctionImageURIs(utilityFunctionImageURIs);
@@ -63,10 +61,8 @@ public class UtilityFunctionOutputTests {
      */
     @BeforeClass
     public static void fillUtilityFunctionModelEvaluate(){
-        String name = "name";
-        String description = "a description for the name of the utility function";
         //building the model.
-        buildUtilityFunction = new ProbabilityDensityFunctionUtilityFunction(name, description);
+        buildUtilityFunction = new ProbabilityDensityFunctionUtilityFunction();
         //end of building
 
         HashMap<String, String> utilityFunctionImageURIs = new HashMap<>();

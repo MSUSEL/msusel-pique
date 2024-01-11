@@ -120,8 +120,8 @@ public class Measure extends ModelNode {
 
 	// Used for cloning
 	public Measure(BigDecimal value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
-						 IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
-			ModelNode> children) {
+				   IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
+		ModelNode> children) {
 		super(value, name, description, evaluator, normalizer, utilityFunction, weights, thresholds, children);
 	}
 

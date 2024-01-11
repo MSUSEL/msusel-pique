@@ -31,7 +31,6 @@ import java.util.Map;
 public class ProductFactor extends ModelNode {
 
 	// Constructors
-
 	public ProductFactor(String name, String description) {
 		super(name, description, new DefaultFactorEvaluator(), new DefaultNormalizer());
 	}
@@ -45,7 +44,7 @@ public class ProductFactor extends ModelNode {
 		super(name, description, new DefaultFactorEvaluator(), new DefaultNormalizer());
 		this.evaluatorObject = evaluator;
 	}
-	
+
 	public ProductFactor(String name, String description, ModelNode measure){
 		super(name, description, new DefaultFactorEvaluator(), new DefaultNormalizer());
 		this.children.put(measure.getName(), measure);
@@ -54,11 +53,9 @@ public class ProductFactor extends ModelNode {
 	// Used for cloning
 	public ProductFactor(BigDecimal value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
 						 IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
-			ModelNode> children) {
+		ModelNode> children) {
 		super(value, name, description, evaluator, normalizer, utilityFunction, weights, thresholds, children);
 	}
-
-
 
 	//region Methods
 

@@ -58,12 +58,13 @@ public class Finding extends ModelNode {
     public Finding(String filePath, int lineNumber, int characterNumber, int severity) {
         super("", "", new DefaultFindingEvaluator(), new DefaultNormalizer());
         this.name = hashName(filePath, String.valueOf(lineNumber), String.valueOf(characterNumber),
-                String.valueOf(severity));
+            String.valueOf(severity));
         this.filePath = filePath;
         this.lineNumber = lineNumber;
         this.characterNumber = characterNumber;
         this.severity = severity;
     }
+
 
     // Used for cloning
     public Finding(BigDecimal value, String name, String description, IEvaluator evaluator, INormalizer normalizer,

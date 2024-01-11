@@ -58,9 +58,7 @@ public class Diagnostic extends ModelNode {
 
 
     // Constructors
-
     public Diagnostic(String id, String description, String toolName) {
-        //constructor for when a utility function is not supplied.
         super(id, description, new DefaultDiagnosticEvaluator(), new DefaultNormalizer());
         this.toolName = toolName;
     }
@@ -89,11 +87,10 @@ public class Diagnostic extends ModelNode {
 
     // Used for cloning
     public Diagnostic(BigDecimal value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
-                   IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
-            ModelNode> children) {
+                      IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
+        ModelNode> children) {
         super(value, name, description, evaluator, normalizer, utilityFunction, weights, thresholds, children);
     }
-
 
     // Methods
 

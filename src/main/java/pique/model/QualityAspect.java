@@ -61,8 +61,8 @@ public class QualityAspect extends ModelNode {
 
     // Used for cloning
     public QualityAspect(BigDecimal value, String name, String description, IEvaluator evaluator, INormalizer normalizer,
-               IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
-            ModelNode> children) {
+                         IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
+        ModelNode> children) {
         super(value, name, description, evaluator, normalizer, utilityFunction, weights, thresholds, children);
     }
 

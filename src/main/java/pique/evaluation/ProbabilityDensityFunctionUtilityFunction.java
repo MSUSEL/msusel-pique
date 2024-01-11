@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
 
-    public ProbabilityDensityFunctionUtilityFunction(String name, String description) {
-        super(name, description);
+    public ProbabilityDensityFunctionUtilityFunction() {
+        super("Probability Density Function (PDF) Utility Function", "TODO -- Redempta - Write description in ProbabilityDensityFunctionUtilityFunction class");
     }
 
     @Override
