@@ -47,9 +47,9 @@ public class DefaultMeasureEvaluator extends Evaluator {
     	}
 
         // Normalize
-        value = node.getNormalizerObject().normalize(value);
+        value = node.getNormalizer().normalize(value);
 
         // Apply utility function
-        return node.getUtilityFunctionObject().utilityFunction(value, node.getThresholds(), node.isPositive());
+        return node.getUtility_function().utilityFunction(value, node.getThresholds(), node.isPositive());
     }
 }

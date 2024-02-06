@@ -70,7 +70,7 @@ public class Tqi extends ModelNode {
         Map<String, ModelNode> clonedChildren = new HashMap<>();
         getChildren().forEach((k, v) -> clonedChildren.put(k, v.clone()));
 
-        return new Tqi(getValue(), getName(), getDescription(), getEvaluatorObject(), getNormalizerObject(), getUtilityFunctionObject(),
+        return new Tqi(getValue(), getName(), getDescription(), this.getEval_strategy(), this.getNormalizer(), this.getUtility_function(),
                  getWeights(), getThresholds(), clonedChildren);
     }
 

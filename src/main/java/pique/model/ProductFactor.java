@@ -42,7 +42,7 @@ public class ProductFactor extends ModelNode {
 
 	public ProductFactor(String name, String description, IEvaluator evaluator) {
 		super(name, description, new DefaultFactorEvaluator(), new DefaultNormalizer());
-		this.evaluatorObject = evaluator;
+		this.eval_strategy = evaluator;
 	}
 
 	public ProductFactor(String name, String description, ModelNode measure){
@@ -65,8 +65,8 @@ public class ProductFactor extends ModelNode {
 		Map<String, ModelNode> clonedChildren = new HashMap<>();
 		getChildren().forEach((k, v) -> clonedChildren.put(k, v.clone()));
 
-		return new ProductFactor(getValue(), getName(), getDescription(), getEvaluatorObject(), getNormalizerObject(),
-				getUtilityFunctionObject(), getWeights(), getThresholds(), clonedChildren);
+		return new ProductFactor(getValue(), getName(), getDescription(), this.getEval_strategy(), this.getNormalizer(),
+				this.getUtility_function(), getWeights(), getThresholds(), clonedChildren);
 	}
 
 	@Override

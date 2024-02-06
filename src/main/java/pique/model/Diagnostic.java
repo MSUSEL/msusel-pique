@@ -100,8 +100,8 @@ public class Diagnostic extends ModelNode {
         Map<String, ModelNode> clonedChildren = new HashMap<>();
         getChildren().forEach((k, v) -> clonedChildren.put(k, v.clone()));
 
-        return new Diagnostic(getValue(), getName(), getDescription(), getEvaluatorObject(), getNormalizerObject(),
-                getUtilityFunctionObject(), getWeights(), getThresholds(), clonedChildren);
+        return new Diagnostic(getValue(), getName(), getDescription(), this.getEval_strategy(), this.getNormalizer(),
+                this.getUtility_function(), getWeights(), getThresholds(), clonedChildren);
     }
 
     @Override

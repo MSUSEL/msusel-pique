@@ -22,21 +22,11 @@
  */
 package pique.calibration;
 
-import pique.analysis.ITool;
-import pique.evaluation.BenchmarkMeasureEvaluator;
-import pique.evaluation.Project;
-import pique.model.Diagnostic;
-import pique.model.Measure;
-import pique.model.ModelNode;
-import pique.model.QualityModel;
-import pique.utility.BigDecimalWithContext;
-import pique.utility.FileUtility;
-
 import java.math.BigDecimal;
-import java.nio.file.Path;
 import java.util.*;
 
 public class AdvancedBenchmarker extends AbstractBenchmarker implements IBenchmarker {
+
     @Override
     public String getName() {
         return this.getClass().getCanonicalName();
@@ -44,18 +34,15 @@ public class AdvancedBenchmarker extends AbstractBenchmarker implements IBenchma
 
 	@Override
 	public Map<String, BigDecimal[]> calculateThresholds(Map<String, ArrayList<BigDecimal>> measureBenchmarkData) {
-		// might need refactorign in the future, I am not sure why I can't just use measureBenchmarkData, but this is waht David did...
-        //I just removed the min and max (which is present in NaiveBenchmarker) and put in the full set of benchmark data.
+		// Full set of benchmark data
         Map<String, BigDecimal[]> measureThresholds = new HashMap<>();
         measureBenchmarkData.forEach((measureName, measureValues) -> {
 
             int measureValuesSize = measureBenchmarkData.get(measureName).size();
             measureThresholds.putIfAbsent(measureName, new BigDecimal[measureValuesSize]);
             for (int i = 0; i < measureValuesSize; i++) {
-                //lol need to fix this: TODO: fixme.
                 measureThresholds.get(measureName)[i] = measureBenchmarkData.get(measureName).get(i);
             }
-
         });
 
         return measureThresholds;

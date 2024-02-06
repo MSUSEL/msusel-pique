@@ -26,10 +26,8 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,7 +37,6 @@ import pique.evaluation.Project;
 import pique.model.Diagnostic;
 import pique.model.Measure;
 import pique.model.QualityModel;
-import pique.utility.BigDecimalWithContext;
 import pique.utility.FileUtility;
 
 public abstract class AbstractBenchmarker implements IBenchmarker {
@@ -102,7 +99,7 @@ public abstract class AbstractBenchmarker implements IBenchmarker {
             // TODO: temp fix
             // Set measures to not use a utility function during their node evaluation
             project.getQualityModel().getMeasures().values().forEach(measure -> {
-                measure.setEvaluatorObject(new BenchmarkMeasureEvaluator());
+                measure.setEval_strategy(new BenchmarkMeasureEvaluator());
             });
 
             // Run the static analysis tools process

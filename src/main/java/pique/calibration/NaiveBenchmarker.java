@@ -22,13 +22,10 @@
  */
 package pique.calibration;
 
-import pique.utility.BigDecimalWithContext;
-
 import java.math.BigDecimal;
 import java.util.*;
 
 public class NaiveBenchmarker extends AbstractBenchmarker implements IBenchmarker {
-
 
     @Override
     public String getName() {

@@ -57,37 +57,37 @@ public abstract class ModelNode {
 
     @Expose
     @Getter @Setter
-    protected IEvaluator evaluatorObject;
+    protected IEvaluator eval_strategy;
 
     @Expose
     @Getter @Setter
-    protected INormalizer normalizerObject;
+    protected INormalizer normalizer;
 
     @Expose
     @Getter @Setter
-    protected IUtilityFunction utilityFunctionObject;
+    protected IUtilityFunction utility_function;
 
     @Getter @Setter
     protected boolean visited = false;      // Use for BFS traversal
 
     // Constructor
 
-    public ModelNode(String name, String description, IEvaluator evaluatorObject, INormalizer normalizerObject) {
+    public ModelNode(String name, String description, IEvaluator eval_strategy, INormalizer normalizer) {
         this.name = name;
         this.description = description;
-        this.evaluatorObject = evaluatorObject;
-        this.normalizerObject = normalizerObject;
-        this.utilityFunctionObject = new ProbabilityDensityFunctionUtilityFunction();
+        this.eval_strategy = eval_strategy;
+        this.normalizer = normalizer;
+        this.utility_function = new ProbabilityDensityFunctionUtilityFunction();
 
     }
 
-    public ModelNode(String name, String description, IEvaluator evaluatorObject, INormalizer normalizerObject,
-                     IUtilityFunction utilityFunctionObject, Map<String, BigDecimal> weights, BigDecimal[] thresholds) {
+    public ModelNode(String name, String description, IEvaluator eval_strategy, INormalizer normalizer,
+                     IUtilityFunction utility_function, Map<String, BigDecimal> weights, BigDecimal[] thresholds) {
         this.name = name;
         this.description = description;
-        this.evaluatorObject = evaluatorObject;
-        this.normalizerObject = normalizerObject;
-        this.utilityFunctionObject = utilityFunctionObject;
+        this.eval_strategy = eval_strategy;
+        this.normalizer = normalizer;
+        this.utility_function = utility_function;
         if (weights != null) this.weights = weights;
         if (thresholds != null) this.thresholds = thresholds;
     }
@@ -95,15 +95,15 @@ public abstract class ModelNode {
     /**
      * Constructor for cloning.
      */
-    public ModelNode(BigDecimal value, String name, String description, IEvaluator evaluatorObject, INormalizer normalizerObject,
-                     IUtilityFunction utilityFunctionObject, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
+    public ModelNode(BigDecimal value, String name, String description, IEvaluator eval_strategy, INormalizer normalizer,
+                     IUtilityFunction utility_function, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
         ModelNode> children) {
         this.value = value;
         this.name = name;
         this.description = description;
-        this.evaluatorObject = evaluatorObject;
-        this.normalizerObject = normalizerObject;
-        this.utilityFunctionObject = utilityFunctionObject;
+        this.eval_strategy = eval_strategy;
+        this.normalizer = normalizer;
+        this.utility_function = utility_function;
         this.weights = weights;
         this.thresholds = thresholds;
         this.children = children;
@@ -135,7 +135,7 @@ public abstract class ModelNode {
     }
 
     public void setNormalizerValue(BigDecimal value) {
-        getNormalizerObject().setNormalizerValue(value);
+        this.getNormalizer().setNormalizerValue(value);
     }
 
     public int getNumChildren() { return getChildren().size(); }
@@ -170,7 +170,7 @@ public abstract class ModelNode {
      * TODO (1.0): Documentation
      */
     protected void evaluate() {
-        setValue(getEvaluatorObject().evaluate(this));
+        setValue(this.getEval_strategy().evaluate(this));
     }
 
     //endregion

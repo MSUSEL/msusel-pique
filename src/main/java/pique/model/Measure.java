@@ -65,7 +65,7 @@ public class Measure extends ModelNode {
 	public Measure(String name, String description, INormalizer normalizer, boolean positive) {
 		super(name, description, new DefaultMeasureEvaluator(), normalizer);
 		this.positive = positive;
-		this.utilityFunctionObject = new DefaultUtility();
+		this.utility_function = new DefaultUtility();
 	}
 
 	public Measure(String name, String description, IEvaluator evaluator, INormalizer normalizer,
@@ -114,7 +114,7 @@ public class Measure extends ModelNode {
 		super(name, description, evaluator, normalizer);
 		this.positive = positive;
 		this.children = diagnostics;
-		this.utilityFunctionObject = utilityFunction;
+		this.utility_function = utilityFunction;
 		this.thresholds = thresholds;
 	}
 
@@ -135,8 +135,8 @@ public class Measure extends ModelNode {
 		Map<String, ModelNode> clonedChildren = new HashMap<>();
 		getChildren().forEach((k, v) -> clonedChildren.put(k, v.clone()));
 
-		return new Measure(getValue(), getName(), getDescription(), getEvaluatorObject(), getNormalizerObject(),
-				getUtilityFunctionObject(), getWeights(), getThresholds(), clonedChildren);
+		return new Measure(getValue(), getName(), getDescription(), this.getEval_strategy(), this.getNormalizer(),
+				this.getUtility_function(), getWeights(), getThresholds(), clonedChildren);
 	}
 
 	@Override
