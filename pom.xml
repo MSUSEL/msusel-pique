@@ -36,7 +36,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>msusel-pique</artifactId>
   <packaging>jar</packaging>
-  <version>0.9.5</version>
+  <version>0.9.5_2</version>
   <name>msusel-pique</name>
   <description>MSU PIQUE quality framework</description>
   <url>https://msusel.github.io</url>

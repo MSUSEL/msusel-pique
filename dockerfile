@@ -21,4 +21,4 @@ WORKDIR "/home"
 RUN git clone https://github.com/MSUSEL/msusel-pique.git
 WORKDIR "/home/msusel-pique"
 RUN git checkout "tags/"$PIQUE_CORE_VERSION
-RUN mvn install -Dmaven.test.skip
+RUN mvn install -Dmaven.test.skip -Dlicense.skip=true

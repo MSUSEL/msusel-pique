@@ -87,7 +87,7 @@ public class Finding extends ModelNode {
 
     @Override
     public Finding clone() {
-        return new Finding(getValue(), getName(), getDescription(), this.getEval_strategy(), this.getNormalizer(),
+        return new Finding(getValue(), getName(), getDescription(), this.getEval_strategyObj(), this.getNormalizerObj(),
                 this.getUtility_function(), getWeights(), getThresholds(), getChildren(), getFilePath(), getLineNumber(),
                 getCharacterNumber(), getSeverity());
     }

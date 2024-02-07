@@ -37,4 +37,8 @@ public abstract class Normalizer implements INormalizer {
     @Override
     public String getName() { return this.getClass().getCanonicalName();
     }
+
+    public String toString(){
+        return this.getName();
+    }
 }

@@ -55,13 +55,23 @@ public abstract class ModelNode {
     protected BigDecimal[] thresholds;
 
 
-    @Expose
+    //@Expose -- uncomment when we get vis schema working
     @Getter @Setter
-    protected IEvaluator eval_strategy;
+    protected IEvaluator eval_strategyObj;
 
+    // remove me once we get vis schema working
     @Expose
     @Getter @Setter
-    protected INormalizer normalizer;
+    protected String eval_strategy;
+
+    //@Expose -- uncomment when we get vis schema working
+    @Getter @Setter
+    protected INormalizer normalizerObj;
+
+    // remove me once we get vis schema working
+    @Expose
+    @Getter @Setter
+    protected String normalizer;
 
     @Expose
     @Getter @Setter
@@ -72,41 +82,53 @@ public abstract class ModelNode {
 
     // Constructor
 
-    public ModelNode(String name, String description, IEvaluator eval_strategy, INormalizer normalizer) {
+    public ModelNode(String name, String description, IEvaluator eval_strategyObj, INormalizer normalizerObj) {
         this.name = name;
         this.description = description;
-        this.eval_strategy = eval_strategy;
-        this.normalizer = normalizer;
+        this.eval_strategyObj = eval_strategyObj;
+        this.normalizerObj = normalizerObj;
         this.utility_function = new ProbabilityDensityFunctionUtilityFunction();
+
+        // remove me once we get vis schema working
+        eval_strategy = eval_strategyObj.getName();
+        normalizer = normalizerObj.getName();
 
     }
 
-    public ModelNode(String name, String description, IEvaluator eval_strategy, INormalizer normalizer,
+    public ModelNode(String name, String description, IEvaluator eval_strategyObj, INormalizer normalizerObj,
                      IUtilityFunction utility_function, Map<String, BigDecimal> weights, BigDecimal[] thresholds) {
         this.name = name;
         this.description = description;
-        this.eval_strategy = eval_strategy;
-        this.normalizer = normalizer;
+        this.eval_strategyObj = eval_strategyObj;
+        this.normalizerObj = normalizerObj;
         this.utility_function = utility_function;
         if (weights != null) this.weights = weights;
         if (thresholds != null) this.thresholds = thresholds;
+
+        // remove me once we get vis schema working
+        eval_strategy = eval_strategyObj.getName();
+        normalizer = normalizerObj.getName();
     }
 
     /**
      * Constructor for cloning.
      */
-    public ModelNode(BigDecimal value, String name, String description, IEvaluator eval_strategy, INormalizer normalizer,
+    public ModelNode(BigDecimal value, String name, String description, IEvaluator eval_strategyObj, INormalizer normalizerObj,
                      IUtilityFunction utility_function, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
         ModelNode> children) {
         this.value = value;
         this.name = name;
         this.description = description;
-        this.eval_strategy = eval_strategy;
-        this.normalizer = normalizer;
+        this.eval_strategyObj = eval_strategyObj;
+        this.normalizerObj = normalizerObj;
         this.utility_function = utility_function;
         this.weights = weights;
         this.thresholds = thresholds;
         this.children = children;
+
+        // remove me once we get vis schema working
+        eval_strategy = eval_strategyObj.getName();
+        normalizer = normalizerObj.getName();
     }
     //endregion
 
@@ -135,7 +157,7 @@ public abstract class ModelNode {
     }
 
     public void setNormalizerValue(BigDecimal value) {
-        this.getNormalizer().setNormalizerValue(value);
+        this.getNormalizerObj().setNormalizerValue(value);
     }
 
     public int getNumChildren() { return getChildren().size(); }
@@ -170,7 +192,7 @@ public abstract class ModelNode {
      * TODO (1.0): Documentation
      */
     protected void evaluate() {
-        setValue(this.getEval_strategy().evaluate(this));
+        setValue(this.getEval_strategyObj().evaluate(this));
     }
 
     //endregion

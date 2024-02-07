@@ -31,4 +31,8 @@ public abstract class Evaluator implements IEvaluator {
 
         .getClass().getCanonicalName();
     }
+
+    public String toString(){
+        return this.getName();
+    }
 }

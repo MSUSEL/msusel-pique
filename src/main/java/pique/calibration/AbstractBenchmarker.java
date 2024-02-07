@@ -99,7 +99,7 @@ public abstract class AbstractBenchmarker implements IBenchmarker {
             // TODO: temp fix
             // Set measures to not use a utility function during their node evaluation
             project.getQualityModel().getMeasures().values().forEach(measure -> {
-                measure.setEval_strategy(new BenchmarkMeasureEvaluator());
+                measure.setEval_strategyObj(new BenchmarkMeasureEvaluator());
             });
 
             // Run the static analysis tools process

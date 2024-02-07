@@ -43,6 +43,6 @@ public class BenchmarkMeasureEvaluator extends Evaluator {
     		rawSum = rawSum.add(x.getValue());
     	}
     	
-        return inNode.getNormalizer().normalize(rawSum);
+        return inNode.getNormalizerObj().normalize(rawSum);
     }
 }
