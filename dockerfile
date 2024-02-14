@@ -1,6 +1,6 @@
 FROM alpine:3.19
 
-ARG PIQUE_CORE_VERSION=v0.9.5
+ARG PIQUE_CORE_VERSION=v0.9.5_2
 ARG MAVEN_VERSION=3.9.6
 
 RUN apk update && apk upgrade && apk add \
