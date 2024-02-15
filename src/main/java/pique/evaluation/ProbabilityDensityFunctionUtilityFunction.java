@@ -22,7 +22,10 @@
  */
 package pique.evaluation;
 
+import pique.utility.BigDecimalWithContext;
+
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
@@ -33,9 +36,32 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
     @Override
     public BigDecimal utilityFunction(BigDecimal inValue, BigDecimal[] thresholds, boolean positive) {
-        //Redempta TODO
+        //are all values the same?
+        BigDecimalWithContext score;
+        if (Arrays.stream(thresholds).distinct().count() == 1){
+            //one distinct value across the entire array
+            BigDecimal compareValue = thresholds[0];
+            //clean up if I get time
+            if (inValue.compareTo(compareValue) == -1){
+                //invalue is less than compareValue
+                if (positive){
+                    score = new BigDecimalWithContext(0.001);
+                }else{
+                    score = new BigDecimalWithContext(0.999);
+                }
+            }else{
+                //inValue is greater than or equal to compareValue
+                if (positive){
+                    score = new BigDecimalWithContext(0.999);
+                }else{
+                    score = new BigDecimalWithContext(0.001);
+                }
+            }
+        }else{
+            //scores are different
+            score = new BigDecimalWithContext(-10000);
+        }
 
-
-        return null;
+        return score;
     }
 }
