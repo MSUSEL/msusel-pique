@@ -75,7 +75,9 @@ public class QualityAspect extends ModelNode {
     public ModelNode clone() {
 
         Map<String, ModelNode> clonedChildren = new HashMap<>();
-        getChildren().forEach((k, v) -> clonedChildren.put(k, v.clone()));
+        getChildren().forEach((k, v) -> {
+            clonedChildren.put(k, v.clone());
+        });
 
         return new QualityAspect(getValue(), getName(), getDescription(), this.getEval_strategyObj(), this.getNormalizerObj(),
                 this.getUtility_function(), getWeights(), getThresholds(), clonedChildren);

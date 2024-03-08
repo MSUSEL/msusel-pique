@@ -22,6 +22,7 @@
  */
 package pique.evaluation;
 
+import org.apache.commons.math3.analysis.interpolation.AkimaSplineInterpolator;
 import pique.utility.BigDecimalWithContext;
 
 import java.math.BigDecimal;
@@ -37,6 +38,11 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
     @Override
     public BigDecimal utilityFunction(BigDecimal inValue, BigDecimal[] thresholds, boolean positive) {
         //are all values the same?
+
+
+        //python call here
+
+
         BigDecimalWithContext score;
         if (Arrays.stream(thresholds).distinct().count() == 1){
             //one distinct value across the entire array
@@ -59,6 +65,8 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
             }
         }else{
             //scores are different
+            //AkimaSplineInterpolator curve = new AkimaSplineInterpolator();
+            //curve.interpolate(thresholds).value(inValue);
             score = new BigDecimalWithContext(-10000);
         }
 

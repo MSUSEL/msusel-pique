@@ -36,7 +36,10 @@ public class DefaultProductFactorEvaluator extends Evaluator {
         for (ModelNode child : inNode.getChildren().values()) {
             weightedSum = weightedSum.add(child.getValue());
         }
-        weightedSum = weightedSum.divide(new BigDecimalWithContext(""+ inNode.getChildren().size()),BigDecimalWithContext.getMC());
+        if (inNode.getChildren().size() != 0){
+            //running into issues here when no children are declared; either because we will add them to the model later or a mistake with the model definition
+            weightedSum = weightedSum.divide(new BigDecimalWithContext(""+ inNode.getChildren().size()),BigDecimalWithContext.getMC());
+        }
         return weightedSum;
     }
 
