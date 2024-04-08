@@ -22,7 +22,8 @@
  */
 package pique.evaluation;
 
-import org.apache.commons.math3.analysis.interpolation.AkimaSplineInterpolator;
+import jep.Interpreter;
+import jep.SharedInterpreter;
 import pique.utility.BigDecimalWithContext;
 
 import java.math.BigDecimal;
@@ -38,13 +39,8 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
     @Override
     public BigDecimal utilityFunction(BigDecimal inValue, BigDecimal[] thresholds, boolean positive) {
         //are all values the same?
-
-
-        //python call here
-
-
         BigDecimalWithContext score;
-        if (Arrays.stream(thresholds).distinct().count() == 1){
+        if (Arrays.stream(thresholds).distinct().count() == 1) {
             //one distinct value across the entire array
             BigDecimal compareValue = thresholds[0];
             //clean up if I get time
@@ -63,12 +59,28 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
                     score = new BigDecimalWithContext(0.001);
                 }
             }
-        }else{
-            //scores are different
-            //AkimaSplineInterpolator curve = new AkimaSplineInterpolator();
-            //curve.interpolate(thresholds).value(inValue);
-            score = new BigDecimalWithContext(-10000);
+        }else {
+            //python call here
+            try (Interpreter interp = new SharedInterpreter()) {
+                interp.exec("import IPython");
+                // any of the following work, these are just pseudo-examples
+
+                // using exec(String) to invoke methods
+                //interp.set("arg", obj);
+                //interp.exec("x = somePyModule.foo1(arg)");
+                //Object result1 = interp.getValue("x");
+
+                // using getValue(String) to invoke methods
+                //Object result2 = interp.getValue("somePyModule.foo2()");
+
+                // using invoke to invoke methods
+                //interp.exec("foo3 = somePyModule.foo3")
+                //Object result3 = interp.invoke("foo3", obj);
+            }
+
+
         }
+            score = new BigDecimalWithContext(-10000);
 
         return score;
     }

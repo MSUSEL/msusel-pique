@@ -26,7 +26,6 @@ import java.math.BigDecimal;
 
 import pique.model.ModelNode;
 import pique.utility.BigDecimalWithContext;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 //TODO (1.0): Documentation
 public class DefaultFactorEvaluator extends Evaluator {

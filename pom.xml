@@ -99,6 +99,12 @@
       <artifactId>commons-collections4</artifactId>
       <version>4.1</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/black.ninia/jep -->
+    <dependency>
+      <groupId>black.ninia</groupId>
+      <artifactId>jep</artifactId>
+      <version>4.2.0</version>
+    </dependency>
   </dependencies>
 
   <build>

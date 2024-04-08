@@ -22,14 +22,10 @@
  */
 package pique.evaluation;
 
-import pique.model.Finding;
+import org.apache.commons.lang3.NotImplementedException;
 import pique.model.ModelNode;
 import pique.utility.BigDecimalWithContext;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 
 // TODO (1.0): Documentation
 public class LoCEvaluator extends Evaluator {
@@ -39,6 +35,6 @@ public class LoCEvaluator extends Evaluator {
     public BigDecimalWithContext evaluate(ModelNode inNode) {
 
         // TODO (1.0): Add error handling
-        throw new NotImplementedException();
+        throw new NotImplementedException("LOC Evaluator is not implemented yet");
     }
 }
