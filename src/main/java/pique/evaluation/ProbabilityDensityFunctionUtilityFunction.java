@@ -62,25 +62,37 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
         }else {
             //python call here
             try (Interpreter interp = new SharedInterpreter()) {
-                interp.exec("import IPython");
-                // any of the following work, these are just pseudo-examples
+                interp.exec("from java.lang import System");
+                interp.exec("import sys");
+                interp.exec("import math");
+                interp.exec("import numpy as np");
+                interp.exec("import pandas as pd");
+                interp.exec("import seaborn as sns");
+                interp.exec("import matplotlib.pyplot as plt");
+                interp.exec("from scipy import stats");
+                interp.exec("from sklearn.preprocessing import MinMaxScaler");
+                interp.exec("from IPython.display import Image");
 
-                // using exec(String) to invoke methods
-                //interp.set("arg", obj);
-                //interp.exec("x = somePyModule.foo1(arg)");
-                //Object result1 = interp.getValue("x");
+                /// start code here
+                interp.set("thresholds", thresholds);
+                Object a = interp.getValue("thresholds");
+                //this works, surprisingly
+                for (Object b : (BigDecimal[]) a){
+                    System.out.println(b);
+                }
+                interp.exec("System.out.println(type(thresholds))");
+                interp.exec("ax = sns.kdeplot(thresholds)");
+                interp.exec("System.out.println(ax)");
 
-                // using getValue(String) to invoke methods
-                //Object result2 = interp.getValue("somePyModule.foo2()");
 
-                // using invoke to invoke methods
-                //interp.exec("foo3 = somePyModule.foo3")
-                //Object result3 = interp.invoke("foo3", obj);
+                interp.close();
+
+            }catch (Exception e){
+                e.printStackTrace();
+                System.out.println("unable to initialize python interpreter call");
             }
-
-
-        }
             score = new BigDecimalWithContext(-10000);
+        }
 
         return score;
     }

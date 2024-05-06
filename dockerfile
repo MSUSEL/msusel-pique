@@ -6,6 +6,8 @@ ARG MAVEN_VERSION=3.9.6
 RUN apk update && apk upgrade && apk add \
     git openjdk8
 
+#pip install jep numpy pandas seaborn matplotlib scipy scikit-learn IPython
+
 # move to home for a fresh start
 WORKDIR "/home"
 
