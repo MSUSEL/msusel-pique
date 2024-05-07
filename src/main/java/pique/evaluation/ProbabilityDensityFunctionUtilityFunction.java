@@ -73,14 +73,20 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
                 interp.exec("from sklearn.preprocessing import MinMaxScaler");
                 interp.exec("from IPython.display import Image");
 
-                /// start code here
-                interp.set("thresholds", thresholds);
+
+                //////// start code here
+                //convert thresholds to decimal[] objects
+                double[] converted = new double[thresholds.length];
+                for (int i = 0; i < thresholds.length; i++){
+                    converted[i] = thresholds[i].doubleValue();
+                }
+
+                interp.set("thresholds", converted);
                 Object a = interp.getValue("thresholds");
                 //this works, surprisingly
-                for (Object b : (BigDecimal[]) a){
-                    System.out.println(b);
-                }
-                interp.exec("System.out.println(type(thresholds))");
+//                for (Object b : (BigDecimal[]) a){
+//                    System.out.println(b);
+//                }
                 interp.exec("ax = sns.kdeplot(thresholds)");
                 interp.exec("System.out.println(ax)");
 
