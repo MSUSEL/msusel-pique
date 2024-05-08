@@ -82,13 +82,25 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
                 }
 
                 interp.set("thresholds", converted);
+                interp.set("new_data_point", inValue.doubleValue());
                 Object a = interp.getValue("thresholds");
                 //this works, surprisingly
 //                for (Object b : (BigDecimal[]) a){
 //                    System.out.println(b);
 //                }
                 interp.exec("ax = sns.kdeplot(thresholds)");
-                interp.exec("System.out.println(ax)");
+                interp.exec("kde_lines = ax.get_lines()[-1]");
+                interp.exec("ax = sns.kdeplot(thresholds)");
+                interp.exec("kde_x,kde_y = kde_lines.get_data()");
+                interp.exec("mask = kde_x < new_data_point");
+                interp.exec("xx ,yy = kde_x[mask], kde_y[mask]");
+                interp.exec("A = 0");
+                interp.exec("N = len(xx)");
+                //interp.exec("for i in range(N-1):");
+                //interp.exec("    dx = xx[i+1] - xx[i]");
+                //interp.exec("    A = A + (dx/2)*(yy[i] + yy[i+1])");
+                interp.exec("dx, A = xx[i+1] - xx[i], A + (dx/2)*(yy[i] + yy[i+1]) for i in range(N-1)");
+                interp.exec("System.out.println(1 - A)");
 
 
                 interp.close();
