@@ -22,6 +22,8 @@ public class ProbabilityDensityFunctionUtilityFunctionTests {
 
     private static HashMap<String, BigDecimal[]> columns;
 
+    private double delta = 0.0005;
+
     public ProbabilityDensityFunctionUtilityFunctionTests(){
 
     }
@@ -63,7 +65,7 @@ public class ProbabilityDensityFunctionUtilityFunctionTests {
         ProbabilityDensityFunctionUtilityFunction pdf = new ProbabilityDensityFunctionUtilityFunction();
         BigDecimal outputScore = pdf.utilityFunction(new BigDecimalWithContext(40), data, false);
 
-        assertEquals(new BigDecimalWithContext(0.6677223507742107), outputScore);
+        assertEquals(new BigDecimalWithContext(0.6677223507742107).doubleValue(), outputScore.doubleValue(), delta);
     }
 
     @Test
@@ -73,7 +75,6 @@ public class ProbabilityDensityFunctionUtilityFunctionTests {
         assertEquals(650, data.length);
         BigDecimal lowScore = new BigDecimalWithContext(0.001);
         BigDecimal highScore = new BigDecimalWithContext(0.999);
-        double delta = 0.0005;
         ProbabilityDensityFunctionUtilityFunction pdf = new ProbabilityDensityFunctionUtilityFunction();
         BigDecimal outputScore = pdf.utilityFunction(new BigDecimal(3), data, false);
         //ideally get a difference of 0, but precision can be funky

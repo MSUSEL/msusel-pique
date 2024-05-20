@@ -39,7 +39,7 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
     @Override
     public BigDecimal utilityFunction(BigDecimal inValue, BigDecimal[] thresholds, boolean positive) {
         //are all values the same?
-        BigDecimalWithContext score;
+        BigDecimalWithContext score = new BigDecimalWithContext(-10000);
         if (Arrays.stream(thresholds).distinct().count() == 1) {
             //one distinct value across the entire array
             BigDecimal compareValue = thresholds[0];
@@ -96,20 +96,15 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
                 interp.exec("xx ,yy = kde_x[mask], kde_y[mask]");
                 interp.exec("A = 0");
                 interp.exec("N = len(xx)");
-                //interp.exec("for i in range(N-1):");
-                //interp.exec("    dx = xx[i+1] - xx[i]");
-                //interp.exec("    A = A + (dx/2)*(yy[i] + yy[i+1])");
-                interp.exec("dx, A = xx[i+1] - xx[i], A + (dx/2)*(yy[i] + yy[i+1]) for i in range(N-1)");
-                interp.exec("System.out.println(1 - A)");
+                interp.exec("for i in range(N-1):\n\tdx = xx[i+1] - xx[i]\n\tA = A + (dx/2)*(yy[i] + yy[i+1])");
 
-
-                interp.close();
+                Object oScore = interp.getValue("1 - A");
+                score = new BigDecimalWithContext((Double) oScore);
 
             }catch (Exception e){
                 e.printStackTrace();
                 System.out.println("unable to initialize python interpreter call");
             }
-            score = new BigDecimalWithContext(-10000);
         }
 
         return score;
