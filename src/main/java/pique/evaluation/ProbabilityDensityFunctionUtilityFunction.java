@@ -38,8 +38,9 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
     @Override
     public BigDecimal utilityFunction(BigDecimal inValue, BigDecimal[] thresholds, boolean positive) {
-        //are all values the same?
         BigDecimalWithContext score = new BigDecimalWithContext(-10000);
+
+        //are all values the same? - in O(n) apparently, said someone on stack overflow
         if (Arrays.stream(thresholds).distinct().count() == 1) {
             //one distinct value across the entire array
             BigDecimal compareValue = thresholds[0];
@@ -81,16 +82,13 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
                     converted[i] = thresholds[i].doubleValue();
                 }
 
+                //set variables from java -> python
                 interp.set("thresholds", converted);
                 interp.set("new_data_point", inValue.doubleValue());
-                Object a = interp.getValue("thresholds");
-                //this works, surprisingly
-//                for (Object b : (BigDecimal[]) a){
-//                    System.out.println(b);
-//                }
+
+                //begin logic for analytics
                 interp.exec("ax = sns.kdeplot(thresholds)");
                 interp.exec("kde_lines = ax.get_lines()[-1]");
-                interp.exec("ax = sns.kdeplot(thresholds)");
                 interp.exec("kde_x,kde_y = kde_lines.get_data()");
                 interp.exec("mask = kde_x < new_data_point");
                 interp.exec("xx ,yy = kde_x[mask], kde_y[mask]");
@@ -98,6 +96,27 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
                 interp.exec("N = len(xx)");
                 interp.exec("for i in range(N-1):\n\tdx = xx[i+1] - xx[i]\n\tA = A + (dx/2)*(yy[i] + yy[i+1])");
 
+
+                /* do plots, note that plots are an approximation of the value. The plots use a kernel density estimator (KDE) which
+                * might produce a different value than the trapezoid method
+                */
+                // initial histogram plot
+                interp.exec("plt.figure(figsize=(6,6))");
+                interp.exec("plt.subplot(211)");
+                interp.exec("sns.histplot(thresholds, bins=10, kde=False)");
+                interp.exec("plt.xlim(left=0, right=max(thresholds))");
+
+                // second spline with red dot plot
+                interp.exec("plt.subplot(212)");
+                interp.exec("plt.fill_between(xx, yy, where=(xx <= new_data_point), color='gray', alpha=0.5)");
+                interp.exec("plt.scatter(xx[-1], yy[-1], color='red', s=60)");
+                interp.exec("plt.ylabel('Density')");
+                interp.exec("plt.xlim(left=0, right=max(thresholds))");
+                interp.exec("plt.tight_layout()");
+                interp.exec("plt.savefig('testeser.png')");
+
+
+                //back to java-land, our score value returns as a masked Double object, need to turn into a BigDecimal
                 Object oScore = interp.getValue("1 - A");
                 score = new BigDecimalWithContext((Double) oScore);
 
