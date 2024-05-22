@@ -87,6 +87,7 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
                 interp.set("new_data_point", inValue.doubleValue());
 
                 //begin logic for analytics
+                //interp.exec("for t in thresholds:\n\tSystem.out.println(t)");
                 interp.exec("ax = sns.kdeplot(thresholds)");
                 interp.exec("kde_lines = ax.get_lines()[-1]");
                 interp.exec("kde_x,kde_y = kde_lines.get_data()");
@@ -108,12 +109,14 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
                 // second spline with red dot plot
                 interp.exec("plt.subplot(212)");
+                interp.exec("sns.kdeplot(thresholds)");
                 interp.exec("plt.fill_between(xx, yy, where=(xx <= new_data_point), color='gray', alpha=0.5)");
                 interp.exec("plt.scatter(xx[-1], yy[-1], color='red', s=60)");
-                interp.exec("plt.ylabel('Density')");
-                interp.exec("plt.xlim(left=0, right=max(thresholds))");
+                interp.exec("plt.xlim(left=0)");
                 interp.exec("plt.tight_layout()");
                 interp.exec("plt.savefig('testeser.png')");
+
+
 
 
                 //back to java-land, our score value returns as a masked Double object, need to turn into a BigDecimal
