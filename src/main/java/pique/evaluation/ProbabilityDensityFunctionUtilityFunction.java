@@ -74,8 +74,8 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
                 interp.exec("from IPython.display import Image");
 
 
-                //////// start code here
-                //convert thresholds to decimal[] objects
+                //////// start code here ----
+                //convert thresholds to double[] objects for python
                 double[] converted = new double[thresholds.length];
                 for (int i = 0; i < thresholds.length; i++){
                     converted[i] = thresholds[i].doubleValue();
@@ -83,19 +83,17 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
                 interp.set("thresholds", converted);
                 interp.set("new_data_point", inValue.doubleValue());
-                Object a = interp.getValue("thresholds");
-                //this works, surprisingly
-//                for (Object b : (BigDecimal[]) a){
-//                    System.out.println(b);
-//                }
+
                 interp.exec("ax = sns.kdeplot(thresholds)");
                 interp.exec("kde_lines = ax.get_lines()[-1]");
                 interp.exec("ax = sns.kdeplot(thresholds)");
                 interp.exec("kde_x,kde_y = kde_lines.get_data()");
                 interp.exec("mask = kde_x < new_data_point");
                 interp.exec("xx ,yy = kde_x[mask], kde_y[mask]");
+                //TODO - print images of kde overlay
                 interp.exec("A = 0");
                 interp.exec("N = len(xx)");
+                //leave this one-liner, need to use escape chars to do loops in jep
                 interp.exec("for i in range(N-1):\n\tdx = xx[i+1] - xx[i]\n\tA = A + (dx/2)*(yy[i] + yy[i+1])");
 
                 Object oScore = interp.getValue("1 - A");
