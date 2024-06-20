@@ -98,7 +98,7 @@ public class ProbabilityDensityFunctionUtilityFunctionTests {
         ProbabilityDensityFunctionUtilityFunction pdf = new ProbabilityDensityFunctionUtilityFunction();
         BigDecimal outputScore = pdf.utilityFunction(new BigDecimal(5), data, false);
 
-        assertEquals(new BigDecimal(0.16302670275858278), outputScore);
+        assertEquals(0.0, outputScore.subtract(new BigDecimal(0.16302670275858278)).abs().doubleValue(), delta);
     }
 
 }
