@@ -98,4 +98,8 @@ public abstract class UtilityFunction implements IUtilityFunction{
         this.utilityFunctionQualityMetrics = utilityFunctionQualityMetrics;
         this.sensitivityAnalysisResults = sensitivityAnalysisResults;
     }
+
+    public String toString(){
+        return this.name;
+    }
 }
