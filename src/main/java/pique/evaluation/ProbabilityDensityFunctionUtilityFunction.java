@@ -33,7 +33,7 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
 
     public ProbabilityDensityFunctionUtilityFunction() {
-        super("Probability Density Function (PDF) Utility Function", "TODO -- Redempta - Write description in ProbabilityDensityFunctionUtilityFunction class");
+        super("pique.evaluation.ProbabilityDensityFunctionUtilityFunction", "TODO -- Redempta - Write description in ProbabilityDensityFunctionUtilityFunction class");
     }
 
     @Override
@@ -98,9 +98,11 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
                 interp.exec("for i in range(N-1):\n\tdx = xx[i+1] - xx[i]\n\tA = A + (dx/2)*(yy[i] + yy[i+1])");
 
 
-                /* do plots, note that plots are an approximation of the value. The plots use a kernel density estimator (KDE) which
+                /** do plots, note that plots are an approximation of the value. The plots use a kernel density estimator (KDE) which
                 * might produce a different value than the trapezoid method
-                */
+                 *
+                 * commented for now because we don't want to incorporate visuals in this graph
+
                 // initial histogram plot
                 interp.exec("plt.figure(figsize=(6,6))");
                 interp.exec("plt.subplot(211)");
@@ -112,13 +114,11 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
                 interp.exec("sns.kdeplot(thresholds)");
                 interp.exec("plt.fill_between(xx, yy, where=(xx <= new_data_point), color='gray', alpha=0.5)");
                 interp.exec("plt.scatter(xx[-1], yy[-1], color='red', s=60)");
-                interp.exec("plt.xlim(left=0)");
+                interp.exec("plt.xlim(left=0, right=max(thresholds))");
                 interp.exec("plt.tight_layout()");
                 interp.exec("plt.savefig('testeser.png')");
 
-
-
-
+                 */
                 //back to java-land, our score value returns as a masked Double object, need to turn into a BigDecimal
                 Object oScore = interp.getValue("1 - A");
                 score = new BigDecimalWithContext((Double) oScore);
