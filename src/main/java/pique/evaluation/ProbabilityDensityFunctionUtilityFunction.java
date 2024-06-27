@@ -29,6 +29,8 @@ import pique.utility.BigDecimalWithContext;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
@@ -37,7 +39,7 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
 
     public ProbabilityDensityFunctionUtilityFunction() {
-        super("pique.evaluation.ProbabilityDensityFunctionUtilityFunction", "TODO -- Redempta - Write description in ProbabilityDensityFunctionUtilityFunction class");
+        super("pique.evaluation.ProbabilityDensityFunctionUtilityFunction", "TODO - Write description in ProbabilityDensityFunctionUtilityFunction class");
     }
 
     @Override
@@ -168,8 +170,8 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
      *
      * @param min starting value
      * @param max ending value
-     * @param range number of evenly spaced values we want
-     * @return array of BigDecimals that
+     * @param range number of evenly spaced values desired
+     * @return array of BigDecimals that contains an array of equally spaced values between the parameters min and max
      */
     private BigDecimal[] linSpace(BigDecimal min, BigDecimal max, BigDecimal range){
         BigDecimal[] toRet = new BigDecimal[range.intValue()];
@@ -180,6 +182,33 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
             toRet[i] = new BigDecimalWithContext((min.add(stepSize)).doubleValue());
         }
         return toRet;
+    }
+
+    /***
+     * Java equivalent code to python's numpy.searchSorted() function. Follows default implementation with side=left.
+     * Meaning return the value equal OR immediately lesser than the input value.
+     *
+     * Returns the closest value to an input value, in an input array. One assumption is that if
+     *
+     * @param array Array to search through for a value
+     * @param value value to search for
+     * @return index for the value equal to or the index of where the value would be inserted into the array
+     */
+        private int searchSorted(BigDecimal[] array, BigDecimal value){
+            //sort in case it wasn't sorted already.
+            Arrays.sort(array);
+
+            int index = Arrays.binarySearch(array, value);
+            //ChatGPT helped me with this, note that it covers the edge case presented in the Arrays.binarySearch documentation:
+            // "Note that this guarantees that the return value will be >= 0 if and only if the key is found."
+            // I spent a good amount of time verifying chatgpt's code acutally works, and it does because the Arrays.binarySearch
+            // performs -index -1 on all values of initial index >= 0, and while I am not sure of the cases where index would be <0,
+            // the code is the same as what would happen if the index was above 0.
+            if (index < 0) {
+                index = -index - 1;
+            }
+            return index;
+
     }
 
 
