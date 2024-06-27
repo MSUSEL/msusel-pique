@@ -22,6 +22,7 @@
  */
 package pique.evaluation;
 
+import com.google.common.base.Preconditions;
 import jep.Interpreter;
 import jep.SharedInterpreter;
 import pique.utility.BigDecimalWithContext;
@@ -30,6 +31,9 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
+
+    private double bandwidth = 0.4;
+    private int samplingSpace = 1000;
 
 
     public ProbabilityDensityFunctionUtilityFunction() {
@@ -130,5 +134,74 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
         }
 
         return score;
+    }
+
+    /***
+     * Gaussian kernel function
+     * @param input x value to evaluate with
+     * @return corresponding y value from the gaussian kernel
+     */
+    private BigDecimal gaussianKernel(BigDecimal input){
+        BigDecimal constant = new BigDecimalWithContext(1 / Math.sqrt(2*Math.PI));
+        BigDecimal exponent = new BigDecimalWithContext(Math.exp(-0.5 * Math.pow(input.doubleValue(), 2)));
+        return constant.multiply(exponent);
+    }
+
+    private BigDecimal[] kernelDensityEstimator(BigDecimal[] thresholds, BigDecimal[] evaluateRange){
+        int size = thresholds.length;
+        BigDecimal[] density = new BigDecimal[size];
+        Arrays.fill(density, new BigDecimalWithContext(0));
+
+
+
+
+        return density;
+    }
+
+    /***
+     * Java equivalent function to perform python's np.linspace(), which generates a list of evenly spaced numbers between
+     * two endpoints, with the number of evenly spaced numbers being parameterized.
+     *
+     * Java does have such a library in the ND4J library, but it feels unnecessary to use the full library (and therefore
+     * potentially inherit any vulnerabilities) for one quick function. Additionally, I couldn't track down the runtime
+     * complexity of ND4J.Linspace, but I doubt it is faster than linear, which this quick solution is linear.
+     *
+     * @param min starting value
+     * @param max ending value
+     * @param range number of evenly spaced values we want
+     * @return array of BigDecimals that
+     */
+    private BigDecimal[] linSpace(BigDecimal min, BigDecimal max, BigDecimal range){
+        BigDecimal[] toRet = new BigDecimal[range.intValue()];
+        BigDecimal stepSize = (max.subtract(min)).divide(range);
+        for (int i = 0; i < toRet.length; i++){
+            //bit awkward to cast BigDecimal to double so that it fits in the BigDecimalWithContext constructor,
+            // consider making everything a bigDecimalWithContext
+            toRet[i] = new BigDecimalWithContext((min.add(stepSize)).doubleValue());
+        }
+        return toRet;
+    }
+
+
+    /***
+     * quick function to calculate the area under a curve using the trapezoid rule
+     *
+     * @param functionDomain The array of the x domain values of the function, basically x[min] through the x for which we supplied the y value
+     * @param densityRange The array of density estimate values, computed from the kernel density estimator
+     * @return area under the curve
+     */
+    private BigDecimal manualTrapezoidalRule(BigDecimal[] functionDomain, BigDecimal[] densityRange){
+        BigDecimal area = new BigDecimalWithContext(0);
+        for (int i = 1; i < functionDomain.length; i++){
+            // x[i] - x[i-1]1
+            BigDecimal xStep = functionDomain[i].subtract(functionDomain[i-1]);
+            // y[i] - y[i-1]
+            BigDecimal yStep = densityRange[i].subtract(densityRange[i-1]);
+            // (x[i] - x[i-1]) * (y[i] - y[i-1])
+            BigDecimal numerator = xStep.multiply(yStep);
+            // area += (x[i] - x[i-1]) * (y[i] - y[i-1])) / 2
+            area = area.add(numerator.divide(new BigDecimalWithContext(2.0)));
+        }
+        return area;
     }
 }
