@@ -11,6 +11,7 @@ import pique.utility.BigDecimalWithContext;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -99,6 +100,15 @@ public class ProbabilityDensityFunctionUtilityFunctionTests {
         BigDecimal outputScore = pdf.utilityFunction(new BigDecimal(5), data, false);
 
         assertEquals(0.0, outputScore.subtract(new BigDecimal(0.16302670275858278)).abs().doubleValue(), delta);
+    }
+
+    @Test
+    public void testGaussianKernelFunction(){
+        BigDecimal[] input = new BigDecimal[]{new BigDecimalWithContext(1),new BigDecimalWithContext(2),new BigDecimalWithContext(3)};
+        ProbabilityDensityFunctionUtilityFunction pdf = new ProbabilityDensityFunctionUtilityFunction();
+        BigDecimal[] evaluationDomain = pdf.linSpace(new BigDecimalWithContext(1), new BigDecimalWithContext(3), new BigDecimalWithContext(pdf.getSamplingSpace()));
+        BigDecimal[] output = pdf.kernelDensityEstimator(input, evaluationDomain);
+        Arrays.stream(output).forEach(System.out::println);
     }
 
 }

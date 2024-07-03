@@ -25,6 +25,7 @@ package pique.evaluation;
 import com.google.common.base.Preconditions;
 import jep.Interpreter;
 import jep.SharedInterpreter;
+import lombok.Getter;
 import pique.utility.BigDecimalWithContext;
 
 import java.math.BigDecimal;
@@ -34,7 +35,9 @@ import java.util.Collections;
 
 public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
+    @Getter
     private double bandwidth = 0.4;
+    @Getter
     private int samplingSpace = 1000;
 
 
@@ -143,20 +146,31 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
      * @param input x value to evaluate with
      * @return corresponding y value from the gaussian kernel
      */
-    private BigDecimal gaussianKernel(BigDecimal input){
+    private BigDecimal[] gaussianKernel(BigDecimal[] input){
         BigDecimal constant = new BigDecimalWithContext(1 / Math.sqrt(2*Math.PI));
-        BigDecimal exponent = new BigDecimalWithContext(Math.exp(-0.5 * Math.pow(input.doubleValue(), 2)));
-        return constant.multiply(exponent);
+        for (int i = 0; i < input.length; i++){
+            BigDecimal transformed = new BigDecimalWithContext(Math.exp(-0.5 * Math.pow(input[i].doubleValue(),2)));
+            input[i] = transformed.multiply(constant);
+        }
+        return input;
     }
 
-    private BigDecimal[] kernelDensityEstimator(BigDecimal[] thresholds, BigDecimal[] evaluateRange){
-        int size = thresholds.length;
-        BigDecimal[] density = new BigDecimal[size];
+    public BigDecimal[] kernelDensityEstimator(BigDecimal[] thresholds, BigDecimal[] evaluationDomain){
+        BigDecimal[] density = new BigDecimal[evaluationDomain.length];
         Arrays.fill(density, new BigDecimalWithContext(0));
 
+        BigDecimal denominatorConstant = new BigDecimalWithContext(thresholds.length * bandwidth);
+        for (int i = 0; i < evaluationDomain.length; i++){
+            BigDecimal[] transformed = thresholds.clone();
+            for (int j = 0; j < thresholds.length; j++){
+                //subtract evaluationDomain[i] from every value of thresholds, and then divide every value by bandwidth
 
-
-
+                BigDecimal subtractand = evaluationDomain[i].subtract(thresholds[j]);
+                transformed[j] = subtractand.divide(new BigDecimalWithContext(bandwidth),BigDecimalWithContext.getMC());
+            }
+            BigDecimal[] kernelValues = gaussianKernel(transformed);
+            density[i] = Arrays.stream(kernelValues).reduce(BigDecimalWithContext.ZERO,BigDecimal::add).divide(denominatorConstant,BigDecimalWithContext.getMC());
+        }
         return density;
     }
 
@@ -173,7 +187,7 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
      * @param range number of evenly spaced values desired
      * @return array of BigDecimals that contains an array of equally spaced values between the parameters min and max
      */
-    private BigDecimal[] linSpace(BigDecimal min, BigDecimal max, BigDecimal range){
+    public BigDecimal[] linSpace(BigDecimal min, BigDecimal max, BigDecimal range){
         BigDecimal[] toRet = new BigDecimal[range.intValue()];
         BigDecimal stepSize = (max.subtract(min)).divide(range);
         for (int i = 0; i < toRet.length; i++){

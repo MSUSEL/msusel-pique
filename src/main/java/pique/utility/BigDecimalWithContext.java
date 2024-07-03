@@ -22,6 +22,9 @@
  */
 package pique.utility;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.DataInput;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -36,6 +39,7 @@ import java.math.RoundingMode;
 public class BigDecimalWithContext extends BigDecimal{
 
 	private static final Integer precision=25;
+
 	public static final MathContext mc = new MathContext(precision,RoundingMode.HALF_UP);
 	
 	public BigDecimalWithContext(int x) {
