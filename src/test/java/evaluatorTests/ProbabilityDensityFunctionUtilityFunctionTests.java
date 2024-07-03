@@ -107,7 +107,7 @@ public class ProbabilityDensityFunctionUtilityFunctionTests {
         BigDecimal[] input = new BigDecimal[]{new BigDecimalWithContext(1),new BigDecimalWithContext(2),new BigDecimalWithContext(3)};
         ProbabilityDensityFunctionUtilityFunction pdf = new ProbabilityDensityFunctionUtilityFunction();
         BigDecimal[] evaluationDomain = pdf.linSpace(new BigDecimalWithContext(1), new BigDecimalWithContext(3), new BigDecimalWithContext(pdf.getSamplingSpace()));
-        BigDecimal[] output = pdf.kernelDensityEstimator(input, evaluationDomain);
+        BigDecimal[] output = pdf.getDensityArray(input, evaluationDomain);
         Arrays.stream(output).forEach(System.out::println);
     }
 

@@ -146,32 +146,32 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
      * @param input x value to evaluate with
      * @return corresponding y value from the gaussian kernel
      */
-    private BigDecimal[] gaussianKernel(BigDecimal[] input){
+    private BigDecimal gaussianKernel(BigDecimal input){
         BigDecimal constant = new BigDecimalWithContext(1 / Math.sqrt(2*Math.PI));
-        for (int i = 0; i < input.length; i++){
-            BigDecimal transformed = new BigDecimalWithContext(Math.exp(-0.5 * Math.pow(input[i].doubleValue(),2)));
-            input[i] = transformed.multiply(constant);
-        }
-        return input;
+        BigDecimal transformed = new BigDecimalWithContext(Math.exp(-0.5 * Math.pow(input.doubleValue(),2)));
+        return transformed.multiply(constant, BigDecimalWithContext.getMC());
     }
 
-    public BigDecimal[] kernelDensityEstimator(BigDecimal[] thresholds, BigDecimal[] evaluationDomain){
-        BigDecimal[] density = new BigDecimal[evaluationDomain.length];
-        Arrays.fill(density, new BigDecimalWithContext(0));
+    public BigDecimal kernelDensityEstimator(BigDecimal input, BigDecimal[] thresholds){
 
-        BigDecimal denominatorConstant = new BigDecimalWithContext(thresholds.length * bandwidth);
-        for (int i = 0; i < evaluationDomain.length; i++){
-            BigDecimal[] transformed = thresholds.clone();
-            for (int j = 0; j < thresholds.length; j++){
-                //subtract evaluationDomain[i] from every value of thresholds, and then divide every value by bandwidth
-
-                BigDecimal subtractand = evaluationDomain[i].subtract(thresholds[j]);
-                transformed[j] = subtractand.divide(new BigDecimalWithContext(bandwidth),BigDecimalWithContext.getMC());
-            }
-            BigDecimal[] kernelValues = gaussianKernel(transformed);
-            density[i] = Arrays.stream(kernelValues).reduce(BigDecimalWithContext.ZERO,BigDecimal::add).divide(denominatorConstant,BigDecimalWithContext.getMC());
+        BigDecimal[] singlePointSummables = new BigDecimal[thresholds.length];
+        for (int i = 0; i < thresholds.length; i++){
+            //find distance from input to every threshold, normalized by height
+            singlePointSummables[i] = gaussianKernel((input.subtract(thresholds[i])).divide(new BigDecimalWithContext(bandwidth), BigDecimalWithContext.getMC()));
         }
-        return density;
+        BigDecimal constant = new BigDecimalWithContext(thresholds.length * bandwidth);
+        //sum the summables
+        BigDecimal sum = Arrays.stream(singlePointSummables).reduce(BigDecimalWithContext.ZERO,BigDecimal::add);
+        //divide the summables
+        return sum.divide(constant,BigDecimalWithContext.getMC());
+    }
+
+    public BigDecimal[] getDensityArray(BigDecimal[] thresholds, BigDecimal[] domainRange){
+        BigDecimal[] toRet = new BigDecimal[domainRange.length];
+        for (int i = 0; i < domainRange.length; i++){
+            toRet[i] = kernelDensityEstimator(domainRange[i], thresholds);
+        }
+        return toRet;
     }
 
     /***
