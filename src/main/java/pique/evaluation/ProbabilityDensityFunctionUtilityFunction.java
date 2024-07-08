@@ -22,16 +22,14 @@
  */
 package pique.evaluation;
 
-import com.google.common.base.Preconditions;
 import jep.Interpreter;
 import jep.SharedInterpreter;
 import lombok.Getter;
 import pique.utility.BigDecimalWithContext;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 
 public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
@@ -193,7 +191,8 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
         for (int i = 0; i < toRet.length; i++){
             //bit awkward to cast BigDecimal to double so that it fits in the BigDecimalWithContext constructor,
             // consider making everything a bigDecimalWithContext
-            toRet[i] = new BigDecimalWithContext((min.add(stepSize)).doubleValue());
+            toRet[i] = new BigDecimalWithContext(min.doubleValue());
+            min = min.add(stepSize);
         }
         return toRet;
     }
@@ -208,20 +207,20 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
      * @param value value to search for
      * @return index for the value equal to or the index of where the value would be inserted into the array
      */
-        private int searchSorted(BigDecimal[] array, BigDecimal value){
-            //sort in case it wasn't sorted already.
-            Arrays.sort(array);
+    public int searchSorted(BigDecimal[] array, BigDecimal value){
+        //sort in case it wasn't sorted already.
+        //Arrays.sort(array);
 
-            int index = Arrays.binarySearch(array, value);
-            //ChatGPT helped me with this, note that it covers the edge case presented in the Arrays.binarySearch documentation:
-            // "Note that this guarantees that the return value will be >= 0 if and only if the key is found."
-            // I spent a good amount of time verifying chatgpt's code acutally works, and it does because the Arrays.binarySearch
-            // performs -index -1 on all values of initial index >= 0, and while I am not sure of the cases where index would be <0,
-            // the code is the same as what would happen if the index was above 0.
-            if (index < 0) {
-                index = -index - 1;
-            }
-            return index;
+        int index = Arrays.binarySearch(array, value);
+        //ChatGPT helped me with this, note that it covers the edge case presented in the Arrays.binarySearch documentation:
+        // "Note that this guarantees that the return value will be >= 0 if and only if the key is found."
+        // I spent a good amount of time verifying chatgpt's code acutally works, and it does because the Arrays.binarySearch
+        // performs -index -1 on all values of initial index >= 0, and while I am not sure of the cases where index would be <0,
+        // the code is the same as what would happen if the index was above 0.
+        if (index < 0) {
+            index = -index - 1;
+        }
+        return index;
 
     }
 
@@ -233,16 +232,16 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
      * @param densityRange The array of density estimate values, computed from the kernel density estimator
      * @return area under the curve
      */
-    private BigDecimal manualTrapezoidalRule(BigDecimal[] functionDomain, BigDecimal[] densityRange){
+    public BigDecimal manualTrapezoidalRule(BigDecimal[] functionDomain, BigDecimal[] densityRange){
         BigDecimal area = new BigDecimalWithContext(0);
         for (int i = 1; i < functionDomain.length; i++){
-            // x[i] - x[i-1]1
+            // x[i] - x[i-1]
             BigDecimal xStep = functionDomain[i].subtract(functionDomain[i-1]);
-            // y[i] - y[i-1]
-            BigDecimal yStep = densityRange[i].subtract(densityRange[i-1]);
-            // (x[i] - x[i-1]) * (y[i] - y[i-1])
+            // y[i] + y[i-1]
+            BigDecimal yStep = densityRange[i].add(densityRange[i-1]);
+            // (x[i] - x[i-1]) * (y[i] + y[i-1])
             BigDecimal numerator = xStep.multiply(yStep);
-            // area += (x[i] - x[i-1]) * (y[i] - y[i-1])) / 2
+            // area += (x[i] - x[i-1]) * (y[i] + y[i-1])) / 2
             area = area.add(numerator.divide(new BigDecimalWithContext(2.0)));
         }
         return area;

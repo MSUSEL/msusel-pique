@@ -3,11 +3,19 @@ package evaluatorTests;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import pique.evaluation.ProbabilityDensityFunctionUtilityFunction;
 import pique.utility.BigDecimalWithContext;
 
+import javax.swing.*;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -108,7 +116,62 @@ public class ProbabilityDensityFunctionUtilityFunctionTests {
         ProbabilityDensityFunctionUtilityFunction pdf = new ProbabilityDensityFunctionUtilityFunction();
         BigDecimal[] evaluationDomain = pdf.linSpace(new BigDecimalWithContext(1), new BigDecimalWithContext(3), new BigDecimalWithContext(pdf.getSamplingSpace()));
         BigDecimal[] output = pdf.getDensityArray(input, evaluationDomain);
-        Arrays.stream(output).forEach(System.out::println);
+        BigDecimal zero = new BigDecimalWithContext(0);
+        BigDecimal one = new BigDecimalWithContext(1);
+        BigDecimal two = new BigDecimalWithContext(2);
+        BigDecimal three = new BigDecimalWithContext(3);
+        BigDecimal four = new BigDecimalWithContext(4);
+        int zeroIndex = pdf.searchSorted(output, zero);
+        int oneIndex = pdf.searchSorted(output, one);
+        int twoIndex = pdf.searchSorted(output, two);
+        int threeIndex = pdf.searchSorted(output, three);
+        int fourIndex = pdf.searchSorted(output, four);
+        System.out.println(zeroIndex);
+        System.out.println(oneIndex);
+        System.out.println(twoIndex);
+        System.out.println(threeIndex);
+        System.out.println(fourIndex);
+    }
+
+    @Test
+    public void visualizeDensities(){
+        BigDecimal[] input = new BigDecimal[]{new BigDecimalWithContext(1),new BigDecimalWithContext(2),new BigDecimalWithContext(3)};
+        ProbabilityDensityFunctionUtilityFunction pdf = new ProbabilityDensityFunctionUtilityFunction();
+        BigDecimal[] evaluationDomain = pdf.linSpace(new BigDecimalWithContext(1), new BigDecimalWithContext(3), new BigDecimalWithContext(pdf.getSamplingSpace()));
+        BigDecimal[] output = pdf.getDensityArray(input, evaluationDomain);
+
+        visualizeData(output, "vanillaOutput");
+        double[] testValues = new double[]{0,1,2,3,4};
+
+        for (int i = 0; i < testValues.length; i++){
+            BigDecimal asBigDecimal = new BigDecimalWithContext(testValues[i]);
+            int closestIndex = pdf.searchSorted(evaluationDomain, asBigDecimal);
+            //System.out.println(closestIndex);
+            // tedious because java
+            BigDecimal[] leftSideOfEvaluationDomain = Arrays.copyOfRange(evaluationDomain, 0, closestIndex);
+            BigDecimal[] leftSideOfDensity = Arrays.copyOfRange(output, 0, closestIndex);
+            BigDecimal aucAtValueZero = pdf.manualTrapezoidalRule(leftSideOfEvaluationDomain, leftSideOfDensity);
+            System.out.println("area under curve: " + aucAtValueZero);
+            //System.out.println("score at value: " + new BigDecimalWithContext(1).subtract(aucAtValueZero));
+
+        }
+    }
+
+
+    private void visualizeData(BigDecimal[] inData, String name){
+        XYSeriesCollection series = new XYSeriesCollection();
+        XYSeries data = new XYSeries("density values");
+        for (int i = 0; i < inData.length; i++){
+            data.add(i, inData[i]);
+        }
+        series.addSeries(data);
+
+        JFreeChart chart = ChartFactory.createScatterPlot("test", "x axis", "y axis", series);
+        try {
+            ChartUtils.saveChartAsPNG(new File("src/test/out/" + name  + ".png"), chart, 800, 600);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }
