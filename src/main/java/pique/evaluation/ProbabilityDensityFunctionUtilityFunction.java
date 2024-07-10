@@ -25,16 +25,17 @@ package pique.evaluation;
 import jep.Interpreter;
 import jep.SharedInterpreter;
 import lombok.Getter;
+import lombok.Setter;
 import pique.utility.BigDecimalWithContext;
 
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
-    @Getter
-    private double bandwidth = 0.4;
+    @Getter @Setter
+    private double bandwidth = 0.9;
     @Getter
     private int samplingSpace = 1000;
 
@@ -45,7 +46,7 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
     @Override
     public BigDecimal utilityFunction(BigDecimal inValue, BigDecimal[] thresholds, boolean positive) {
-        BigDecimalWithContext score = new BigDecimalWithContext(-10000);
+        BigDecimal score = new BigDecimalWithContext(-10000);
 
         //are all values the same? - in O(n) apparently, said someone on stack overflow
         if (Arrays.stream(thresholds).distinct().count() == 1) {
@@ -68,72 +69,18 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
                 }
             }
         }else {
-            //python call here
-            try (Interpreter interp = new SharedInterpreter()) {
-                interp.exec("from java.lang import System");
-                interp.exec("import sys");
-                interp.exec("import math");
-                interp.exec("import numpy as np");
-                interp.exec("import pandas as pd");
-                interp.exec("import seaborn as sns");
-                interp.exec("import matplotlib.pyplot as plt");
-                interp.exec("from scipy import stats");
-                interp.exec("from sklearn.preprocessing import MinMaxScaler");
-                interp.exec("from IPython.display import Image");
+            //assume 'positive' flag is false, so more of x means less quality
 
-
-                //////// start code here
-                //convert thresholds to decimal[] objects
-                double[] converted = new double[thresholds.length];
-                for (int i = 0; i < thresholds.length; i++){
-                    converted[i] = thresholds[i].doubleValue();
-                }
-
-                //set variables from java -> python
-                interp.set("thresholds", converted);
-                interp.set("new_data_point", inValue.doubleValue());
-
-                //begin logic for analytics
-                //interp.exec("for t in thresholds:\n\tSystem.out.println(t)");
-                interp.exec("ax = sns.kdeplot(thresholds)");
-                interp.exec("kde_lines = ax.get_lines()[-1]");
-                interp.exec("kde_x,kde_y = kde_lines.get_data()");
-                interp.exec("mask = kde_x < new_data_point");
-                interp.exec("xx ,yy = kde_x[mask], kde_y[mask]");
-                interp.exec("A = 0");
-                interp.exec("N = len(xx)");
-                interp.exec("for i in range(N-1):\n\tdx = xx[i+1] - xx[i]\n\tA = A + (dx/2)*(yy[i] + yy[i+1])");
-
-
-                /** do plots, note that plots are an approximation of the value. The plots use a kernel density estimator (KDE) which
-                * might produce a different value than the trapezoid method
-                 *
-                 * commented for now because we don't want to incorporate visuals in this graph
-
-                // initial histogram plot
-                interp.exec("plt.figure(figsize=(6,6))");
-                interp.exec("plt.subplot(211)");
-                interp.exec("sns.histplot(thresholds, bins=10, kde=False)");
-                interp.exec("plt.xlim(left=0, right=max(thresholds))");
-
-                // second spline with red dot plot
-                interp.exec("plt.subplot(212)");
-                interp.exec("sns.kdeplot(thresholds)");
-                interp.exec("plt.fill_between(xx, yy, where=(xx <= new_data_point), color='gray', alpha=0.5)");
-                interp.exec("plt.scatter(xx[-1], yy[-1], color='red', s=60)");
-                interp.exec("plt.xlim(left=0, right=max(thresholds))");
-                interp.exec("plt.tight_layout()");
-                interp.exec("plt.savefig('testeser.png')");
-
-                 */
-                //back to java-land, our score value returns as a masked Double object, need to turn into a BigDecimal
-                Object oScore = interp.getValue("1 - A");
-                score = new BigDecimalWithContext((Double) oScore);
-
-            }catch (Exception e){
-                e.printStackTrace();
-                System.out.println("unable to initialize python interpreter call");
-            }
+            //sort array
+            Arrays.sort(thresholds);
+            BigDecimal[] evaluationDomain = linSpace(thresholds[0], thresholds[thresholds.length - 1], new BigDecimalWithContext(samplingSpace));
+            BigDecimal[] output = getDensityArray(thresholds, evaluationDomain);
+            int closestIndex = searchSorted(evaluationDomain, inValue);
+            // tedious because java
+            BigDecimal[] leftSideOfEvaluationDomain = Arrays.copyOfRange(evaluationDomain, 0, closestIndex);
+            BigDecimal[] leftSideOfDensity = Arrays.copyOfRange(output, 0, closestIndex);
+            BigDecimal aucAtValueZero = manualTrapezoidalRule(leftSideOfEvaluationDomain, leftSideOfDensity);
+            score = new BigDecimalWithContext(1.0).subtract(aucAtValueZero);
         }
 
         return score;
@@ -151,7 +98,6 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
     }
 
     public BigDecimal kernelDensityEstimator(BigDecimal input, BigDecimal[] thresholds){
-
         BigDecimal[] singlePointSummables = new BigDecimal[thresholds.length];
         for (int i = 0; i < thresholds.length; i++){
             //find distance from input to every threshold, normalized by height
@@ -187,7 +133,7 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
      */
     public BigDecimal[] linSpace(BigDecimal min, BigDecimal max, BigDecimal range){
         BigDecimal[] toRet = new BigDecimal[range.intValue()];
-        BigDecimal stepSize = (max.subtract(min)).divide(range);
+        BigDecimal stepSize = (max.subtract(min)).divide(range, BigDecimalWithContext.getMC());
         for (int i = 0; i < toRet.length; i++){
             //bit awkward to cast BigDecimal to double so that it fits in the BigDecimalWithContext constructor,
             // consider making everything a bigDecimalWithContext
@@ -209,8 +155,6 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
      */
     public int searchSorted(BigDecimal[] array, BigDecimal value){
         //sort in case it wasn't sorted already.
-        //Arrays.sort(array);
-
         int index = Arrays.binarySearch(array, value);
         //ChatGPT helped me with this, note that it covers the edge case presented in the Arrays.binarySearch documentation:
         // "Note that this guarantees that the return value will be >= 0 if and only if the key is found."
@@ -242,7 +186,7 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
             // (x[i] - x[i-1]) * (y[i] + y[i-1])
             BigDecimal numerator = xStep.multiply(yStep);
             // area += (x[i] - x[i-1]) * (y[i] + y[i-1])) / 2
-            area = area.add(numerator.divide(new BigDecimalWithContext(2.0)));
+            area = area.add(numerator.divide(new BigDecimalWithContext(2.0), BigDecimalWithContext.getMC()));
         }
         return area;
     }

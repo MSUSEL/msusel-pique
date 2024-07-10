@@ -10,6 +10,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import pique.evaluation.ProbabilityDensityFunctionUtilityFunction;
 import pique.utility.BigDecimalWithContext;
@@ -110,7 +111,7 @@ public class ProbabilityDensityFunctionUtilityFunctionTests {
         assertEquals(0.0, outputScore.subtract(new BigDecimal(0.16302670275858278)).abs().doubleValue(), delta);
     }
 
-    @Test
+    @Test @Ignore //not a real test, was testing stuff with this code
     public void testGaussianKernelFunction(){
         BigDecimal[] input = new BigDecimal[]{new BigDecimalWithContext(1),new BigDecimalWithContext(2),new BigDecimalWithContext(3)};
         ProbabilityDensityFunctionUtilityFunction pdf = new ProbabilityDensityFunctionUtilityFunction();
@@ -133,30 +134,79 @@ public class ProbabilityDensityFunctionUtilityFunctionTests {
         System.out.println(fourIndex);
     }
 
-    @Test
-    public void visualizeDensities(){
-        BigDecimal[] input = new BigDecimal[]{new BigDecimalWithContext(1),new BigDecimalWithContext(2),new BigDecimalWithContext(3)};
+    @Test @Ignore //deprecated because I was using this for testing the individual components of the pdf function
+    public void individualTests(){
+        int range = 100;
+        BigDecimal[] input = generateEvenlyDispersedIntegers(range);
+
+        Arrays.sort(input);
+
         ProbabilityDensityFunctionUtilityFunction pdf = new ProbabilityDensityFunctionUtilityFunction();
-        BigDecimal[] evaluationDomain = pdf.linSpace(new BigDecimalWithContext(1), new BigDecimalWithContext(3), new BigDecimalWithContext(pdf.getSamplingSpace()));
+        //range -1
+        BigDecimal[] evaluationDomain = pdf.linSpace(new BigDecimalWithContext(0), new BigDecimalWithContext(range-1), new BigDecimalWithContext(pdf.getSamplingSpace()));
         BigDecimal[] output = pdf.getDensityArray(input, evaluationDomain);
 
-        visualizeData(output, "vanillaOutput");
-        double[] testValues = new double[]{0,1,2,3,4};
+        visualizeData(output, "density array");
+        double[] testValues = new double[]{100};
 
         for (int i = 0; i < testValues.length; i++){
-            BigDecimal asBigDecimal = new BigDecimalWithContext(testValues[i]);
-            int closestIndex = pdf.searchSorted(evaluationDomain, asBigDecimal);
-            //System.out.println(closestIndex);
+            BigDecimal test = new BigDecimalWithContext(testValues[i]);
+            int closestIndex = pdf.searchSorted(evaluationDomain, test);
             // tedious because java
             BigDecimal[] leftSideOfEvaluationDomain = Arrays.copyOfRange(evaluationDomain, 0, closestIndex);
             BigDecimal[] leftSideOfDensity = Arrays.copyOfRange(output, 0, closestIndex);
             BigDecimal aucAtValueZero = pdf.manualTrapezoidalRule(leftSideOfEvaluationDomain, leftSideOfDensity);
-            System.out.println("area under curve: " + aucAtValueZero);
-            //System.out.println("score at value: " + new BigDecimalWithContext(1).subtract(aucAtValueZero));
-
+            BigDecimal score = new BigDecimalWithContext(1.0).subtract(aucAtValueZero);
+            System.out.println("Value: " + testValues[i] + "\t index of closest point: " + closestIndex + "\t and corresponding score: " + score);
         }
     }
 
+    @Test
+    public void doExperiments(){
+        //a method to run the suite of experiments to generate data to assess the quality of the pdf function
+        
+
+    }
+
+    @Test
+    public void testPDFFunction(){
+        int range = 100;
+        ProbabilityDensityFunctionUtilityFunction pdf = new ProbabilityDensityFunctionUtilityFunction();
+        BigDecimal[] thresholds = generateEvenlyDispersedIntegers(range);
+        BigDecimal inValue = new BigDecimalWithContext(100);
+        BigDecimal output = pdf.utilityFunction(inValue, thresholds, false);
+        System.out.println(output);
+    }
+
+    private BigDecimal[] generateEvenlyDispersedIntegers(int size){
+        BigDecimal[] toRet = new BigDecimal[size];
+        for (int i = 0; i < size; i++){
+            toRet[i] = new BigDecimalWithContext(i);
+        }
+        return toRet;
+    }
+
+//    private BigDecimal calculateMinimumScore(BigDecimal[] testValues){
+//        //min score should be close to 0
+//        for (int i = 0; i < testValues.length; i++){
+//            BigDecimal test = testValues[i];
+//            int closestIndex = pdf.searchSorted(evaluationDomain, test);
+//            // tedious because java
+//            BigDecimal[] leftSideOfEvaluationDomain = Arrays.copyOfRange(evaluationDomain, 0, closestIndex);
+//            BigDecimal[] leftSideOfDensity = Arrays.copyOfRange(output, 0, closestIndex);
+//            BigDecimal aucAtValueZero = pdf.manualTrapezoidalRule(leftSideOfEvaluationDomain, leftSideOfDensity);
+//            BigDecimal score = new BigDecimalWithContext(1.0).subtract(pdf.manualTrapezoidalRule(leftSideOfEvaluationDomain, leftSideOfDensity));
+//            System.out.println("Value: " + testValues[i] + "\t index of closest point: " + closestIndex + "\t and corresponding auc values: " + aucAtValueZero);
+//        }
+//    }
+
+    private void exportCSV(){
+        try{
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
     private void visualizeData(BigDecimal[] inData, String name){
         XYSeriesCollection series = new XYSeriesCollection();
