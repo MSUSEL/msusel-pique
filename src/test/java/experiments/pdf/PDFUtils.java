@@ -72,7 +72,7 @@ public class PDFUtils {
                 BigDecimal[] toRet = new BigDecimal[count];
                 double stepSize = (endIndex - beginIndex) / (double) count;
                 double current = beginIndex;
-                for (int i = beginIndex; current < endIndex; i++){
+                for (int i = 0; i < count; i++){
                     toRet[i] = new BigDecimalWithContext(current);
                     current += stepSize;
                 }

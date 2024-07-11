@@ -19,12 +19,15 @@ public class PDFResponse {
     @Getter
     private TransitionValueSummaryStatistics transitionValueSummaryStatistics;
 
+    private long timeToRun;
 
-    public PDFResponse(BigDecimal[] evaluationDomain, BigDecimal[] densityArray){
+
+    public PDFResponse(BigDecimal[] evaluationDomain, BigDecimal[] densityArray, long timeToRun){
         this.densityArray = densityArray;
         calculateMaxAUC(evaluationDomain, densityArray);
         calculateTransitionValues(densityArray);
         transitionValueSummaryStatistics = new TransitionValueSummaryStatistics(transitionValues);
+        this.timeToRun = timeToRun;
     }
 
     private void calculateMaxAUC(BigDecimal[] evaluationDomain, BigDecimal[] densityArray){

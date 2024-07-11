@@ -161,12 +161,6 @@ public class ProbabilityDensityFunctionUtilityFunctionTests {
         }
     }
 
-    @Test
-    public void doExperiments(){
-        //a method to run the suite of experiments to generate data to assess the quality of the pdf function
-        
-
-    }
 
     @Test
     public void testPDFFunction(){
