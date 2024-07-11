@@ -19,8 +19,8 @@ public class PDFExperimentMasqueradeTest {
     public void runExperiments(){
         BigDecimal[] thresholds = PDFUtils.GenerationStrategy.RANDOMLY_SPACED_WITHIN_INTERVAL.generateValues(0, 100, 500);
         BigDecimal[] evaluationDomain = PDFUtils.GenerationStrategy.EVENLY_SPACED_OVER_INTERVAL.generateValues(0, 100, 1000);
-        PDFUtils.KernelFunction kernelFunction = PDFUtils.KernelFunction.COSINE;
-        double bandwidth = 0.8;
+        PDFUtils.KernelFunction kernelFunction = PDFUtils.KernelFunction.LOGISTIC;
+        double bandwidth = .4;
         PDFTreatment t = new PDFTreatment(thresholds, evaluationDomain, kernelFunction, bandwidth);
 
         long start = System.currentTimeMillis();
@@ -31,7 +31,7 @@ public class PDFExperimentMasqueradeTest {
         //everything after the density array is just interpolation/extrapolation, I believe I can just use this for my response.
         //PDFResponse response = new PDFResponse(t.getEvaluationDomain(), densityArray, timeToRun);
 
-        visualizeBigDecimalArray(densityArray, "density array");
+        visualizeBigDecimalArray(densityArray, "density array" + bandwidth);
 
         Arrays.stream(densityArray).forEach(System.out::println);
     }
