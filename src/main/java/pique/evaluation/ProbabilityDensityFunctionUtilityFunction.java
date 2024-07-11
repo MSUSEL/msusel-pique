@@ -74,11 +74,11 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
             //sort array
             Arrays.sort(thresholds);
             BigDecimal[] evaluationDomain = linSpace(thresholds[0], thresholds[thresholds.length - 1], new BigDecimalWithContext(samplingSpace));
-            BigDecimal[] output = getDensityArray(thresholds, evaluationDomain);
+            BigDecimal[] densityArray = getDensityArray(thresholds, evaluationDomain);
             int closestIndex = searchSorted(evaluationDomain, inValue);
             // tedious because java
             BigDecimal[] leftSideOfEvaluationDomain = Arrays.copyOfRange(evaluationDomain, 0, closestIndex);
-            BigDecimal[] leftSideOfDensity = Arrays.copyOfRange(output, 0, closestIndex);
+            BigDecimal[] leftSideOfDensity = Arrays.copyOfRange(densityArray, 0, closestIndex);
             BigDecimal aucAtValueZero = manualTrapezoidalRule(leftSideOfEvaluationDomain, leftSideOfDensity);
             score = new BigDecimalWithContext(1.0).subtract(aucAtValueZero);
         }
@@ -101,7 +101,8 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
         BigDecimal[] singlePointSummables = new BigDecimal[thresholds.length];
         for (int i = 0; i < thresholds.length; i++){
             //find distance from input to every threshold, normalized by height
-            singlePointSummables[i] = gaussianKernel((input.subtract(thresholds[i])).divide(new BigDecimalWithContext(bandwidth), BigDecimalWithContext.getMC()));
+            BigDecimal evaluationCriteria = (input.subtract(thresholds[i])).divide(new BigDecimalWithContext(bandwidth), BigDecimalWithContext.getMC());
+            singlePointSummables[i] = gaussianKernel(evaluationCriteria);
         }
         BigDecimal constant = new BigDecimalWithContext(thresholds.length * bandwidth);
         //sum the summables
