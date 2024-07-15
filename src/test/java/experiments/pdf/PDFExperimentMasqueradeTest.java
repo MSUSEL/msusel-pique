@@ -24,9 +24,9 @@ import java.util.stream.Stream;
 
 public class PDFExperimentMasqueradeTest {
     private List<PDFUtils.GenerationStrategy> thresholdGenerationStrategies;
-    private List<Integer> thresholdBeginIndicies, thresholdEndIndicies, thresholdCounts;
+    private List<Integer> thresholdBeginIndices, thresholdEndIndices, thresholdCounts;
     private List<PDFUtils.GenerationStrategy> evaluationDomainGenerationStrategies;
-    private List<Integer> evaluationDomainBeginIndicies, evaluationDomainEndEndicies, evaluationDomainCounts;
+    private List<Integer> evaluationDomainBeginIndices, evaluationDomainEndEndices, evaluationDomainCounts;
     private List<PDFUtils.KernelFunction> kernelFunctions;
     private List<Double> bandwidths;
 
@@ -41,13 +41,13 @@ public class PDFExperimentMasqueradeTest {
         Type type = new TypeToken<List<Integer>>() {}.getType();
 
         thresholdGenerationStrategies = generationStrategyParserHelper(obj.get("thresholds").getAsJsonObject());
-        thresholdBeginIndicies = gson.fromJson(generationDataParserHelper(obj, "thresholds", "beginIndicies"), type);
-        thresholdEndIndicies = gson.fromJson(generationDataParserHelper(obj, "thresholds", "endIndicies"), type);
+        thresholdBeginIndices = gson.fromJson(generationDataParserHelper(obj, "thresholds", "beginIndices"), type);
+        thresholdEndIndices = gson.fromJson(generationDataParserHelper(obj, "thresholds", "endIndices"), type);
         thresholdCounts = gson.fromJson(generationDataParserHelper(obj, "thresholds", "counts"), type);
 
         evaluationDomainGenerationStrategies = generationStrategyParserHelper(obj.get("evaluationDomain").getAsJsonObject());
-        evaluationDomainBeginIndicies = gson.fromJson(generationDataParserHelper(obj, "evaluationDomain", "beginIndicies"), type);
-        evaluationDomainEndEndicies = gson.fromJson(generationDataParserHelper(obj, "evaluationDomain", "endIndicies"), type);
+        evaluationDomainBeginIndices = gson.fromJson(generationDataParserHelper(obj, "evaluationDomain", "beginIndices"), type);
+            evaluationDomainEndEndices = gson.fromJson(generationDataParserHelper(obj, "evaluationDomain", "endIndices"), type);
         evaluationDomainCounts = gson.fromJson(generationDataParserHelper(obj, "evaluationDomain", "counts"), type);
 
         kernelFunctions = kernelFunctionParserHelper(obj);
@@ -56,14 +56,32 @@ public class PDFExperimentMasqueradeTest {
     }
 
     @Test
+    public void runSimpleCase(){
+        GenerationData thresholdGeneration =
+                new GenerationData(PDFUtils.GenerationStrategy.RANDOMLY_SPACED_RIGHT_SKEW, 0, 10, 500);
+        GenerationData evaluationDomainGeneration =
+                new GenerationData(PDFUtils.GenerationStrategy.EVENLY_SPACED_OVER_INTERVAL, 0, 10, 1000);
+        PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.GAUSSIAN, 0.4);
+        long start = System.currentTimeMillis();
+        BigDecimal[] densityArray = getDensityArray(treatment);
+        long end = System.currentTimeMillis();
+        long timeToRunMS = end - start;
+
+        //everything after the density array is just interpolation/extrapolation, I believe I can just use this for my response.
+        PDFResponse response = new PDFResponse(treatment.getEvaluationDomain(), densityArray, timeToRunMS);
+        visualizeBigDecimalArray(densityArray, treatment.getUuid().toString());
+
+        toJSON(treatment, response);
+    }
+    @Test
     public void runExperiments(){
         for (PDFUtils.GenerationStrategy thresholdGenerationStrategy : thresholdGenerationStrategies) {
-            for (Integer thresholdBeginIndex : thresholdBeginIndicies) {
-                for (Integer thresholdEndIndex : thresholdEndIndicies) {
+            for (Integer thresholdBeginIndex : thresholdBeginIndices) {
+                for (Integer thresholdEndIndex : thresholdEndIndices) {
                     for (Integer thresholdCount : thresholdCounts) {
                         for (PDFUtils.GenerationStrategy evaluationDomainGenerationStrategy : evaluationDomainGenerationStrategies){
-                            for (Integer evaluationDomainBeginIndex : evaluationDomainBeginIndicies) {
-                                for (Integer evaluationDomainEndIndex : evaluationDomainEndEndicies) {
+                            for (Integer evaluationDomainBeginIndex : evaluationDomainBeginIndices) {
+                                for (Integer evaluationDomainEndIndex : evaluationDomainEndEndices) {
                                     for (Integer evaluationDomainCount : evaluationDomainCounts) {
                                         for (PDFUtils.KernelFunction kernelFunction : kernelFunctions){
                                             for (Double bandwidth : bandwidths){
@@ -128,7 +146,6 @@ public class PDFExperimentMasqueradeTest {
     private List<Double> bandwidthParserHelper(JsonObject obj){
         List<Double> toRet = new ArrayList<>();
         String rangeAsString = obj.get("bandwidths").getAsString();
-        System.out.println(rangeAsString);
         if (rangeAsString.matches("\\[\\d*\\.?\\d+-\\d*\\.?\\d+:\\d*\\.?\\d+]")){
             // thank you chatgpt
             String[] parts = rangeAsString.substring(1, rangeAsString.length() - 1).split("[:-]");

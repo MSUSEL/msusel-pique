@@ -1,14 +1,14 @@
 {
   "thresholds": {
     "generationStrategies": ["RANDOMLY_SPACED_WITHIN_INTERVAL"],
-    "beginIndicies": [0],
-    "endIndicies": [100],
+    "beginIndices": [0],
+    "endIndices": [100],
     "counts": [10, 50, 100, 500, 1000]
   },
   "evaluationDomain": {
     "generationStrategies": ["EVENLY_SPACED_OVER_INTERVAL"],
-    "beginIndicies": [0],
-    "endIndicies": [100],
+    "beginIndices": [0],
+    "endIndices": [100],
     "counts": [10, 50, 100, 500, 1000]
   },
   "kernelFunctions": ["UNIFORM", "TRIANGULAR", "EPANECHNIKOV", "QUARTIC", "TRIWEIGHT", "TRICUBE", "GAUSSIAN", "COSINE", "LOGISTIC", "SIGMOID", "SILVERMAN"],

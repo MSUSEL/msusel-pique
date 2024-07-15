@@ -94,9 +94,16 @@ public class PDFUtils {
             Random rand = new Random(11235813);
             @Override
             BigDecimal[] generateValues(int beginIndex, int endIndex, int count){
+                double mu = 5.0;
+                double lambda = 10000.0;
                 BigDecimal[] toRet = new BigDecimal[count];
                 for (int i = 0; i < count; i++){
-                    toRet[i] = new BigDecimalWithContext(beginIndex + (endIndex - beginIndex) * rand.nextDouble());
+                    double randomValue = beginIndex + (endIndex - beginIndex) * rand.nextDouble();
+                    BigDecimal constant = new BigDecimalWithContext(Math.sqrt(lambda / (2*Math.PI * randomValue)));
+                    double numerator = -1.0 * lambda * Math.pow(randomValue - mu, 2);
+                    double denominator = 2 * Math.pow(mu, 2) * randomValue;
+                    BigDecimal allTogetherNow = constant.multiply(new BigDecimalWithContext(Math.exp(numerator / denominator)));
+                    toRet[i] = allTogetherNow;
                 }
                 return toRet;
             }
