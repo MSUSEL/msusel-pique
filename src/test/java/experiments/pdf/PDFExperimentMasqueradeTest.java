@@ -14,19 +14,18 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class PDFExperimentMasqueradeTest {
-    private PDFUtils.GenerationStrategy thresholdGenerationStrategy;
+    private List<PDFUtils.GenerationStrategy> thresholdGenerationStrategies;
     private List<Integer> thresholdBeginIndicies, thresholdEndIndicies, thresholdCounts;
-    private PDFUtils.GenerationStrategy evaluationDomainGenerationStrategy;
+    private List<PDFUtils.GenerationStrategy> evaluationDomainGenerationStrategies;
     private List<Integer> evaluationDomainBeginIndicies, evaluationDomainEndEndicies, evaluationDomainCounts;
     private List<PDFUtils.KernelFunction> kernelFunctions;
     private List<Double> bandwidths;
@@ -41,12 +40,16 @@ public class PDFExperimentMasqueradeTest {
         Gson gson = new Gson();
         Type type = new TypeToken<List<Integer>>() {}.getType();
 
-        thresholdGenerationStrategy = gson.fromJson(generationStrategyParserHelper(obj, "thresholds"), PDFUtils.GenerationStrategy.class);
+        thresholdGenerationStrategies = generationStrategyParserHelper(obj.get("thresholds"));
+        evaluationDomainGenerationStrategies = generationStrategyParserHelper(obj.get("evaluationDomain"));
+
+
+
         thresholdBeginIndicies = gson.fromJson(generationDataParserHelper(obj, "thresholds", "beginIndicies"), type);
         thresholdEndIndicies = gson.fromJson(generationDataParserHelper(obj, "thresholds", "endIndicies"), type);
         thresholdCounts = gson.fromJson(generationDataParserHelper(obj, "thresholds", "counts"), type);
 
-        evaluationDomainGenerationStrategy = gson.fromJson(generationStrategyParserHelper(obj, "evaluationDomain"), PDFUtils.GenerationStrategy.class);
+
         evaluationDomainBeginIndicies = gson.fromJson(generationDataParserHelper(obj, "evaluationDomain", "beginIndicies"), type);
         evaluationDomainEndEndicies = gson.fromJson(generationDataParserHelper(obj, "evaluationDomain", "endIndicies"), type);
         evaluationDomainCounts = gson.fromJson(generationDataParserHelper(obj, "evaluationDomain", "counts"), type);
@@ -56,50 +59,21 @@ public class PDFExperimentMasqueradeTest {
         bandwidths = bandwidthParserHelper(obj);
     }
 
-    private List<Double> bandwidthParserHelper(JsonObject obj){
-        List<Double> toRet = new ArrayList<>();
-        String rangeAsString = obj.get("bandwidths").getAsString();
-        System.out.println(rangeAsString);
-        if (rangeAsString.matches("\\[\\d*\\.?\\d+-\\d*\\.?\\d+:\\d*\\.?\\d+]")){
-            // thank you chatgpt
-            String[] parts = rangeAsString.substring(1, rangeAsString.length() - 1).split("[:-]");
-            double start = Double.parseDouble(parts[0]);
-            double end = Double.parseDouble(parts[1]);
-            double step = Double.parseDouble(parts[2]);
-
-            for (double i = start; i <= end; i += step) {
-                toRet.add(i);
-            }
-        }else{
-            System.out.println("error with range of bandwidths in input json file");
-        }
-        return toRet;
-    }
-
-    private List<PDFUtils.KernelFunction> kernelFunctionParserHelper(JsonObject obj){
-        return List.of(new Gson().fromJson(obj.get("kernelFunctions").getAsJsonArray(), PDFUtils.KernelFunction[].class));
-    }
-
-    private JsonElement generationStrategyParserHelper(JsonObject obj, String parentKey){
-       return obj.get(parentKey).getAsJsonObject().get("generationStrategy");
-    }
-
-    private JsonArray generationDataParserHelper(JsonObject obj, String parentKey, String childKey){
-        return obj.get(parentKey).getAsJsonObject().get(childKey).getAsJsonArray();
-    }
-
-    private String readInputJson(String filePath){
-        StringBuilder builder = new StringBuilder();
-        try (Stream<String> stream = Files.lines(Path.of(filePath), StandardCharsets.UTF_8)){
-            stream.forEach(s -> builder.append(s).append("\n"));
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        return builder.toString();
-    }
-
     @Test
     public void runExperiments(){
+//        for (Integer thresholdBeginIndex : thresholdBeginIndicies){
+//            for (Integer thresholdEndIndex : thresholdEndIndicies){
+//                for (Integer thresholdCount : thresholdCounts){
+//                    for (Integer evaluationDomainBeginIndex : evaluationDomainBeginIndicies){
+//                        for (Integer evaluationDomainEndIndex : evaluationDomainEndEndicies){
+//                            for (Integer evaluationDomainCount : evaluationDomainCounts){
+//                                for ()
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
         GenerationData thresholdGeneration = new GenerationData(PDFUtils.GenerationStrategy.RANDOMLY_SPACED_WITHIN_INTERVAL, 0, 100, 500);
         GenerationData evaluationDomainGeneration = new GenerationData(PDFUtils.GenerationStrategy.EVENLY_SPACED_OVER_INTERVAL, 0, 100, 1000);
         PDFUtils.KernelFunction kernelFunction = PDFUtils.KernelFunction.LOGISTIC;
@@ -150,6 +124,52 @@ public class PDFExperimentMasqueradeTest {
         }
     }
 
+
+    private List<Double> bandwidthParserHelper(JsonObject obj){
+        List<Double> toRet = new ArrayList<>();
+        String rangeAsString = obj.get("bandwidths").getAsString();
+        System.out.println(rangeAsString);
+        if (rangeAsString.matches("\\[\\d*\\.?\\d+-\\d*\\.?\\d+:\\d*\\.?\\d+]")){
+            // thank you chatgpt
+            String[] parts = rangeAsString.substring(1, rangeAsString.length() - 1).split("[:-]");
+            double start = Double.parseDouble(parts[0]);
+            double end = Double.parseDouble(parts[1]);
+            double step = Double.parseDouble(parts[2]);
+
+            int sigDigits = new Double(step).toString().split("\\.")[1].length();
+
+            for (double i = start; i <= end; i += step) {
+                BigDecimal bd = BigDecimal.valueOf(i);
+                bd = bd.setScale(sigDigits, RoundingMode.HALF_UP);
+                toRet.add(bd.doubleValue());
+            }
+        }else{
+            System.out.println("error with range of bandwidths in input json file");
+        }
+        return toRet;
+    }
+
+    private List<PDFUtils.KernelFunction> kernelFunctionParserHelper(JsonObject obj){
+        return List.of(new Gson().fromJson(obj.get("kernelFunctions").getAsJsonArray(), PDFUtils.KernelFunction[].class));
+    }
+
+    private List<PDFUtils.GenerationStrategy> generationStrategyParserHelper(JsonObject obj){
+        return List.of(new Gson().fromJson(obj.get("generationStrategies").getAsJsonArray(), PDFUtils.GenerationStrategy[].class));
+    }
+
+    private JsonArray generationDataParserHelper(JsonObject obj, String parentKey, String childKey){
+        return obj.get(parentKey).getAsJsonObject().get(childKey).getAsJsonArray();
+    }
+
+    private String readInputJson(String filePath){
+        StringBuilder builder = new StringBuilder();
+        try (Stream<String> stream = Files.lines(Path.of(filePath), StandardCharsets.UTF_8)){
+            stream.forEach(s -> builder.append(s).append("\n"));
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return builder.toString();
+    }
 
 
 
