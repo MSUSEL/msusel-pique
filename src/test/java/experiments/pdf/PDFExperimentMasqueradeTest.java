@@ -40,16 +40,12 @@ public class PDFExperimentMasqueradeTest {
         Gson gson = new Gson();
         Type type = new TypeToken<List<Integer>>() {}.getType();
 
-        thresholdGenerationStrategies = generationStrategyParserHelper(obj.get("thresholds"));
-        evaluationDomainGenerationStrategies = generationStrategyParserHelper(obj.get("evaluationDomain"));
-
-
-
+        thresholdGenerationStrategies = generationStrategyParserHelper(obj.get("thresholds").getAsJsonObject());
         thresholdBeginIndicies = gson.fromJson(generationDataParserHelper(obj, "thresholds", "beginIndicies"), type);
         thresholdEndIndicies = gson.fromJson(generationDataParserHelper(obj, "thresholds", "endIndicies"), type);
         thresholdCounts = gson.fromJson(generationDataParserHelper(obj, "thresholds", "counts"), type);
 
-
+        evaluationDomainGenerationStrategies = generationStrategyParserHelper(obj.get("evaluationDomain").getAsJsonObject());
         evaluationDomainBeginIndicies = gson.fromJson(generationDataParserHelper(obj, "evaluationDomain", "beginIndicies"), type);
         evaluationDomainEndEndicies = gson.fromJson(generationDataParserHelper(obj, "evaluationDomain", "endIndicies"), type);
         evaluationDomainCounts = gson.fromJson(generationDataParserHelper(obj, "evaluationDomain", "counts"), type);
@@ -61,37 +57,41 @@ public class PDFExperimentMasqueradeTest {
 
     @Test
     public void runExperiments(){
-//        for (Integer thresholdBeginIndex : thresholdBeginIndicies){
-//            for (Integer thresholdEndIndex : thresholdEndIndicies){
-//                for (Integer thresholdCount : thresholdCounts){
-//                    for (Integer evaluationDomainBeginIndex : evaluationDomainBeginIndicies){
-//                        for (Integer evaluationDomainEndIndex : evaluationDomainEndEndicies){
-//                            for (Integer evaluationDomainCount : evaluationDomainCounts){
-//                                for ()
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-        GenerationData thresholdGeneration = new GenerationData(PDFUtils.GenerationStrategy.RANDOMLY_SPACED_WITHIN_INTERVAL, 0, 100, 500);
-        GenerationData evaluationDomainGeneration = new GenerationData(PDFUtils.GenerationStrategy.EVENLY_SPACED_OVER_INTERVAL, 0, 100, 1000);
-        PDFUtils.KernelFunction kernelFunction = PDFUtils.KernelFunction.LOGISTIC;
-        double bandwidth = .4;
-        PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, kernelFunction, bandwidth);
+        for (PDFUtils.GenerationStrategy thresholdGenerationStrategy : thresholdGenerationStrategies) {
+            for (Integer thresholdBeginIndex : thresholdBeginIndicies) {
+                for (Integer thresholdEndIndex : thresholdEndIndicies) {
+                    for (Integer thresholdCount : thresholdCounts) {
+                        for (PDFUtils.GenerationStrategy evaluationDomainGenerationStrategy : evaluationDomainGenerationStrategies){
+                            for (Integer evaluationDomainBeginIndex : evaluationDomainBeginIndicies) {
+                                for (Integer evaluationDomainEndIndex : evaluationDomainEndEndicies) {
+                                    for (Integer evaluationDomainCount : evaluationDomainCounts) {
+                                        for (PDFUtils.KernelFunction kernelFunction : kernelFunctions){
+                                            for (Double bandwidth : bandwidths){
+                                                GenerationData thresholdGeneration =
+                                                        new GenerationData(thresholdGenerationStrategy, thresholdBeginIndex, thresholdEndIndex, thresholdCount);
+                                                GenerationData evaluationDomainGeneration =
+                                                        new GenerationData(evaluationDomainGenerationStrategy, evaluationDomainBeginIndex, evaluationDomainEndIndex, evaluationDomainCount);
+                                                PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, kernelFunction, bandwidth);
+                                                long start = System.currentTimeMillis();
+                                                BigDecimal[] densityArray = getDensityArray(treatment);
+                                                long end = System.currentTimeMillis();
+                                                long timeToRunMS = end - start;
 
-        long start = System.currentTimeMillis();
-        BigDecimal[] densityArray = getDensityArray(treatment);
-        long end = System.currentTimeMillis();
-        long timeToRunMS = end - start;
+                                                //everything after the density array is just interpolation/extrapolation, I believe I can just use this for my response.
+                                                PDFResponse response = new PDFResponse(treatment.getEvaluationDomain(), densityArray, timeToRunMS);
+                                                visualizeBigDecimalArray(densityArray, treatment.getUuid().toString());
 
-        //everything after the density array is just interpolation/extrapolation, I believe I can just use this for my response.
-        PDFResponse response = new PDFResponse(treatment.getEvaluationDomain(), densityArray, timeToRunMS);
-
-        visualizeBigDecimalArray(densityArray, treatment.getUuid().toString());
-
-        toJSON(treatment, response);
-        //Arrays.stream(densityArray).forEach(System.out::println);
+                                                toJSON(treatment, response);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void toJSON(PDFTreatment treatment, PDFResponse response){
