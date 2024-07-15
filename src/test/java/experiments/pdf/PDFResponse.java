@@ -1,5 +1,6 @@
 package experiments.pdf;
 
+import com.google.gson.annotations.Expose;
 import lombok.Getter;
 import pique.utility.BigDecimalWithContext;
 
@@ -10,24 +11,27 @@ public class PDFResponse {
     @Getter
     private BigDecimal[] densityArray;
 
+    @Expose
     @Getter
     private BigDecimal maxAUC;
 
     @Getter
     private BigDecimal[] transitionValues;
 
+    @Expose
     @Getter
     private TransitionValueSummaryStatistics transitionValueSummaryStatistics;
 
-    private long timeToRun;
+    @Expose
+    private long timeToRunMS;
 
 
-    public PDFResponse(BigDecimal[] evaluationDomain, BigDecimal[] densityArray, long timeToRun){
+    public PDFResponse(BigDecimal[] evaluationDomain, BigDecimal[] densityArray, long timeToRunMS){
         this.densityArray = densityArray;
         calculateMaxAUC(evaluationDomain, densityArray);
         calculateTransitionValues(densityArray);
         transitionValueSummaryStatistics = new TransitionValueSummaryStatistics(transitionValues);
-        this.timeToRun = timeToRun;
+        this.timeToRunMS = timeToRunMS;
     }
 
     private void calculateMaxAUC(BigDecimal[] evaluationDomain, BigDecimal[] densityArray){
@@ -44,14 +48,20 @@ public class PDFResponse {
     @Getter
     public class TransitionValueSummaryStatistics{
 
+        @Expose
         private BigDecimal mean;
+        @Expose
         private BigDecimal max;
+        @Expose
         private BigDecimal min;
+        @Expose
         private BigDecimal std;
         public TransitionValueSummaryStatistics(BigDecimal[] transitionValues){
             BigDecimal transitionArraySize = new BigDecimalWithContext(transitionValues.length);
             //all in 1 loop for fast
             BigDecimal sum = new BigDecimalWithContext(0.0);
+            min = new BigDecimalWithContext(Double.MAX_VALUE);
+            max = new BigDecimalWithContext(Double.MIN_VALUE);
             for (int i = 0; i < transitionArraySize.doubleValue(); i++){
                 BigDecimal value = transitionValues[i];
                 sum = sum.add(value);

@@ -89,6 +89,17 @@ public class PDFUtils {
                 }
                 return toRet;
             }
+        },
+        RANDOMLY_SPACED_RIGHT_SKEW {
+            Random rand = new Random(11235813);
+            @Override
+            BigDecimal[] generateValues(int beginIndex, int endIndex, int count){
+                BigDecimal[] toRet = new BigDecimal[count];
+                for (int i = 0; i < count; i++){
+                    toRet[i] = new BigDecimalWithContext(beginIndex + (endIndex - beginIndex) * rand.nextDouble());
+                }
+                return toRet;
+            }
         };
 
         abstract BigDecimal[] generateValues(int beginIndex, int endIndex, int count);
