@@ -1,6 +1,6 @@
 {
   "thresholds": {
-    "generationStrategies": ["RANDOMLY_SPACED_WITHIN_INTERVAL"],
+    "generationStrategies": ["RANDOMLY_SPACED_RIGHT_SKEW"],
     "beginIndices": [0],
     "endIndices": [100],
     "counts": [10, 50, 100, 500, 1000]
@@ -12,5 +12,5 @@
     "counts": [10, 50, 100, 500, 1000]
   },
   "kernelFunctions": ["UNIFORM", "TRIANGULAR", "EPANECHNIKOV", "QUARTIC", "TRIWEIGHT", "TRICUBE", "GAUSSIAN", "COSINE", "LOGISTIC", "SIGMOID", "SILVERMAN"],
-  "bandwidths": "[0-10:0.3]"
+  "bandwidths": "[0.3-10:0.3]"
 }

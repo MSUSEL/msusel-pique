@@ -73,6 +73,26 @@ public class PDFExperimentMasqueradeTest {
 
         toJSON(treatment, response);
     }
+
+    @Test
+    public void testNegativeAUC(){
+        GenerationData thresholdGeneration =
+                new GenerationData(PDFUtils.GenerationStrategy.RANDOMLY_SPACED_RIGHT_SKEW, 0, 100, 100);
+        GenerationData evaluationDomainGeneration =
+                new GenerationData(PDFUtils.GenerationStrategy.EVENLY_SPACED_OVER_INTERVAL, 0, 100, 10);
+        PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.TRIWEIGHT, 0.9);
+        long start = System.currentTimeMillis();
+        BigDecimal[] densityArray = getDensityArray(treatment);
+        long end = System.currentTimeMillis();
+        long timeToRunMS = end - start;
+
+        //everything after the density array is just interpolation/extrapolation, I believe I can just use this for my response.
+        PDFResponse response = new PDFResponse(treatment.getEvaluationDomain(), densityArray, timeToRunMS);
+        visualizeBigDecimalArray(densityArray, treatment.getUuid().toString());
+
+        toJSON(treatment, response);
+    }
+
     @Test
     public void runExperiments(){
         for (PDFUtils.GenerationStrategy thresholdGenerationStrategy : thresholdGenerationStrategies) {
