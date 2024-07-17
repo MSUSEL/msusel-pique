@@ -6,11 +6,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.Getter;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.math3.util.Pair;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
 import org.jfree.data.xy.XYSeries;
@@ -49,31 +47,60 @@ private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
     private void printMetaSummaryStatistics(){
         printMaxAUC();
         printMaxMeanTransition();
+        printMinMeanTransition();
     }
 
     private void generateGraphs(){
         maxAUCOverTime();
-        histogramOfTransitionMeans();
-
+        histogramOfDensityTransitionMeans();
+        histogramOfDensityTransitionSTDs();
     }
 
-    private void histogramOfTransitionMeans() {
+    private void histogramOfDensityTransitionMeans() {
         int numBins = 100;
         HistogramDataset dataset = new HistogramDataset();
         dataset.setType(HistogramType.FREQUENCY);
 
         List<Double> transitionMeans = new ArrayList<>();
         for (ImmutablePair<PDFTreatment, PDFResponse> value : data.values()){
-            transitionMeans.add(value.getRight().getTransitionValueSummaryStatistics().getMean().doubleValue());
+            double currentMean = value.getRight().getTransitionValueSummaryStatistics().getMean().doubleValue();
+            if (currentMean > 0.0 && currentMean < 0.1) {
+                transitionMeans.add(currentMean);
+            }
         }
 
         dataset.addSeries("Histogram", transitionMeans.stream().mapToDouble(Double::doubleValue).toArray(), numBins);
 
-        JFreeChart chart = ChartFactory.createHistogram("Histogram of Mean Density Transition values",
-                "Mean density Transition values", "Frequency", dataset);
+        JFreeChart chart = ChartFactory.createHistogram("Histogram of Density Transition Mean values BETWEEN 0 AND 0.1",
+                "Density Transition Mean values", "Frequency", dataset);
 
         try {
             ChartUtils.saveChartAsPNG(new File("src/test/out/pdf_analysis/mean_density_transition_histogram.png"), chart, 800, 600);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void histogramOfDensityTransitionSTDs() {
+        int numBins = 100;
+        HistogramDataset dataset = new HistogramDataset();
+        dataset.setType(HistogramType.FREQUENCY);
+
+        List<Double> transitionSTDs = new ArrayList<>();
+        for (ImmutablePair<PDFTreatment, PDFResponse> value : data.values()){
+            double currentSTD = value.getRight().getTransitionValueSummaryStatistics().getStd().doubleValue();
+            if (currentSTD > 0.0 && currentSTD < 0.1) {
+                transitionSTDs.add(currentSTD);
+            }
+        }
+
+        dataset.addSeries("Histogram", transitionSTDs.stream().mapToDouble(Double::doubleValue).toArray(), numBins);
+
+        JFreeChart chart = ChartFactory.createHistogram("Histogram of Density Transition STD values BETWEEN 0 AND 0.1",
+                "Density Transition STD values", "Frequency", dataset);
+
+        try {
+            ChartUtils.saveChartAsPNG(new File("src/test/out/pdf_analysis/std_density_transition_histogram.png"), chart, 800, 600);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -119,6 +146,18 @@ private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
             }
         }
         System.out.println("Max of mean density transition value (want to minimize this for a cleaner interpolation range): " + maxMean + " \n\tfrom treatment/config with ID: " + correspondingUUID.toString());
+    }
+    private void printMinMeanTransition(){
+        double minMean = Double.MAX_VALUE;
+        UUID correspondingUUID = null;
+        for (ImmutablePair<PDFTreatment, PDFResponse> p : data.values()){
+            double compareValue = p.getRight().getTransitionValueSummaryStatistics().getMean().doubleValue();
+            if (compareValue < minMean) {
+                minMean = compareValue;
+                correspondingUUID = p.getLeft().getUuid();
+            }
+        }
+        System.out.println("Min of mean density transition value (want to minimize this for a cleaner interpolation range): " + minMean + " \n\tfrom treatment/config with ID: " + correspondingUUID.toString());
     }
 
 }
