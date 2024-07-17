@@ -2,21 +2,31 @@ package experiments.pdf;
 
 import pique.utility.BigDecimalWithContext;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class PDFUtils {
 
 
     public static BigDecimal kernelDensityEstimator(BigDecimal input, PDFTreatment treatment){
         BigDecimal sum = new BigDecimalWithContext(0.0);
-        //for convienence
+        //for convenience
         BigDecimal[] thresholds = treatment.getThresholds();
         double bandwidth = treatment.getBandwidth();
         for (int i = 0; i < thresholds.length; i++){
             //find distance from input to every threshold, normalized by height
             BigDecimal evaluationCriteria = (input.subtract(thresholds[i])).divide(new BigDecimalWithContext(bandwidth), BigDecimalWithContext.getMC());
+            if (evaluationCriteria.doubleValue() < 0){
+                // overflow/underflow issue here
+                //System.out.println("here");
+            }
             sum = sum.add(treatment.getKernelFunction().evaluateKernel(evaluationCriteria));
         }
         BigDecimal constant = new BigDecimalWithContext(thresholds.length * bandwidth);
@@ -27,13 +37,13 @@ public class PDFUtils {
         BigDecimal area = new BigDecimalWithContext(0);
         for (int i = 1; i < functionDomain.length; i++){
             // x[i] - x[i-1]
-            BigDecimal xStep = functionDomain[i].subtract(functionDomain[i-1]);
+            BigDecimal xStep = functionDomain[i].subtract(functionDomain[i-1], BigDecimalWithContext.getMC());
             // y[i] + y[i-1]
-            BigDecimal yStep = densityRange[i].add(densityRange[i-1]);
+            BigDecimal yStep = densityRange[i].add(densityRange[i-1], BigDecimalWithContext.getMC());
             // (x[i] - x[i-1]) * (y[i] + y[i-1])
-            BigDecimal numerator = xStep.multiply(yStep);
+            BigDecimal numerator = xStep.multiply(yStep, BigDecimalWithContext.getMC());
             // area += (x[i] - x[i-1]) * (y[i] + y[i-1])) / 2
-            area = area.add(numerator.divide(new BigDecimalWithContext(2.0), BigDecimalWithContext.getMC()));
+            area = area.add(numerator.divide(new BigDecimalWithContext(2.0), BigDecimalWithContext.getMC()), BigDecimalWithContext.getMC());
         }
         return area;
     }
@@ -94,15 +104,17 @@ public class PDFUtils {
             Random rand = new Random(11235813);
             @Override
             BigDecimal[] generateValues(int beginIndex, int endIndex, int count){
-                double mu = 5.0;
-                double lambda = 10000.0;
+                double mu = 3.0;
+                double lambda = 1.0;
                 BigDecimal[] toRet = new BigDecimal[count];
                 for (int i = 0; i < count; i++){
                     double randomValue = beginIndex + (endIndex - beginIndex) * rand.nextDouble();
                     BigDecimal constant = new BigDecimalWithContext(Math.sqrt(lambda / (2*Math.PI * randomValue)));
                     double numerator = -1.0 * lambda * Math.pow(randomValue - mu, 2);
                     double denominator = 2 * Math.pow(mu, 2) * randomValue;
-                    BigDecimal allTogetherNow = constant.multiply(new BigDecimalWithContext(Math.exp(numerator / denominator)));
+                    BigDecimal allTogetherNow = constant.multiply(new BigDecimalWithContext(Math.exp(numerator / denominator)), BigDecimalWithContext.getMC());
+                    // round to 10 seg digits?
+                    //allTogetherNow = allTogetherNow.setScale(10, RoundingMode.DOWN);
                     toRet[i] = allTogetherNow;
                 }
                 return toRet;
@@ -199,5 +211,15 @@ public class PDFUtils {
             }
         };
         abstract BigDecimal evaluateKernel(BigDecimal input);
+    }
+
+    public static String readInputJson(String filePath){
+        StringBuilder builder = new StringBuilder();
+        try (Stream<String> stream = Files.lines(Path.of(filePath), StandardCharsets.UTF_8)){
+            stream.forEach(s -> builder.append(s).append("\n"));
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return builder.toString();
     }
 }

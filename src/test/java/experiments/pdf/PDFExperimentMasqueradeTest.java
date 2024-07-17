@@ -2,6 +2,7 @@ package experiments.pdf;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
+import org.apache.commons.io.FileUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
@@ -11,16 +12,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
+
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class PDFExperimentMasqueradeTest {
     private List<PDFUtils.GenerationStrategy> thresholdGenerationStrategies;
@@ -33,7 +34,7 @@ public class PDFExperimentMasqueradeTest {
 
     @Before
     public void initializeParams(){
-        String data = readInputJson("src/test/resources/experiments/input.json");
+        String data = PDFUtils.readInputJson("src/test/resources/experiments/input.json");
         JsonParser parser = new JsonParser();
         JsonElement element = parser.parse(data);
         JsonObject obj = element.getAsJsonObject();
@@ -47,7 +48,7 @@ public class PDFExperimentMasqueradeTest {
 
         evaluationDomainGenerationStrategies = generationStrategyParserHelper(obj.get("evaluationDomain").getAsJsonObject());
         evaluationDomainBeginIndices = gson.fromJson(generationDataParserHelper(obj, "evaluationDomain", "beginIndices"), type);
-            evaluationDomainEndEndices = gson.fromJson(generationDataParserHelper(obj, "evaluationDomain", "endIndices"), type);
+        evaluationDomainEndEndices = gson.fromJson(generationDataParserHelper(obj, "evaluationDomain", "endIndices"), type);
         evaluationDomainCounts = gson.fromJson(generationDataParserHelper(obj, "evaluationDomain", "counts"), type);
 
         kernelFunctions = kernelFunctionParserHelper(obj);
@@ -55,12 +56,13 @@ public class PDFExperimentMasqueradeTest {
         bandwidths = bandwidthParserHelper(obj);
     }
 
+
     @Test
-    public void runSimpleCase(){
+    public void runNaiveCase(){
         GenerationData thresholdGeneration =
-                new GenerationData(PDFUtils.GenerationStrategy.RANDOMLY_SPACED_RIGHT_SKEW, 0, 10, 500);
+                new GenerationData(PDFUtils.GenerationStrategy.RANDOMLY_SPACED_WITHIN_INTERVAL, 0, 100, 500);
         GenerationData evaluationDomainGeneration =
-                new GenerationData(PDFUtils.GenerationStrategy.EVENLY_SPACED_OVER_INTERVAL, 0, 10, 1000);
+                new GenerationData(PDFUtils.GenerationStrategy.EVENLY_SPACED_OVER_INTERVAL, 0, 100, 5000);
         PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.GAUSSIAN, 0.4);
         long start = System.currentTimeMillis();
         BigDecimal[] densityArray = getDensityArray(treatment);
@@ -69,7 +71,9 @@ public class PDFExperimentMasqueradeTest {
 
         //everything after the density array is just interpolation/extrapolation, I believe I can just use this for my response.
         PDFResponse response = new PDFResponse(treatment.getEvaluationDomain(), densityArray, timeToRunMS);
-        visualizeBigDecimalArray(densityArray, treatment.getUuid().toString());
+        visualizeBigDecimalArray(densityArray, treatment.getUuid().toString() + "_density");
+        visualizeBigDecimalArray(treatment.getThresholds(), treatment.getUuid().toString() + "_thresholds");
+        visualizeBigDecimalArray(treatment.getEvaluationDomain(), treatment.getUuid().toString() + "_evaluationDomain");
 
         toJSON(treatment, response);
     }
@@ -95,16 +99,22 @@ public class PDFExperimentMasqueradeTest {
 
     @Test
     public void runExperiments(){
+        //resetExperimentDeleteFiles();
+        int expCount = thresholdGenerationStrategies.size() * thresholdBeginIndices.size() * thresholdEndIndices.size() * thresholdCounts.size()
+                * evaluationDomainGenerationStrategies.size() + evaluationDomainBeginIndices.size() * evaluationDomainEndEndices.size() * evaluationDomainCounts.size()
+                * kernelFunctions.size() * bandwidths.size();
+        System.out.println("Experimenting on : " + expCount + " different treatments");
+        int counter = 0;
         for (PDFUtils.GenerationStrategy thresholdGenerationStrategy : thresholdGenerationStrategies) {
             for (Integer thresholdBeginIndex : thresholdBeginIndices) {
                 for (Integer thresholdEndIndex : thresholdEndIndices) {
                     for (Integer thresholdCount : thresholdCounts) {
-                        for (PDFUtils.GenerationStrategy evaluationDomainGenerationStrategy : evaluationDomainGenerationStrategies){
+                        for (PDFUtils.GenerationStrategy evaluationDomainGenerationStrategy : evaluationDomainGenerationStrategies) {
                             for (Integer evaluationDomainBeginIndex : evaluationDomainBeginIndices) {
                                 for (Integer evaluationDomainEndIndex : evaluationDomainEndEndices) {
                                     for (Integer evaluationDomainCount : evaluationDomainCounts) {
-                                        for (PDFUtils.KernelFunction kernelFunction : kernelFunctions){
-                                            for (Double bandwidth : bandwidths){
+                                        for (PDFUtils.KernelFunction kernelFunction : kernelFunctions) {
+                                            for (Double bandwidth : bandwidths) {
                                                 GenerationData thresholdGeneration =
                                                         new GenerationData(thresholdGenerationStrategy, thresholdBeginIndex, thresholdEndIndex, thresholdCount);
                                                 GenerationData evaluationDomainGeneration =
@@ -120,6 +130,10 @@ public class PDFExperimentMasqueradeTest {
                                                 visualizeBigDecimalArray(densityArray, treatment.getUuid().toString());
 
                                                 toJSON(treatment, response);
+                                                if (counter % 250 == 0){
+                                                    System.out.println("\tSuccessfully ran experiment: " + counter);
+                                                }
+                                                counter++;
                                             }
                                         }
                                     }
@@ -132,10 +146,34 @@ public class PDFExperimentMasqueradeTest {
         }
     }
 
+    @Test
+    public void runAnalysis(){
+        Analysis analysisPackage = new Analysis();
+
+    }
+
+
+    @Test
+    public void resetExperimentDeleteFiles() {
+        String preamble = "src/test/out/";
+        try {
+            FileUtils.cleanDirectory(new File(preamble + "pdf_graphs"));
+            FileUtils.cleanDirectory(new File(preamble + "pdf_output"));
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
     private void toJSON(PDFTreatment treatment, PDFResponse response){
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
-        PDFOutputter pdfOutputter = new PDFOutputter(treatment, response);
-        System.out.println(gson.toJson(pdfOutputter));
+        PDFOutputterWrapper pdfOutputterWrapper = new PDFOutputterWrapper(treatment, response);
+        try (Writer writer = new FileWriter("src/test/out/pdf_output/" + Paths.get(treatment.getUuid().toString() + ".json"))){
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+            gson.toJson(pdfOutputterWrapper, writer);
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     private BigDecimal[] getDensityArray(PDFTreatment treatment){
@@ -197,19 +235,5 @@ public class PDFExperimentMasqueradeTest {
     private JsonArray generationDataParserHelper(JsonObject obj, String parentKey, String childKey){
         return obj.get(parentKey).getAsJsonObject().get(childKey).getAsJsonArray();
     }
-
-    private String readInputJson(String filePath){
-        StringBuilder builder = new StringBuilder();
-        try (Stream<String> stream = Files.lines(Path.of(filePath), StandardCharsets.UTF_8)){
-            stream.forEach(s -> builder.append(s).append("\n"));
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        return builder.toString();
-    }
-
-
-
-
 
 }

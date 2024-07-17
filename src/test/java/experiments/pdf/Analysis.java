@@ -1,0 +1,124 @@
+package experiments.pdf;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import lombok.Getter;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.math3.util.Pair;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.statistics.HistogramDataset;
+import org.jfree.data.statistics.HistogramType;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
+import java.io.File;
+import java.util.*;
+
+public class Analysis {
+
+    @Getter
+private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
+    private String fileLocation = "src/test/out/pdf_output";
+
+    public Analysis(){
+        data = new HashMap<>();
+        parseJsonsToData();
+        generateGraphs();
+        printMetaSummaryStatistics();
+    }
+
+    private void parseJsonsToData(){
+        File[] listOfFiles = new File(fileLocation).listFiles();
+        for (File f : listOfFiles) {
+            String individualFile = PDFUtils.readInputJson(f.getPath());
+            JsonParser parser = new JsonParser();
+            JsonElement element = parser.parse(individualFile);
+            JsonObject obj = element.getAsJsonObject();
+            Gson gson = new Gson();
+            PDFTreatment treatment = gson.fromJson(obj.get("treatment").getAsJsonObject(), PDFTreatment.class);
+            PDFResponse response = gson.fromJson(obj.get("response").getAsJsonObject(), PDFResponse.class);
+            data.put(treatment.getUuid(), new ImmutablePair<>(treatment, response));
+        }
+    }
+
+    private void printMetaSummaryStatistics(){
+        printMaxAUC();
+        printMaxMeanTransition();
+    }
+
+    private void generateGraphs(){
+        maxAUCOverTime();
+        histogramOfTransitionMeans();
+
+    }
+
+    private void histogramOfTransitionMeans() {
+        int numBins = 100;
+        HistogramDataset dataset = new HistogramDataset();
+        dataset.setType(HistogramType.FREQUENCY);
+
+        List<Double> transitionMeans = new ArrayList<>();
+        for (ImmutablePair<PDFTreatment, PDFResponse> value : data.values()){
+            transitionMeans.add(value.getRight().getTransitionValueSummaryStatistics().getMean().doubleValue());
+        }
+
+        dataset.addSeries("Histogram", transitionMeans.stream().mapToDouble(Double::doubleValue).toArray(), numBins);
+
+        JFreeChart chart = ChartFactory.createHistogram("Histogram of Mean Density Transition values",
+                "Mean density Transition values", "Frequency", dataset);
+
+        try {
+            ChartUtils.saveChartAsPNG(new File("src/test/out/pdf_analysis/mean_density_transition_histogram.png"), chart, 800, 600);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private void maxAUCOverTime(){
+        XYSeriesCollection series = new XYSeriesCollection();
+        XYSeries seriesData = new XYSeries("Values");
+        for (ImmutablePair<PDFTreatment, PDFResponse> p : data.values()){
+            if (p.getRight().getMaxAUC().doubleValue() >= 0.0 && p.getRight().getMaxAUC().doubleValue() <= 1.0) {
+                //odd problem with overflow/underflow
+                seriesData.add(p.getRight().getTimeToRunMS(), p.getRight().getMaxAUC());
+            }
+        }
+        series.addSeries(seriesData);
+
+        JFreeChart chart = ChartFactory.createScatterPlot("Max AUC over time", "Time to run (ms)", "Max AUC", series);
+        try {
+            ChartUtils.saveChartAsPNG(new File("src/test/out/pdf_analysis/max_auc_over_time.png"), chart, 800, 600);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void printMaxAUC(){
+        double maxAUC = 0.0;
+        UUID correspondingUUID = null;
+        for (ImmutablePair<PDFTreatment, PDFResponse> p : data.values()){
+        if (p.getRight().getMaxAUC().doubleValue() > maxAUC);
+            maxAUC = p.getRight().getMaxAUC().doubleValue();
+            correspondingUUID = p.getLeft().getUuid();
+        }
+        System.out.println("Max of max AUCs (want something close to 1 to full the entire domain, but a manual trapezoidal method makes this practically very difficult): " + maxAUC + " \n\tfrom treatment/config with ID: " + correspondingUUID.toString());
+    }
+
+    private void printMaxMeanTransition(){
+        double maxMean = 0.0;
+        UUID correspondingUUID = null;
+        for (ImmutablePair<PDFTreatment, PDFResponse> p : data.values()){
+            double compareValue = p.getRight().getTransitionValueSummaryStatistics().getMean().doubleValue();
+            if (compareValue > maxMean) {
+                maxMean = compareValue;
+                correspondingUUID = p.getLeft().getUuid();
+            }
+        }
+        System.out.println("Max of mean density transition value (want to minimize this for a cleaner interpolation range): " + maxMean + " \n\tfrom treatment/config with ID: " + correspondingUUID.toString());
+    }
+
+}

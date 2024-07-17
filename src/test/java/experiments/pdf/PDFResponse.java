@@ -23,6 +23,7 @@ public class PDFResponse {
     private TransitionValueSummaryStatistics transitionValueSummaryStatistics;
 
     @Expose
+    @Getter
     private long timeToRunMS;
 
 
