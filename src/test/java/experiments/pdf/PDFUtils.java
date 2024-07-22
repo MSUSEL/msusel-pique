@@ -23,11 +23,15 @@ public class PDFUtils {
         for (int i = 0; i < thresholds.length; i++){
             //find distance from input to every threshold, normalized by height
             BigDecimal evaluationCriteria = (input.subtract(thresholds[i])).divide(new BigDecimalWithContext(bandwidth), BigDecimalWithContext.getMC());
-            if (evaluationCriteria.doubleValue() < 0){
-                // overflow/underflow issue here
-                //System.out.println("here");
+
+            BigDecimal functionEvaluation;
+            if (evaluationCriteria.abs().compareTo(BigDecimal.ONE) == 1){
+                // outside of support --
+                functionEvaluation = BigDecimal.ZERO;
+            }else{
+                functionEvaluation = treatment.getKernelFunction().evaluateKernel(evaluationCriteria);
             }
-            sum = sum.add(treatment.getKernelFunction().evaluateKernel(evaluationCriteria));
+            sum = sum.add(functionEvaluation, BigDecimalWithContext.getMC());
         }
         BigDecimal constant = new BigDecimalWithContext(thresholds.length * bandwidth);
         return sum.divide(constant,BigDecimalWithContext.getMC());
@@ -141,32 +145,39 @@ public class PDFUtils {
             @Override
             BigDecimal evaluateKernel(BigDecimal input) {
                 BigDecimal constant = new BigDecimalWithContext(0.75);  //  3/4
-                BigDecimal variation = new BigDecimalWithContext(1 - Math.pow(input.doubleValue(), 2));
-                return constant.multiply(variation, BigDecimalWithContext.getMC());
+                BigDecimal orderOfOps1 = new BigDecimalWithContext(1.0).subtract(input.pow(2, BigDecimalWithContext.getMC()), BigDecimalWithContext.getMC());
+                return constant.multiply(orderOfOps1, BigDecimalWithContext.getMC());
             }
         },
         QUARTIC {
             @Override
             BigDecimal evaluateKernel(BigDecimal input) {
-                BigDecimal constant = new BigDecimalWithContext(0.9375 ); //    15/16
-                BigDecimal variation = new BigDecimalWithContext(Math.pow(1 - Math.pow(input.doubleValue(), 2), 2));
-                return constant.multiply(variation, BigDecimalWithContext.getMC());
+                BigDecimal constant = new BigDecimalWithContext(0.9375); //    15/16
+                BigDecimal orderOfOps1 = input.pow(2, BigDecimalWithContext.getMC());
+                BigDecimal orderOfOps2 = new BigDecimalWithContext(1.0).subtract(orderOfOps1, BigDecimalWithContext.getMC());
+                BigDecimal orderOfOps3 = orderOfOps2.pow(2, BigDecimalWithContext.getMC());
+                return constant.multiply(orderOfOps3, BigDecimalWithContext.getMC());
             }
         },
         TRIWEIGHT {
             @Override
             BigDecimal evaluateKernel(BigDecimal input) {
-                BigDecimal constant = new BigDecimalWithContext(0.9375 ); //    15/16
-                BigDecimal variation = new BigDecimalWithContext(Math.pow(1 - Math.pow(input.doubleValue(), 2), 3));
-                return constant.multiply(variation, BigDecimalWithContext.getMC());
+                BigDecimal constant = new BigDecimalWithContext(1.09375); //    35/32
+                BigDecimal orderOfOps1 = input.pow(2, BigDecimalWithContext.getMC());
+                BigDecimal orderOfOps2 = new BigDecimalWithContext(1.0).subtract(orderOfOps1, BigDecimalWithContext.getMC());
+                BigDecimal orderOfOps3 = orderOfOps2.pow(3, BigDecimalWithContext.getMC());
+                return constant.multiply(orderOfOps3, BigDecimalWithContext.getMC());
             }
         },
         TRICUBE {
             @Override
             BigDecimal evaluateKernel(BigDecimal input) {
                 BigDecimal constant = new BigDecimalWithContext(0.86419753086);   //  70/81
-                BigDecimal variation = new BigDecimalWithContext(Math.pow(1 - Math.pow(input.abs().doubleValue(), 3), 3));
-                return constant.multiply(variation, BigDecimalWithContext.getMC());
+                BigDecimal orderOfOps1 = input.abs();
+                BigDecimal orderOfOps2 = orderOfOps1.pow(3, BigDecimalWithContext.getMC());
+                BigDecimal orderOfOps3 = new BigDecimalWithContext(1.0).subtract(orderOfOps2, BigDecimalWithContext.getMC());
+                BigDecimal orderOfOps4 = orderOfOps3.pow(3, BigDecimalWithContext.getMC());
+                return constant.multiply(orderOfOps4, BigDecimalWithContext.getMC());
             }
         },
         GAUSSIAN {
@@ -180,6 +191,7 @@ public class PDFUtils {
         COSINE {
             @Override
             BigDecimal evaluateKernel(BigDecimal input) {
+                //TODO - rewrite math to allow for bigdecimal trig functions
                 BigDecimal constant = new BigDecimalWithContext(Math.PI / 4);
                 BigDecimal variation = new BigDecimalWithContext(Math.cos(Math.PI * input.doubleValue() / 2 ));
                 return constant.multiply(variation, BigDecimalWithContext.getMC());
@@ -188,21 +200,27 @@ public class PDFUtils {
         LOGISTIC {
             @Override
             BigDecimal evaluateKernel(BigDecimal input) {
-                BigDecimal variation = new BigDecimalWithContext(1 / (Math.exp(input.doubleValue()) + 2 + Math.exp(-1 * input.doubleValue())));
-                return variation;
+                BigDecimal orderOfOps1 = BigDecimalWithContext.exp(input);
+                BigDecimal orderOfOps2 = orderOfOps1.negate();
+                BigDecimal orderOfOps3 = orderOfOps1.add(new BigDecimalWithContext(2.0), BigDecimalWithContext.getMC()).add(orderOfOps2, BigDecimalWithContext.getMC());
+                return BigDecimalWithContext.ONE.divide(orderOfOps3, BigDecimalWithContext.getMC());
             }
         },
         SIGMOID {
             @Override
             BigDecimal evaluateKernel(BigDecimal input) {
                 BigDecimal constant = new BigDecimalWithContext(2 / Math.PI);
-                BigDecimal variation = new BigDecimalWithContext(1 / (Math.exp(input.doubleValue()) + Math.exp(-1 * input.doubleValue())));
-                return constant.multiply(variation, BigDecimalWithContext.getMC());
+                BigDecimal orderOfOps1 = BigDecimalWithContext.exp(input);
+                BigDecimal orderOfOps2 = orderOfOps1.negate();
+                BigDecimal orderOfOps3 = orderOfOps1.add(orderOfOps2, BigDecimalWithContext.getMC());
+                BigDecimal orderOfOps4 = BigDecimalWithContext.ONE.divide(orderOfOps3, BigDecimalWithContext.getMC());
+                return constant.multiply(orderOfOps4, BigDecimalWithContext.getMC());
             }
         },
         SILVERMAN {
             @Override
             BigDecimal evaluateKernel(BigDecimal input) {
+                //TODO - rewrite math to allow for bigdecimal trig functions
                 double inputAbs = input.abs().doubleValue();
                 BigDecimal constant = new BigDecimalWithContext(0.5);
                 BigDecimal firstVariation = new BigDecimalWithContext(Math.exp(-1 * (inputAbs / Math.sqrt(2))));

@@ -81,10 +81,10 @@ public class PDFExperimentMasqueradeTest {
     @Test
     public void testNegativeAUC(){
         GenerationData thresholdGeneration =
-                new GenerationData(PDFUtils.GenerationStrategy.RANDOMLY_SPACED_RIGHT_SKEW, 0, 100, 100);
+                new GenerationData(PDFUtils.GenerationStrategy.RANDOMLY_SPACED_WITHIN_INTERVAL, 0, 100, 500);
         GenerationData evaluationDomainGeneration =
-                new GenerationData(PDFUtils.GenerationStrategy.EVENLY_SPACED_OVER_INTERVAL, 0, 100, 10);
-        PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.TRIWEIGHT, 0.9);
+                new GenerationData(PDFUtils.GenerationStrategy.EVENLY_SPACED_OVER_INTERVAL, 0, 100, 1000);
+        PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.GAUSSIAN, 10);
         long start = System.currentTimeMillis();
         BigDecimal[] densityArray = getDensityArray(treatment);
         long end = System.currentTimeMillis();
@@ -92,7 +92,7 @@ public class PDFExperimentMasqueradeTest {
 
         //everything after the density array is just interpolation/extrapolation, I believe I can just use this for my response.
         PDFResponse response = new PDFResponse(treatment.getEvaluationDomain(), densityArray, timeToRunMS);
-        //visualizeBigDecimalArray(densityArray, treatment.getUuid().toString());
+        visualizeBigDecimalArray(densityArray, treatment.getUuid().toString());
 
         printToSTD(treatment, response);
 
@@ -201,7 +201,7 @@ public class PDFExperimentMasqueradeTest {
         }
         series.addSeries(data);
 
-        JFreeChart chart = ChartFactory.createScatterPlot("nerds at harvard got nothing on this", "x axis", "y axis", series);
+        JFreeChart chart = ChartFactory.createScatterPlot("graph", "x axis", "y axis", series);
         try {
             ChartUtils.saveChartAsPNG(new File("src/test/out/pdf_graphs/" + name  + ".png"), chart, 800, 600);
         }catch (Exception e){
