@@ -92,9 +92,11 @@ public class PDFExperimentMasqueradeTest {
 
         //everything after the density array is just interpolation/extrapolation, I believe I can just use this for my response.
         PDFResponse response = new PDFResponse(treatment.getEvaluationDomain(), densityArray, timeToRunMS);
-        visualizeBigDecimalArray(densityArray, treatment.getUuid().toString());
+        //visualizeBigDecimalArray(densityArray, treatment.getUuid().toString());
 
-        toJSON(treatment, response);
+        printToSTD(treatment, response);
+
+        //toJSON(treatment, response);
     }
 
     @Test
@@ -174,6 +176,13 @@ public class PDFExperimentMasqueradeTest {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    private void printToSTD(PDFTreatment treatment, PDFResponse response){
+        PDFOutputterWrapper pdfOutputterWrapper = new PDFOutputterWrapper(treatment, response);
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+        System.out.println(gson.toJson(pdfOutputterWrapper));
+
     }
 
     private BigDecimal[] getDensityArray(PDFTreatment treatment){

@@ -54,6 +54,8 @@ private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
         maxAUCOverTime();
         histogramOfDensityTransitionMeans();
         histogramOfDensityTransitionSTDs();
+        bandwidthOverTime();
+        kernelFuncOverTime();
     }
 
     private void histogramOfDensityTransitionMeans() {
@@ -105,6 +107,40 @@ private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
             e.printStackTrace();
         }
     }
+
+    private void kernelFuncOverTime(){
+        XYSeriesCollection series = new XYSeriesCollection();
+        XYSeries seriesData = new XYSeries("Values");
+        for (ImmutablePair<PDFTreatment, PDFResponse> p : data.values()){
+            seriesData.add(p.getRight().getTimeToRunMS(), p.getLeft().getKernelFunction().ordinal());
+            System.out.println(p.getLeft().getKernelFunction() + " " + p.getLeft().getKernelFunction().ordinal());
+        }
+        series.addSeries(seriesData);
+
+        JFreeChart chart = ChartFactory.createScatterPlot("Kernel Functions over time", "Time to run (ms)", "Kernel functions as ordinal values", series);
+        try {
+            ChartUtils.saveChartAsPNG(new File("src/test/out/pdf_analysis/kernel_functions_over_time.png"), chart, 800, 600);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void bandwidthOverTime(){
+        XYSeriesCollection series = new XYSeriesCollection();
+        XYSeries seriesData = new XYSeries("Values");
+        for (ImmutablePair<PDFTreatment, PDFResponse> p : data.values()){
+            seriesData.add(p.getRight().getTimeToRunMS(), p.getLeft().getBandwidth());
+        }
+        series.addSeries(seriesData);
+
+        JFreeChart chart = ChartFactory.createScatterPlot("Bandwidth over time", "Time to run (ms)", "Bandwidth value", series);
+        try {
+            ChartUtils.saveChartAsPNG(new File("src/test/out/pdf_analysis/bandwidth_over_time.png"), chart, 800, 600);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     private void maxAUCOverTime(){
         XYSeriesCollection series = new XYSeriesCollection();
         XYSeries seriesData = new XYSeries("Values");
