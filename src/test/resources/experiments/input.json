@@ -12,5 +12,5 @@
     "counts": [100, 250, 500, 1000, 2500, 5000, 10000]
   },
   "kernelFunctions": ["UNIFORM", "TRIANGULAR", "EPANECHNIKOV", "QUARTIC", "TRIWEIGHT", "TRICUBE", "GAUSSIAN", "COSINE", "LOGISTIC", "SIGMOID", "SILVERMAN"],
-  "bandwidths": "[0.3-10:0.3]"
+  "bandwidths": "[0.02-10:0.02]"
 }

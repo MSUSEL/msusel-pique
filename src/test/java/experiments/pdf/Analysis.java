@@ -56,6 +56,7 @@ private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
         histogramOfDensityTransitionSTDs();
         bandwidthOverTime();
         kernelFuncOverTime();
+        meanTransitionValuesOverTime();
     }
 
     private void histogramOfDensityTransitionMeans() {
@@ -104,6 +105,22 @@ private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
         try {
             ChartUtils.saveChartAsPNG(new File("src/test/out/pdf_analysis/std_density_transition_histogram.png"), chart, 800, 600);
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void meanTransitionValuesOverTime(){
+        XYSeriesCollection series = new XYSeriesCollection();
+        XYSeries seriesData = new XYSeries("Values");
+        for (ImmutablePair<PDFTreatment, PDFResponse> p : data.values()){
+            seriesData.add(p.getRight().getTimeToRunMS(), p.getRight().getTransitionValueSummaryStatistics().getMean());
+        }
+        series.addSeries(seriesData);
+
+        JFreeChart chart = ChartFactory.createScatterPlot("Mean over time", "Time to run (ms)", "Mean Transition value", series);
+        try {
+            ChartUtils.saveChartAsPNG(new File("src/test/out/pdf_analysis/mean_over_time.png"), chart, 800, 600);
+        }catch (Exception e){
             e.printStackTrace();
         }
     }

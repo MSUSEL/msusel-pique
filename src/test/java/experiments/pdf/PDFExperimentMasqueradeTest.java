@@ -81,10 +81,10 @@ public class PDFExperimentMasqueradeTest {
     @Test
     public void testNegativeAUC(){
         GenerationData thresholdGeneration =
-                new GenerationData(PDFUtils.GenerationStrategy.RANDOMLY_SPACED_WITHIN_INTERVAL, 0, 100, 500);
+                new GenerationData(PDFUtils.GenerationStrategy.RANDOMLY_SPACED_RIGHT_SKEW, 0, 100, 500);
         GenerationData evaluationDomainGeneration =
                 new GenerationData(PDFUtils.GenerationStrategy.EVENLY_SPACED_OVER_INTERVAL, 0, 100, 1000);
-        PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.GAUSSIAN, 10);
+        PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.COSINE, 10);
         long start = System.currentTimeMillis();
         BigDecimal[] densityArray = getDensityArray(treatment);
         long end = System.currentTimeMillis();

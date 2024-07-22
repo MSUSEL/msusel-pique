@@ -108,8 +108,8 @@ public class PDFUtils {
             Random rand = new Random(11235813);
             @Override
             BigDecimal[] generateValues(int beginIndex, int endIndex, int count){
-                double mu = 3.0;
-                double lambda = 1.0;
+                double mu = 1.0;
+                double lambda = 0.2;
                 BigDecimal[] toRet = new BigDecimal[count];
                 for (int i = 0; i < count; i++){
                     double randomValue = beginIndex + (endIndex - beginIndex) * rand.nextDouble();
