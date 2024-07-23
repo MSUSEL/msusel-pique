@@ -4,7 +4,6 @@ import pique.utility.BigDecimalWithContext;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -72,7 +71,7 @@ public class PDFUtils {
     }
 
     public enum GenerationStrategy{
-        EVENLY_SPACED_OVER_INTERVAL {
+        EVEN_UNIFORM_SPACING {
             @Override
             BigDecimal[] generateValues(int beginIndex, int endIndex, int count){
                 BigDecimal[] toRet = new BigDecimal[count];
@@ -85,7 +84,7 @@ public class PDFUtils {
                 return toRet;
             }
         },
-        RANDOMLY_SPACED_WITHIN_INTERVAL {
+        RANDOM_UNIFORM_SPACING {
             Random rand = new Random(11235813);
             @Override
             BigDecimal[] generateValues(int beginIndex, int endIndex, int count){
@@ -96,7 +95,7 @@ public class PDFUtils {
                 return toRet;
             }
         },
-        RANDOMLY_SPACED_RIGHT_SKEW {
+        RANDOM_RIGHT_SKEW_SPACING {
             Random rand = new Random(11235813);
             @Override
             BigDecimal[] generateValues(int beginIndex, int endIndex, int count){

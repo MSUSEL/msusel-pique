@@ -6,6 +6,8 @@ import org.apache.commons.io.FileUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
+import org.jfree.data.statistics.HistogramDataset;
+import org.jfree.data.statistics.HistogramType;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.junit.Before;
@@ -60,9 +62,9 @@ public class PDFExperimentMasqueradeTest {
     @Test
     public void runNaiveCase(){
         GenerationData thresholdGeneration =
-                new GenerationData(PDFUtils.GenerationStrategy.RANDOMLY_SPACED_WITHIN_INTERVAL, 0, 100, 500);
+                new GenerationData(PDFUtils.GenerationStrategy.RANDOM_UNIFORM_SPACING, 0, 100, 500);
         GenerationData evaluationDomainGeneration =
-                new GenerationData(PDFUtils.GenerationStrategy.EVENLY_SPACED_OVER_INTERVAL, 0, 100, 5000);
+                new GenerationData(PDFUtils.GenerationStrategy.EVEN_UNIFORM_SPACING, 0, 100, 5000);
         PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.GAUSSIAN, 0.4);
         long start = System.currentTimeMillis();
         BigDecimal[] densityArray = getDensityArray(treatment);
@@ -79,11 +81,11 @@ public class PDFExperimentMasqueradeTest {
     }
 
     @Test
-    public void testNegativeAUC(){
+    public void basicTestConfig(){
         GenerationData thresholdGeneration =
-                new GenerationData(PDFUtils.GenerationStrategy.RANDOMLY_SPACED_RIGHT_SKEW, 0, 100, 500);
+                new GenerationData(PDFUtils.GenerationStrategy.RANDOM_UNIFORM_SPACING, 0, 100, 500);
         GenerationData evaluationDomainGeneration =
-                new GenerationData(PDFUtils.GenerationStrategy.EVENLY_SPACED_OVER_INTERVAL, 0, 100, 1000);
+                new GenerationData(PDFUtils.GenerationStrategy.EVEN_UNIFORM_SPACING, 0, 100, 1000);
         PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.GAUSSIAN, 0.5);
         long start = System.currentTimeMillis();
         BigDecimal[] densityArray = getDensityArray(treatment);
@@ -93,6 +95,8 @@ public class PDFExperimentMasqueradeTest {
         //everything after the density array is just interpolation/extrapolation, I believe I can just use this for my response.
         PDFResponse response = new PDFResponse(treatment.getEvaluationDomain(), densityArray, timeToRunMS);
         visualizeBigDecimalArray(densityArray, treatment.getUuid().toString());
+
+        histogram(treatment.getThresholds(), treatment.getUuid().toString());
 
         printToSTD(treatment, response);
 
@@ -159,8 +163,10 @@ public class PDFExperimentMasqueradeTest {
     public void resetExperimentDeleteFiles() {
         String preamble = "src/test/out/";
         try {
-            FileUtils.cleanDirectory(new File(preamble + "pdf_graphs"));
+            FileUtils.cleanDirectory(new File(preamble + "pdf_graphs_scatter_plots"));
             FileUtils.cleanDirectory(new File(preamble + "pdf_output"));
+            FileUtils.cleanDirectory(new File(preamble + "pdf_analysis"));
+            FileUtils.cleanDirectory(new File(preamble + "pdf_graphs_histograms"));
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -203,8 +209,30 @@ public class PDFExperimentMasqueradeTest {
 
         JFreeChart chart = ChartFactory.createScatterPlot("graph", "x axis", "y axis", series);
         try {
-            ChartUtils.saveChartAsPNG(new File("src/test/out/pdf_graphs/" + name  + ".png"), chart, 800, 600);
+            ChartUtils.saveChartAsPNG(new File("src/test/out/pdf_graphs_scatter_plots/" + name  + ".png"), chart, 800, 600);
         }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void histogram(BigDecimal[] inData, String name){
+        int numBins = inData.length / 10;
+        HistogramDataset dataset = new HistogramDataset();
+        dataset.setType(HistogramType.FREQUENCY);
+
+        double[] vals = new double[inData.length];
+        for (int i = 0; i < vals.length; i++) {
+            vals[i] = inData[i].doubleValue();
+        }
+
+        dataset.addSeries("Histogram", vals, numBins);
+
+        JFreeChart chart = ChartFactory.createHistogram("Histogram",
+                "x axis", "Frequency", dataset);
+
+        try {
+            ChartUtils.saveChartAsPNG(new File("src/test/out/pdf_graphs_histograms/" + name + ".png"), chart, 800, 600);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
