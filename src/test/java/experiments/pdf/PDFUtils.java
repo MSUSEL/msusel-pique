@@ -226,21 +226,26 @@ public class PDFUtils {
         LOGISTIC {
             @Override
             BigDecimal evaluateKernel(BigDecimal input) {
-                BigDecimal orderOfOps1 = BigDecimalWithContext.exp(input);
-                BigDecimal orderOfOps2 = orderOfOps1.negate();
-                BigDecimal orderOfOps3 = orderOfOps1.add(new BigDecimalWithContext(2.0), BigDecimalWithContext.getMC()).add(orderOfOps2, BigDecimalWithContext.getMC());
-                return BigDecimalWithContext.ONE.divide(orderOfOps3, BigDecimalWithContext.getMC());
+                BigDecimal variation = new BigDecimalWithContext(1 / (Math.exp(input.doubleValue()) + 2 + Math.exp(-1 * input.doubleValue())));
+                return variation;
+//                BigDecimal orderOfOps1 = BigDecimalWithContext.exp(input);
+//                BigDecimal orderOfOps2 = orderOfOps1.negate();
+//                BigDecimal orderOfOps3 = orderOfOps1.add(new BigDecimalWithContext(2.0), BigDecimalWithContext.getMC()).add(orderOfOps2, BigDecimalWithContext.getMC());
+//                return BigDecimalWithContext.ONE.divide(orderOfOps3, BigDecimalWithContext.getMC());
             }
         },
         SIGMOID {
             @Override
             BigDecimal evaluateKernel(BigDecimal input) {
                 BigDecimal constant = new BigDecimalWithContext(2 / Math.PI);
-                BigDecimal orderOfOps1 = BigDecimalWithContext.exp(input);
-                BigDecimal orderOfOps2 = orderOfOps1.negate();
-                BigDecimal orderOfOps3 = orderOfOps1.add(orderOfOps2, BigDecimalWithContext.getMC());
-                BigDecimal orderOfOps4 = BigDecimalWithContext.ONE.divide(orderOfOps3, BigDecimalWithContext.getMC());
-                return constant.multiply(orderOfOps4, BigDecimalWithContext.getMC());
+                BigDecimal variation = new BigDecimalWithContext(1 / (Math.exp(input.doubleValue()) + Math.exp(-1 * input.doubleValue())));
+                return constant.multiply(variation, BigDecimalWithContext.getMC());
+//                BigDecimal constant = new BigDecimalWithContext(2 / Math.PI);
+//                BigDecimal orderOfOps1 = BigDecimalWithContext.exp(input);
+//                BigDecimal orderOfOps2 = orderOfOps1.negate();
+//                BigDecimal orderOfOps3 = orderOfOps1.add(orderOfOps2, BigDecimalWithContext.getMC());
+//                BigDecimal orderOfOps4 = BigDecimalWithContext.ONE.divide(orderOfOps3, BigDecimalWithContext.getMC());
+//                return constant.multiply(orderOfOps4, BigDecimalWithContext.getMC());
             }
         },
         SILVERMAN {

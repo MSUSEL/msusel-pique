@@ -58,28 +58,5 @@ public class BigDecimalWithContext extends BigDecimal{
 		return mc;
 	}
 
-	/***
-	 * Utility method to perform the BigDecimal equivalent of Math.exp() and retain precision.
-	 * Manual implementation of a Taylor Series Expansion
-	 * Used in probability density function kernel functions
-	 *
-	 *
-	 * @param x exponent of the power function (exp(x))
-	 * @return result of euler's number raised to the power of x, as a BigDecimal with this class's MathContext
-	 */
-	public static BigDecimal exp(BigDecimal x){
-		BigDecimal result = ONE;
-		BigDecimal term = ONE;
-		int n = 1;
-
-		while (term.compareTo(ZERO) != 0){
-			term = term.multiply(x).divide(BigDecimal.valueOf(n), BigDecimalWithContext.getMC());
-			result = result.add(term, BigDecimalWithContext.getMC());
-			n++;
-			System.out.println("evaluating");
-		}
-		return result;
-	}
-
 
 }

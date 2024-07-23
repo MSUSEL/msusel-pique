@@ -83,10 +83,10 @@ public class PDFExperimentMasqueradeTest {
     @Test
     public void basicTestConfig(){
         GenerationData thresholdGeneration =
-                new GenerationData(PDFUtils.GenerationStrategy.RANDOM_UNIFORM_SPACING, 0, 100, 500);
+                new GenerationData(PDFUtils.GenerationStrategy.RANDOM_RIGHT_SKEW_SPACING, 0, 100, 500);
         GenerationData evaluationDomainGeneration =
-                new GenerationData(PDFUtils.GenerationStrategy.EVEN_UNIFORM_SPACING, 0, 100, 1000);
-        PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.GAUSSIAN, 0.5);
+                new GenerationData(PDFUtils.GenerationStrategy.EVEN_UNIFORM_SPACING, 0, 100, 100);
+        PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.COSINE, 0.2);
         long start = System.currentTimeMillis();
         BigDecimal[] densityArray = getDensityArray(treatment);
         long end = System.currentTimeMillis();
@@ -134,6 +134,7 @@ public class PDFExperimentMasqueradeTest {
                                                 //everything after the density array is just interpolation/extrapolation, I believe I can just use this for my response.
                                                 PDFResponse response = new PDFResponse(treatment.getEvaluationDomain(), densityArray, timeToRunMS);
                                                 visualizeBigDecimalArray(densityArray, treatment.getUuid().toString());
+                                                histogram(treatment.getThresholds(), treatment.getUuid().toString());
 
                                                 toJSON(treatment, response);
                                                 if (counter % 50 == 0){
@@ -164,7 +165,7 @@ public class PDFExperimentMasqueradeTest {
         String preamble = "src/test/out/";
         try {
             FileUtils.cleanDirectory(new File(preamble + "pdf_graphs_scatter_plots"));
-            FileUtils.cleanDirectory(new File(preamble + "pdf_output"));
+            FileUtils.cleanDirectory(new File(preamble + "pdf_output_jsons"));
             FileUtils.cleanDirectory(new File(preamble + "pdf_analysis"));
             FileUtils.cleanDirectory(new File(preamble + "pdf_graphs_histograms"));
         }catch (IOException e){
@@ -174,7 +175,7 @@ public class PDFExperimentMasqueradeTest {
 
     private void toJSON(PDFTreatment treatment, PDFResponse response){
         PDFOutputterWrapper pdfOutputterWrapper = new PDFOutputterWrapper(treatment, response);
-        try (Writer writer = new FileWriter("src/test/out/pdf_output/" + Paths.get(treatment.getUuid().toString() + ".json"))){
+        try (Writer writer = new FileWriter("src/test/out/pdf_output_jsons/" + Paths.get(treatment.getUuid().toString() + ".json"))){
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
             gson.toJson(pdfOutputterWrapper, writer);
             writer.flush();

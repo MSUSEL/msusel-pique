@@ -21,7 +21,7 @@ public class Analysis {
 
     @Getter
 private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
-    private String fileLocation = "src/test/out/pdf_output";
+    private String fileLocation = "src/test/out/pdf_output_jsons";
 
     public Analysis(){
         data = new HashMap<>();
@@ -127,7 +127,7 @@ private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
         XYSeries seriesData = new XYSeries("Values");
         for (ImmutablePair<PDFTreatment, PDFResponse> p : data.values()){
             seriesData.add(p.getRight().getTimeToRunMS(), p.getLeft().getKernelFunction().ordinal());
-            System.out.println(p.getLeft().getKernelFunction() + " " + p.getLeft().getKernelFunction().ordinal());
+            //System.out.println(p.getLeft().getKernelFunction() + " " + p.getLeft().getKernelFunction().ordinal());
         }
         series.addSeries(seriesData);
 
