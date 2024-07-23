@@ -67,9 +67,7 @@ private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
         List<Double> transitionMeans = new ArrayList<>();
         for (ImmutablePair<PDFTreatment, PDFResponse> value : data.values()){
             double currentMean = value.getRight().getTransitionValueSummaryStatistics().getMean().doubleValue();
-            if (currentMean > 0.0 && currentMean < 0.1) {
-                transitionMeans.add(currentMean);
-            }
+            transitionMeans.add(currentMean);
         }
 
         dataset.addSeries("Histogram", transitionMeans.stream().mapToDouble(Double::doubleValue).toArray(), numBins);
@@ -92,9 +90,8 @@ private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
         List<Double> transitionSTDs = new ArrayList<>();
         for (ImmutablePair<PDFTreatment, PDFResponse> value : data.values()){
             double currentSTD = value.getRight().getTransitionValueSummaryStatistics().getStd().doubleValue();
-            if (currentSTD > 0.0 && currentSTD < 0.1) {
-                transitionSTDs.add(currentSTD);
-            }
+            transitionSTDs.add(currentSTD);
+
         }
 
         dataset.addSeries("Histogram", transitionSTDs.stream().mapToDouble(Double::doubleValue).toArray(), numBins);
@@ -162,10 +159,7 @@ private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
         XYSeriesCollection series = new XYSeriesCollection();
         XYSeries seriesData = new XYSeries("Values");
         for (ImmutablePair<PDFTreatment, PDFResponse> p : data.values()){
-            if (p.getRight().getMaxAUC().doubleValue() >= 0.0 && p.getRight().getMaxAUC().doubleValue() <= 1.0) {
-                //odd problem with overflow/underflow
-                seriesData.add(p.getRight().getTimeToRunMS(), p.getRight().getMaxAUC());
-            }
+            seriesData.add(p.getRight().getTimeToRunMS(), p.getRight().getMaxAUC());
         }
         series.addSeries(seriesData);
 
@@ -177,15 +171,16 @@ private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
         }
     }
 
-    private void printMaxAUC(){
+    private void printMaxAUC() {
         double maxAUC = 0.0;
         UUID correspondingUUID = null;
-        for (ImmutablePair<PDFTreatment, PDFResponse> p : data.values()){
-        if (p.getRight().getMaxAUC().doubleValue() > maxAUC);
-            maxAUC = p.getRight().getMaxAUC().doubleValue();
-            correspondingUUID = p.getLeft().getUuid();
+        for (ImmutablePair<PDFTreatment, PDFResponse> p : data.values()) {
+            if (p.getRight().getMaxAUC().doubleValue() > maxAUC) {
+                maxAUC = p.getRight().getMaxAUC().doubleValue();
+                correspondingUUID = p.getLeft().getUuid();
+            }
+            System.out.println("Max of max AUCs (want something close to 1 to full the entire domain, but a manual trapezoidal method makes this practically very difficult): " + maxAUC + " \n\tfrom treatment/config with ID: " + correspondingUUID.toString());
         }
-        System.out.println("Max of max AUCs (want something close to 1 to full the entire domain, but a manual trapezoidal method makes this practically very difficult): " + maxAUC + " \n\tfrom treatment/config with ID: " + correspondingUUID.toString());
     }
 
     private void printMaxMeanTransition(){

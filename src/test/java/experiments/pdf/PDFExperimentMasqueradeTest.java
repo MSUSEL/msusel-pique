@@ -84,7 +84,7 @@ public class PDFExperimentMasqueradeTest {
                 new GenerationData(PDFUtils.GenerationStrategy.RANDOMLY_SPACED_RIGHT_SKEW, 0, 100, 500);
         GenerationData evaluationDomainGeneration =
                 new GenerationData(PDFUtils.GenerationStrategy.EVENLY_SPACED_OVER_INTERVAL, 0, 100, 1000);
-        PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.COSINE, 10);
+        PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.GAUSSIAN, 0.5);
         long start = System.currentTimeMillis();
         BigDecimal[] densityArray = getDensityArray(treatment);
         long end = System.currentTimeMillis();
@@ -132,7 +132,7 @@ public class PDFExperimentMasqueradeTest {
                                                 visualizeBigDecimalArray(densityArray, treatment.getUuid().toString());
 
                                                 toJSON(treatment, response);
-                                                if (counter % 250 == 0){
+                                                if (counter % 50 == 0){
                                                     System.out.println("\tSuccessfully ran experiment: " + counter);
                                                 }
                                                 counter++;
