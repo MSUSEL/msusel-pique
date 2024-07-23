@@ -86,7 +86,7 @@ public class PDFExperimentMasqueradeTest {
                 new GenerationData(PDFUtils.GenerationStrategy.RANDOM_RIGHT_SKEW_SPACING, 0, 100, 500);
         GenerationData evaluationDomainGeneration =
                 new GenerationData(PDFUtils.GenerationStrategy.EVEN_UNIFORM_SPACING, 0, 100, 100);
-        PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.COSINE, 0.2);
+        PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.COSINE, 0.01);
         long start = System.currentTimeMillis();
         BigDecimal[] densityArray = getDensityArray(treatment);
         long end = System.currentTimeMillis();

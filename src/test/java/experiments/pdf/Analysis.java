@@ -9,13 +9,19 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.awt.*;
 import java.io.File;
 import java.util.*;
+import java.util.List;
 
 public class Analysis {
 
@@ -96,7 +102,7 @@ private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
 
         dataset.addSeries("Histogram", transitionSTDs.stream().mapToDouble(Double::doubleValue).toArray(), numBins);
 
-        JFreeChart chart = ChartFactory.createHistogram("Histogram of Density Transition STD values BETWEEN 0 AND 0.1",
+        JFreeChart chart = ChartFactory.createHistogram("Histogram of Density Transition STD values",
                 "Density Transition STD values", "Frequency", dataset);
 
         try {
@@ -147,7 +153,15 @@ private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
         }
         series.addSeries(seriesData);
 
-        JFreeChart chart = ChartFactory.createScatterPlot("Bandwidth over time", "Time to run (ms)", "Bandwidth value", series);
+        JFreeChart chart = ChartFactory.createScatterPlot("Bandwidth over time",
+                "Time to run (ms)",
+                "Bandwidth value",
+                series,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false);
+
         try {
             ChartUtils.saveChartAsPNG(new File("src/test/out/pdf_analysis/bandwidth_over_time.png"), chart, 800, 600);
         }catch (Exception e){
@@ -179,8 +193,9 @@ private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
                 maxAUC = p.getRight().getMaxAUC().doubleValue();
                 correspondingUUID = p.getLeft().getUuid();
             }
-            System.out.println("Max of max AUCs (want something close to 1 to full the entire domain, but a manual trapezoidal method makes this practically very difficult): " + maxAUC + " \n\tfrom treatment/config with ID: " + correspondingUUID.toString());
         }
+        System.out.println("Max of max AUCs (want something close to 1 to full the entire domain, but a manual trapezoidal method makes this practically very difficult): " + maxAUC + " \n\tfrom treatment/config with ID: " + correspondingUUID.toString());
+
     }
 
     private void printMaxMeanTransition(){
@@ -207,5 +222,7 @@ private Map<UUID, ImmutablePair<PDFTreatment, PDFResponse>> data;
         }
         System.out.println("Min of mean density transition value (want to minimize this for a cleaner interpolation range): " + minMean + " \n\tfrom treatment/config with ID: " + correspondingUUID.toString());
     }
+
+
 
 }
