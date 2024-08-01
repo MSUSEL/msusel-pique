@@ -11,6 +11,6 @@
     "endIndices": [100],
     "counts": [100, 500, 1000, 2500, 5000, 10000]
   },
-  "kernelFunctions": ["UNIFORM", "TRIANGULAR", "EPANECHNIKOV", "QUARTIC", "TRIWEIGHT", "TRICUBE", "GAUSSIAN", "COSINE", "LOGISTIC", "SIGMOID", "SILVERMAN"],
-  "bandwidths": "[0.2-5.0:0.2]"
+  "kernelFunctions": ["GAUSSIAN"],
+  "bandwidths": "[0.1-10.0:0.1]"
 }

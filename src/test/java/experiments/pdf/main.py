@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
 import pandas as pd
-import os
 
 def bandwidthOverTime():
     title = "Scatter plot of Bandwidth over Time to run (ms)"
@@ -23,6 +22,7 @@ def allPairwiseOverTime():
                           "time_to_run_ms"], data=data, hue="kernel_function")
 
     plt.title(title)
+    plt.savefig(str(Path(__file__).resolve().parents[3]) + "/out/pdf_analysis/pairwise.png")
     plt.show()
 
 def parse_data():

@@ -47,6 +47,11 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>edu.montana.gsoc.msusel</groupId>
+      <artifactId>msusecl-data-utility</artifactId>
+      <version>0.0.1</version>
+    </dependency>
     <!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
     <dependency>
       <groupId>com.opencsv</groupId>
@@ -112,6 +117,7 @@
       <artifactId>jfreechart</artifactId>
       <version>1.5.3</version>
     </dependency>
+
   </dependencies>
 
   <build>

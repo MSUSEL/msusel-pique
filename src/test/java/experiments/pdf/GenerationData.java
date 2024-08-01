@@ -3,6 +3,7 @@ package experiments.pdf;
 
 import com.google.gson.annotations.Expose;
 import lombok.Getter;
+import pique.utility.PDFUtils;
 
 @Getter
 public class GenerationData {

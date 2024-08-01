@@ -12,6 +12,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.junit.Before;
 import org.junit.Test;
+import pique.utility.PDFUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -107,7 +108,7 @@ public class PDFExperimentMasqueradeTest {
     public void runExperiments(){
         //resetExperimentDeleteFiles();
         int expCount = thresholdGenerationStrategies.size() * thresholdBeginIndices.size() * thresholdEndIndices.size() * thresholdCounts.size()
-                * evaluationDomainGenerationStrategies.size() + evaluationDomainBeginIndices.size() * evaluationDomainEndEndices.size() * evaluationDomainCounts.size()
+                * evaluationDomainGenerationStrategies.size() * evaluationDomainBeginIndices.size() * evaluationDomainEndEndices.size() * evaluationDomainCounts.size()
                 * kernelFunctions.size() * bandwidths.size();
         System.out.println("Experimenting on : " + expCount + " different treatments");
         int counter = 0;

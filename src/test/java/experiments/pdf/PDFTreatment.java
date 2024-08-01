@@ -2,6 +2,7 @@ package experiments.pdf;
 
 import com.google.gson.annotations.Expose;
 import lombok.Getter;
+import pique.utility.PDFUtils;
 
 import java.math.BigDecimal;
 import java.util.UUID;
