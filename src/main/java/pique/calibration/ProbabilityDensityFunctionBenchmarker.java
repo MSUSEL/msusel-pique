@@ -22,8 +22,6 @@ public class ProbabilityDensityFunctionBenchmarker extends AbstractBenchmarker{
 
         measureBenchmarkData.forEach((measureName, measureValues) -> {
             BigDecimal[] temp = getDensityArray(measureValues);
-            temp[0] = Collections.min(measureValues);
-            temp[1] = Collections.max(measureValues);
             measureThresholds.putIfAbsent(measureName, temp);
         });
 
@@ -32,12 +30,13 @@ public class ProbabilityDensityFunctionBenchmarker extends AbstractBenchmarker{
 
     private BigDecimal[] getDensityArray(ArrayList<BigDecimal> measureValues) {
         BigDecimal[] toRet = new BigDecimal[measureValues.size()];
+        BigDecimal[] thresholds = measureValues.toArray();
         // generate evaluation domain
         PDFUtils.GenerationStrategy evaluationDomainGenerationStrategy = PDFUtils.GenerationStrategy.EVEN_UNIFORM_SPACING;
         BigDecimal[] evaluationDomain = ;
 
         for (int i = 0; i < toRet.length; i++){
-            toRet[i] = PDFUtils.kernelDensityEstimator(treatment.getEvaluationDomain()[i], treatment);
+            toRet[i] = PDFUtils.kernelDensityEstimator(evaluationDomain[i], measureValues);
         }
         return toRet;
     }

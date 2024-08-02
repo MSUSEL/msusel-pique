@@ -6,21 +6,17 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.stream.Stream;
 
 public class PDFUtils {
 
 
-    public static BigDecimal kernelDensityEstimator(BigDecimal input, PDFTreatment treatment){
+    public static BigDecimal kernelDensityEstimator(BigDecimal input, BigDecimal[] thresholds, double bandwidth, PDFUtils.KernelFunction kernelFunction){
         BigDecimal sum = new BigDecimalWithContext(0.0);
-        //for convenience
-        BigDecimal[] thresholds = treatment.getThresholds();
-        double bandwidth = treatment.getBandwidth();
         for (int i = 0; i < thresholds.length; i++){
             //find distance from input to every threshold, normalized by height
             BigDecimal evaluationCriteria = (input.subtract(thresholds[i])).divide(new BigDecimalWithContext(bandwidth), BigDecimalWithContext.getMC());
-            sum = sum.add(treatment.getKernelFunction().evaluateKernel(evaluationCriteria), BigDecimalWithContext.getMC());
+            sum = sum.add(kernelFunction.evaluateKernel(evaluationCriteria), BigDecimalWithContext.getMC());
         }
         BigDecimal constant = new BigDecimalWithContext(thresholds.length * bandwidth);
         return sum.divide(constant,BigDecimalWithContext.getMC());
