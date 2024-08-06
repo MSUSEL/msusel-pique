@@ -34,15 +34,17 @@ public class ProbabilityDensityFunctionBenchmarker extends AbstractBenchmarker{
 
     private BigDecimal[] getDensityArray(ArrayList<BigDecimal> measureValues) {
         BigDecimal[] toRet = new BigDecimal[measureValues.size()];
+        //awkward conversion of ArrayList to array
         BigDecimal[] measureValuesArray = new BigDecimal[measureValues.size()];
         measureValuesArray = measureValues.toArray(measureValuesArray);
 
+        //min and max for evaluation domain generation strategies - performance improvement instead of Collections.min/max
         BigDecimal min = new BigDecimalWithContext(Double.MAX_VALUE);
         BigDecimal max = new BigDecimalWithContext(Double.MIN_VALUE);
         for (int i = 0; i < measureValues.size(); i++){
             BigDecimal myValue = measureValues.get(i);
             measureValuesArray[i] = myValue;
-            //min and max for evaluation domain generation strategies - performance improvement instead of Collections.min/max
+            //min and max calculations, more efficient to do this in the for loop
             if (min.compareTo(myValue) == 1){
                 min = myValue;
             }
