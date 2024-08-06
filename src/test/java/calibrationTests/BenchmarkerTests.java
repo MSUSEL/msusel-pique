@@ -24,14 +24,13 @@ package calibrationTests;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
 
-import pique.calibration.AdvancedBenchmarker;
-import pique.calibration.IBenchmarker;
-import pique.calibration.NaiveBenchmarker;
+import pique.calibration.*;
 
 public class BenchmarkerTests {
 
@@ -103,5 +102,33 @@ public class BenchmarkerTests {
 		for (BigDecimal val : temp) {
 			assert(t1.contains(val));
 		}
+	}
+
+
+	@Test
+	public void PDFBenchmarkerTest(){
+		AbstractBenchmarker bm = new ProbabilityDensityFunctionBenchmarker();
+		Map<String, ArrayList<BigDecimal>> measureBenchmarkData = new HashMap<String,ArrayList<BigDecimal>>();
+
+		ArrayList<BigDecimal> t1 = new ArrayList<>();
+		t1.add(new BigDecimal("0"));
+		t1.add(new BigDecimal("1"));
+		t1.add(new BigDecimal("2"));
+		t1.add(new BigDecimal("3"));
+		t1.add(new BigDecimal("4"));
+		t1.add(new BigDecimal("5"));
+		t1.add(new BigDecimal("6"));
+		t1.add(new BigDecimal("7"));
+		t1.add(new BigDecimal("8"));
+		t1.add(new BigDecimal("9"));
+		t1.add(new BigDecimal("10"));
+
+		measureBenchmarkData.put("t1",t1);
+
+		Map<String,BigDecimal[]> results = bm.calculateThresholds(measureBenchmarkData);
+
+		BigDecimal[] temp = results.get("t1");
+		Arrays.stream(temp).forEach(System.out::print);
+
 	}
 }

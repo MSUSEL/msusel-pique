@@ -196,7 +196,7 @@ public class PDFExperimentMasqueradeTest {
     private BigDecimal[] getDensityArray(PDFTreatment treatment){
         BigDecimal[] toRet = new BigDecimal[treatment.getEvaluationDomain().length];
         for (int i = 0; i < toRet.length; i++){
-            toRet[i] = PDFUtils.kernelDensityEstimator(treatment.getEvaluationDomain()[i], treatment);
+            toRet[i] = PDFUtils.kernelDensityEstimator(treatment.getEvaluationDomain()[i], treatment.getThresholds(), treatment.getBandwidth(), treatment.getKernelFunction());
         }
         return toRet;
     }

@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.stream.Stream;
 
 public class PDFUtils {
@@ -67,7 +68,7 @@ public class PDFUtils {
     public enum GenerationStrategy{
         EVEN_UNIFORM_SPACING {
             @Override
-            BigDecimal[] generateValues(int beginIndex, int endIndex, int count){
+            public BigDecimal[] generateValues(int beginIndex, int endIndex, int count){
                 BigDecimal[] toRet = new BigDecimal[count];
                 double stepSize = (endIndex - beginIndex) / (double) count;
                 double current = beginIndex;
@@ -77,9 +78,40 @@ public class PDFUtils {
                 }
                 return toRet;
             }
+        },
+        RANDOM_UNIFORM_SPACING {
+            Random rand = new Random(11235813);
+            @Override
+            public BigDecimal[] generateValues(int beginIndex, int endIndex, int count){
+                BigDecimal[] toRet = new BigDecimal[count];
+                for (int i = 0; i < count; i++){
+                    toRet[i] = new BigDecimalWithContext(beginIndex + (endIndex - beginIndex) * rand.nextDouble());
+                }
+                return toRet;
+            }
+        },
+        RANDOM_RIGHT_SKEW_SPACING {
+            Random rand = new Random(11235813);
+            @Override
+            public BigDecimal[] generateValues(int beginIndex, int endIndex, int count){
+                double mu = 1.0;
+                double lambda = 0.2;
+                BigDecimal[] toRet = new BigDecimal[count];
+                for (int i = 0; i < count; i++){
+                    double randomValue = beginIndex + (endIndex - beginIndex) * rand.nextDouble();
+                    BigDecimal constant = new BigDecimalWithContext(Math.sqrt(lambda / (2*Math.PI * randomValue)));
+                    double numerator = -1.0 * lambda * Math.pow(randomValue - mu, 2);
+                    double denominator = 2 * Math.pow(mu, 2) * randomValue;
+                    BigDecimal allTogetherNow = constant.multiply(new BigDecimalWithContext(Math.exp(numerator / denominator)), BigDecimalWithContext.getMC());
+                    // round to 10 seg digits?
+                    //allTogetherNow = allTogetherNow.setScale(10, RoundingMode.DOWN);
+                    toRet[i] = allTogetherNow;
+                }
+                return toRet;
+            }
         };
+        public abstract BigDecimal[] generateValues(int beginIndex, int endIndex, int count);
 
-        abstract BigDecimal[] generateValues(int beginIndex, int endIndex, int count);
     }
 
     public enum KernelFunction {

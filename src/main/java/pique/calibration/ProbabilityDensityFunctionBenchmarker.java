@@ -1,14 +1,18 @@
 package pique.calibration;
 
+import pique.utility.BigDecimalWithContext;
 import pique.utility.PDFUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ProbabilityDensityFunctionBenchmarker extends AbstractBenchmarker{
+
+    private final PDFUtils.GenerationStrategy generationStrategy = PDFUtils.GenerationStrategy.EVEN_UNIFORM_SPACING;
+    private final PDFUtils.KernelFunction kernelFunction = PDFUtils.KernelFunction.GAUSSIAN;
+    private final double bandwidth = 0.5;
 
     /***
      * Thresholds for the PDFBenchmarker will be a list of all the density array data points, for use with the PDFUtilfunction
@@ -30,13 +34,27 @@ public class ProbabilityDensityFunctionBenchmarker extends AbstractBenchmarker{
 
     private BigDecimal[] getDensityArray(ArrayList<BigDecimal> measureValues) {
         BigDecimal[] toRet = new BigDecimal[measureValues.size()];
-        BigDecimal[] thresholds = measureValues.toArray();
+        BigDecimal[] measureValuesArray = new BigDecimal[measureValues.size()];
+        measureValuesArray = measureValues.toArray(measureValuesArray);
+
+        BigDecimal min = new BigDecimalWithContext(Double.MAX_VALUE);
+        BigDecimal max = new BigDecimalWithContext(Double.MIN_VALUE);
+        for (int i = 0; i < measureValues.size(); i++){
+            BigDecimal myValue = measureValues.get(i);
+            measureValuesArray[i] = myValue;
+            //min and max for evaluation domain generation strategies - performance improvement instead of Collections.min/max
+            if (min.compareTo(myValue) == 1){
+                min = myValue;
+            }
+            if (max.compareTo(myValue) == -1){
+                max = myValue;
+            }
+        }
         // generate evaluation domain
-        PDFUtils.GenerationStrategy evaluationDomainGenerationStrategy = PDFUtils.GenerationStrategy.EVEN_UNIFORM_SPACING;
-        BigDecimal[] evaluationDomain = ;
+        BigDecimal[] evaluationDomain = generationStrategy.generateValues(min.intValue(), max.intValue(), measureValues.size());
 
         for (int i = 0; i < toRet.length; i++){
-            toRet[i] = PDFUtils.kernelDensityEstimator(evaluationDomain[i], measureValues);
+            toRet[i] = PDFUtils.kernelDensityEstimator(evaluationDomain[i], measureValuesArray, bandwidth, kernelFunction);
         }
         return toRet;
     }
