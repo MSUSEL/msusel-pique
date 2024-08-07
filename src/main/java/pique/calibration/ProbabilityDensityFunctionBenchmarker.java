@@ -1,5 +1,6 @@
 package pique.calibration;
 
+import lombok.Getter;
 import pique.utility.BigDecimalWithContext;
 import pique.utility.PDFUtils;
 
@@ -10,8 +11,11 @@ import java.util.Map;
 
 public class ProbabilityDensityFunctionBenchmarker extends AbstractBenchmarker{
 
+    @Getter
     private final PDFUtils.GenerationStrategy generationStrategy = PDFUtils.GenerationStrategy.EVEN_UNIFORM_SPACING;
+    @Getter
     private final PDFUtils.KernelFunction kernelFunction = PDFUtils.KernelFunction.GAUSSIAN;
+    @Getter
     private final double bandwidth = 0.5;
 
     /***

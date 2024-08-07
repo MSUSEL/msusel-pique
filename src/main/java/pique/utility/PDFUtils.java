@@ -23,17 +23,24 @@ public class PDFUtils {
         return sum.divide(constant,BigDecimalWithContext.getMC());
     }
 
+    /***
+     * quick function to calculate the area under a curve using the trapezoid rule
+     *
+     * @param functionDomain The array of the x domain values of the function, basically x[min] through the x for which we supplied the y value
+     * @param densityRange The array of density estimate values, computed from the kernel density estimator
+     * @return area under the curve
+     */
     public static BigDecimal manualTrapezoidalRule(BigDecimal[] functionDomain, BigDecimal[] densityRange){
         BigDecimal area = new BigDecimalWithContext(0);
         for (int i = 1; i < functionDomain.length; i++){
             // x[i] - x[i-1]
-            BigDecimal xStep = functionDomain[i].subtract(functionDomain[i-1], BigDecimalWithContext.getMC());
+            BigDecimal xStep = functionDomain[i].subtract(functionDomain[i-1]);
             // y[i] + y[i-1]
-            BigDecimal yStep = densityRange[i].add(densityRange[i-1], BigDecimalWithContext.getMC());
+            BigDecimal yStep = densityRange[i].add(densityRange[i-1]);
             // (x[i] - x[i-1]) * (y[i] + y[i-1])
-            BigDecimal numerator = xStep.multiply(yStep, BigDecimalWithContext.getMC());
+            BigDecimal numerator = xStep.multiply(yStep);
             // area += (x[i] - x[i-1]) * (y[i] + y[i-1])) / 2
-            area = area.add(numerator.divide(new BigDecimalWithContext(2.0), BigDecimalWithContext.getMC()), BigDecimalWithContext.getMC());
+            area = area.add(numerator.divide(new BigDecimalWithContext(2.0), BigDecimalWithContext.getMC()));
         }
         return area;
     }
@@ -53,6 +60,19 @@ public class PDFUtils {
 
     }
 
+    /***
+     * Java equivalent function to perform python's np.linspace(), which generates a list of evenly spaced numbers between
+     * two endpoints, with the number of evenly spaced numbers being parameterized.
+     *
+     * Java does have such a library in the ND4J library, but it feels unnecessary to use the full library (and therefore
+     * potentially inherit any vulnerabilities) for one quick function. Additionally, I couldn't track down the runtime
+     * complexity of ND4J.Linspace, but I doubt it is faster than linear, which this quick solution is linear.
+     *
+     * @param min starting value
+     * @param max ending value
+     * @param range number of evenly spaced values desired
+     * @return array of BigDecimals that contains an array of equally spaced values between the parameters min and max
+     */
     public static BigDecimal[] linSpace(BigDecimal min, BigDecimal max, BigDecimal range){
         BigDecimal[] toRet = new BigDecimal[range.intValue()];
         BigDecimal stepSize = (max.subtract(min)).divide(range, BigDecimalWithContext.getMC());
