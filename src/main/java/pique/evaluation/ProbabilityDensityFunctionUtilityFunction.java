@@ -36,6 +36,13 @@ import java.util.Collections;
 public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
     @Getter
+    private final PDFUtils.GenerationStrategy generationStrategy = PDFUtils.GenerationStrategy.EVEN_UNIFORM_SPACING;
+    @Getter
+    private final PDFUtils.KernelFunction kernelFunction = PDFUtils.KernelFunction.GAUSSIAN;
+    @Getter
+    private final double bandwidth = 0.4;
+
+    @Getter
     private int samplingSpace = 10000;
 
 
@@ -45,7 +52,7 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
     @Override
     public BigDecimal utilityFunction(BigDecimal inValue, BigDecimal[] thresholds, boolean positive) {
-        BigDecimal score = new BigDecimalWithContext(-10000);
+        BigDecimal score;
 
         //are all values the same? - in O(n) apparently, said someone on stack overflow
         if (Arrays.stream(thresholds).distinct().count() == 1) {
@@ -68,19 +75,56 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
                 }
             }
         }else {
-            //assume 'positive' flag is false, so more of x means less quality
 
-            //thresholds is my density array, calculated from teh benchmarking process -- INDEX values from density array
-            BigDecimal[] evaluationDomain = PDFUtils.linSpace(BigDecimal.ZERO, new BigDecimalWithContext(thresholds.length - 1), new BigDecimalWithContext(samplingSpace));
+            //potential FIXME: if we run into performance issues during runtime or my json is too large, we need to offload
+            BigDecimal[] evaluationDomain = generateEvaluationDomain(thresholds);
+            BigDecimal[] densityArray = getDensityArray(evaluationDomain, thresholds);
+
             int closestIndex = PDFUtils.searchSorted(evaluationDomain, inValue);
             // tedious because java
             BigDecimal[] leftSideOfEvaluationDomain = Arrays.copyOfRange(evaluationDomain, 0, closestIndex);
-            BigDecimal[] leftSideOfDensity = Arrays.copyOfRange(thresholds, 0, closestIndex);
+            BigDecimal[] leftSideOfDensity = Arrays.copyOfRange(densityArray, 0, closestIndex);
             BigDecimal aucAtValueZero = PDFUtils.manualTrapezoidalRule(leftSideOfEvaluationDomain, leftSideOfDensity);
-            score = new BigDecimalWithContext(1.0).subtract(aucAtValueZero);
+
+            if (!positive){
+                //negative relationship with quality (majority of cases)
+                score = new BigDecimalWithContext(1.0).subtract(aucAtValueZero);;
+            }else{
+                //positive relationship with quality
+                score = aucAtValueZero;
+            }
         }
 
         return score;
+    }
+
+    private BigDecimal[] generateEvaluationDomain(BigDecimal[] measureValues){
+        //min and max for evaluation domain generation strategies - performance improvement instead of Collections.min/max
+        BigDecimal min = new BigDecimalWithContext(Double.MAX_VALUE);
+        BigDecimal max = new BigDecimalWithContext(Double.MIN_VALUE);
+        for (int i = 0; i < measureValues.length; i++){
+            BigDecimal myValue = measureValues[i];
+            //min and max calculations, more efficient to do this in the for loop
+            if (min.compareTo(myValue) == 1){
+                min = myValue;
+            }
+            if (max.compareTo(myValue) == -1){
+                max = myValue;
+            }
+        }
+        // generate evaluation domain
+        // FIXME better strategies for size of evaluation domain (Affects ability to generate accurate AUCs at the expense of time)
+        BigDecimal[] evaluationDomain = generationStrategy.generateValues(min.intValue(), max.intValue(), measureValues.length);
+        return evaluationDomain;
+    }
+
+    private BigDecimal[] getDensityArray(BigDecimal[] evaluationDomain, BigDecimal[] measureValues) {
+        BigDecimal[] toRet = new BigDecimal[measureValues.length];
+
+        for (int i = 0; i < toRet.length; i++){
+            toRet[i] = PDFUtils.kernelDensityEstimator(evaluationDomain[i], measureValues, bandwidth, kernelFunction);
+        }
+        return toRet;
     }
 
 

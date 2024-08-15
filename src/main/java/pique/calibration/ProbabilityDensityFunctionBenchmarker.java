@@ -11,15 +11,10 @@ import java.util.Map;
 
 public class ProbabilityDensityFunctionBenchmarker extends AbstractBenchmarker{
 
-    @Getter
-    private final PDFUtils.GenerationStrategy generationStrategy = PDFUtils.GenerationStrategy.EVEN_UNIFORM_SPACING;
-    @Getter
-    private final PDFUtils.KernelFunction kernelFunction = PDFUtils.KernelFunction.GAUSSIAN;
-    @Getter
-    private final double bandwidth = 0.5;
+
 
     /***
-     * Thresholds for the PDFBenchmarker will be a list of all the density array data points, for use with the PDFUtilfunction
+     * Thresholds for the PDFBenchmarker will be a list of data points, for use with the PDFUtilfunction
      *
      * @param measureBenchmarkData the data of the application of tools to the benchmark repository.
      * @return
@@ -29,40 +24,12 @@ public class ProbabilityDensityFunctionBenchmarker extends AbstractBenchmarker{
         Map<String, BigDecimal[]> measureThresholds = new HashMap<>();
 
         measureBenchmarkData.forEach((measureName, measureValues) -> {
-            BigDecimal[] temp = getDensityArray(measureValues);
-            measureThresholds.putIfAbsent(measureName, temp);
+            BigDecimal[] measureValuesArray = new BigDecimal[measureValues.size()];
+            //potential FIXME: if we run into performance issues, need to devise a better method to offload performance intensive operations to the benchmarking process
+            measureThresholds.putIfAbsent(measureName, measureValues.toArray(measureValuesArray));
         });
 
         return measureThresholds;
-    }
-
-    private BigDecimal[] getDensityArray(ArrayList<BigDecimal> measureValues) {
-        BigDecimal[] toRet = new BigDecimal[measureValues.size()];
-        //awkward conversion of ArrayList to array
-        BigDecimal[] measureValuesArray = new BigDecimal[measureValues.size()];
-        measureValuesArray = measureValues.toArray(measureValuesArray);
-
-        //min and max for evaluation domain generation strategies - performance improvement instead of Collections.min/max
-        BigDecimal min = new BigDecimalWithContext(Double.MAX_VALUE);
-        BigDecimal max = new BigDecimalWithContext(Double.MIN_VALUE);
-        for (int i = 0; i < measureValues.size(); i++){
-            BigDecimal myValue = measureValues.get(i);
-            measureValuesArray[i] = myValue;
-            //min and max calculations, more efficient to do this in the for loop
-            if (min.compareTo(myValue) == 1){
-                min = myValue;
-            }
-            if (max.compareTo(myValue) == -1){
-                max = myValue;
-            }
-        }
-        // generate evaluation domain
-        BigDecimal[] evaluationDomain = generationStrategy.generateValues(min.intValue(), max.intValue(), measureValues.size());
-
-        for (int i = 0; i < toRet.length; i++){
-            toRet[i] = PDFUtils.kernelDensityEstimator(evaluationDomain[i], measureValuesArray, bandwidth, kernelFunction);
-        }
-        return toRet;
     }
 
 }

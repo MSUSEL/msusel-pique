@@ -38,7 +38,7 @@ public class ProbabilityDensityFunctionTest {
         t1.add(new BigDecimal("7"));
         t1.add(new BigDecimal("8"));
         t1.add(new BigDecimal("9"));
-        t1.add(new BigDecimal("10"));
+        t1.add(new BigDecimal("40"));
         measureBenchmarkData.put("t1",t1);
 
         Map<String,BigDecimal[]> thresholds = probabilityDensityFunctionBenchmarker.calculateThresholds(measureBenchmarkData);
@@ -46,7 +46,7 @@ public class ProbabilityDensityFunctionTest {
         Arrays.stream(t1Thresholds).forEach(System.out::println);
 
         //perform utilitizing
-        BigDecimal inValue = new BigDecimalWithContext(1.0);
+        BigDecimal inValue = new BigDecimalWithContext(100.0);
 
         BigDecimal score = probabilityDensityFunctionUtilityFunction.utilityFunction(inValue, t1Thresholds, false);
         System.out.println(score);

@@ -63,10 +63,10 @@ public class PDFExperimentMasqueradeTest {
     @Test
     public void runNaiveCase(){
         GenerationData thresholdGeneration =
-                new GenerationData(PDFUtils.GenerationStrategy.RANDOM_UNIFORM_SPACING, 0, 100, 500);
+                new GenerationData(PDFUtils.GenerationStrategy.RANDOM_RIGHT_SKEW_SPACING, 0, 100, 1000);
         GenerationData evaluationDomainGeneration =
-                new GenerationData(PDFUtils.GenerationStrategy.EVEN_UNIFORM_SPACING, 0, 100, 5000);
-        PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.GAUSSIAN, 0.4);
+                new GenerationData(PDFUtils.GenerationStrategy.EVEN_UNIFORM_SPACING, 0, 100, 100);
+        PDFTreatment treatment = new PDFTreatment(thresholdGeneration, evaluationDomainGeneration, PDFUtils.KernelFunction.COSINE, 0.4);
         long start = System.currentTimeMillis();
         BigDecimal[] densityArray = getDensityArray(treatment);
         long end = System.currentTimeMillis();
@@ -74,11 +74,13 @@ public class PDFExperimentMasqueradeTest {
 
         //everything after the density array is just interpolation/extrapolation, I believe I can just use this for my response.
         PDFResponse response = new PDFResponse(treatment.getEvaluationDomain(), densityArray, timeToRunMS);
-        visualizeBigDecimalArray(densityArray, treatment.getUuid().toString() + "_density");
-        visualizeBigDecimalArray(treatment.getThresholds(), treatment.getUuid().toString() + "_thresholds");
-        visualizeBigDecimalArray(treatment.getEvaluationDomain(), treatment.getUuid().toString() + "_evaluationDomain");
+        //visualizeBigDecimalArray(densityArray, treatment.getUuid().toString() + "_density");
+        //visualizeBigDecimalArray(treatment.getThresholds(), treatment.getUuid().toString() + "_thresholds");
+        //visualizeBigDecimalArray(treatment.getEvaluationDomain(), treatment.getUuid().toString() + "_evaluationDomain");
 
-        toJSON(treatment, response);
+        //toJSON(treatment, response);
+        printToSTD(treatment, response);
+
     }
 
     @Test
