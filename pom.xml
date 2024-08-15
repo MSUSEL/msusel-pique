@@ -47,11 +47,6 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>edu.montana.gsoc.msusel</groupId>
-      <artifactId>msusecl-data-utility</artifactId>
-      <version>0.0.1</version>
-    </dependency>
     <!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
     <dependency>
       <groupId>com.opencsv</groupId>
@@ -95,29 +90,10 @@
       <version>3.6.1</version>
     </dependency>
     <dependency>
-      <groupId>com.github.jbytecode</groupId>
-      <artifactId>RCaller</artifactId>
-      <version>3.0.2</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-collections4</artifactId>
       <version>4.1</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/black.ninia/jep -->
-    <dependency>
-      <groupId>black.ninia</groupId>
-      <artifactId>jep</artifactId>
-      <version>4.2.0</version>
-    </dependency>
-
-    <!-- visualize dependencies -->
-    <dependency>
-      <groupId>org.jfree</groupId>
-      <artifactId>jfreechart</artifactId>
-      <version>1.5.3</version>
-    </dependency>
-
   </dependencies>
 
   <build>

@@ -28,7 +28,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import pique.calibration.IBenchmarker;
 import pique.calibration.IWeighter;
-import pique.calibration.NaiveBenchmarker;
+import pique.calibration.ProbabilityDensityFunctionBenchmarker;
 import pique.calibration.NaiveWeighter;
 import pique.evaluation.*;
 
@@ -287,7 +287,7 @@ public class QualityModelImport {
             }
         }
         else {
-            return new DefaultUtility();
+            return new ProbabilityDensityFunctionUtilityFunction();
         }
     }
 
@@ -310,7 +310,7 @@ public class QualityModelImport {
 
     /**
      * Check for 'glocal_config' -> 'benchmark_strategy' and return the benchmark strategy class listed.
-     * If configuration does not exist, return a {@link pique.calibration.NaiveBenchmarker}.
+     * If configuration does not exist, return a {@link pique.calibration.ProbabilityDensityFunctionBenchmarker}.
      */
     private IBenchmarker instanceBenchmarkerFromJson() {
         if (jsonQm.getAsJsonObject("global_config") != null && jsonQm.getAsJsonObject("global_config").get("benchmark_strategy") != null) {
@@ -322,7 +322,7 @@ public class QualityModelImport {
                 throw new RuntimeException();
             }
         } else {
-            return new NaiveBenchmarker();
+            return new ProbabilityDensityFunctionBenchmarker();
         }
     }
 
