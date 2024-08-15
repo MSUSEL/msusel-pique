@@ -22,6 +22,7 @@
  */
 package outputTests;
 
+import org.junit.Before;
 import org.junit.Test;
 import pique.model.QualityModel;
 import pique.model.QualityModelCompactExport;
@@ -29,27 +30,47 @@ import pique.model.QualityModelImport;
 
 import java.nio.file.Paths;
 
+import static org.junit.Assert.assertEquals;
+
 public class AcceptanceTests {
 
     public AcceptanceTests(){
 
     }
 
-    @Test
-    public void basicAcceptanceTest(){
+    @Before
+    public void loadTestFileFromExistingSources(){
         QualityModelImport importer = new QualityModelImport(Paths.get("src/test/resources/quality_models/busybox-1.21.1_evalResults.json"));
         QualityModel model = importer.importQualityModel();
 
         QualityModelCompactExport compactExport = new QualityModelCompactExport(model);
-        compactExport.exportToJson("acceptance-test-output.json", Paths.get("src/test/out"));
+        compactExport.exportToJson("busybox-1.21.1_evalResults-out", Paths.get("src/test/resources/quality_models"));
     }
 
-    @Test
-    public void acceptanceTestWithDefaultUtilityToPDFUtilityFunc(){
+    @Before
+    public void loadPDFTestFileFromExistingSources(){
         QualityModelImport importer = new QualityModelImport(Paths.get("src/test/resources/quality_models/busybox-1.21.1_evalResults-pdf-utilityfunc.json"));
         QualityModel model = importer.importQualityModel();
 
         QualityModelCompactExport compactExport = new QualityModelCompactExport(model);
-        compactExport.exportToJson("acceptance-test-output-pdf-util.json", Paths.get("src/test/out"));
+        compactExport.exportToJson("busybox-1.21.1_evalResults-pdf-utilityfunc-out", Paths.get("src/test/resources/quality_models/"));
+    }
+
+    @Test
+    public void basicAcceptanceTest(){
+        QualityModelImport importer = new QualityModelImport(Paths.get("src/test/resources/quality_models/busybox-1.21.1_evalResults-out.json"));
+        QualityModel model = importer.importQualityModel();
+
+        //can add more tests as necessary, basically if we can get this far that means something correct happened.
+        assertEquals("Binary Security Quality", model.getTqi().getName());
+    }
+
+    @Test
+    public void acceptanceTestWithDefaultUtilityToPDFUtilityFunc(){
+        QualityModelImport importer = new QualityModelImport(Paths.get("src/test/resources/quality_models/busybox-1.21.1_evalResults-pdf-utilityfunc-out.json"));
+        QualityModel model = importer.importQualityModel();
+
+        //can add more tests as necessary, basically if we can get this far that means something correct happened.
+        assertEquals("Binary Security Quality", model.getTqi().getName());
     }
 }

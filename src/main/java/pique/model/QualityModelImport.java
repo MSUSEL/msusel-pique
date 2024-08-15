@@ -268,7 +268,17 @@ public class QualityModelImport {
 
     private IUtilityFunction getUtilityFunctionFromConfiguration(JsonObject jsonQmNode) {
         if (jsonQmNode.get("utility_function") != null) {
-            String fullClassName = jsonQmNode.get("utility_function").getAsString();
+            String fullClassName = "";
+            Object utilFunctionImport = jsonQmNode.get("utility_function");
+            // YAY tech debt to ensure backwards compatibility. I hate using instanceof.....
+            if (utilFunctionImport instanceof JsonObject){
+                fullClassName = ((JsonObject) utilFunctionImport).getAsJsonPrimitive("name").getAsString();
+            } else if (utilFunctionImport instanceof JsonElement){
+                //redundant element cast potentially, but it is whatever
+                fullClassName = ((JsonElement) utilFunctionImport).getAsString();
+            }else{
+                System.out.println("PROBLEM");
+            }
             try {
                 return (IUtilityFunction) Class.forName(fullClassName).getConstructor().newInstance();
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {

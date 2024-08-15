@@ -5,7 +5,6 @@ This project is a fork of the QATCH project found from QuthEceSoftEng's [GitHub]
 This fork intends to modify QATCH to behave more like a library by modularizing code, introducing maven project structure, removing GUI elements, removing main methods, and having all methods be language and tool agnostic.
 
 Due to the major changes of intent and design, this fork renames the project to PIQUE: a *Platform for Investigative software Quality Understanding and Evaluation*.
-QATCH legacy build, config, rulesets, and default model files are left in an archive folder.
 
 PIQUE is a collection of library functions and runner entry points designed to support experimental software quality analysis from a language-agnostic perspective.
 To remain language-agnostic, this project provides the abstractions, interfaces, and algorithms necessary for quality assessment, but leaves the task of defining language-specific static analysis operations to dependent language-specific projects that will use MSUSEL-PIQUE as a dependency.

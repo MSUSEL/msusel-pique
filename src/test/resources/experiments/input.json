@@ -1,0 +1,16 @@
+{
+  "thresholds": {
+    "generationStrategies": ["RANDOM_RIGHT_SKEW_SPACING"],
+    "beginIndices": [0],
+    "endIndices": [100],
+    "counts": [100, 500, 1000]
+  },
+  "evaluationDomain": {
+    "generationStrategies": ["EVEN_UNIFORM_SPACING"],
+    "beginIndices": [0],
+    "endIndices": [100],
+    "counts": [100, 500, 1000, 2500, 5000, 10000]
+  },
+  "kernelFunctions": ["GAUSSIAN"],
+  "bandwidths": "[0.1-10.0:0.1]"
+}

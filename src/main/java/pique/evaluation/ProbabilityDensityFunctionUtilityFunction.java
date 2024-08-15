@@ -24,22 +24,37 @@ package pique.evaluation;
 
 import jep.Interpreter;
 import jep.SharedInterpreter;
+import lombok.Getter;
+import lombok.Setter;
 import pique.utility.BigDecimalWithContext;
+import pique.utility.PDFUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
+    @Getter
+    private final PDFUtils.GenerationStrategy generationStrategy = PDFUtils.GenerationStrategy.EVEN_UNIFORM_SPACING;
+    @Getter
+    private final PDFUtils.KernelFunction kernelFunction = PDFUtils.KernelFunction.GAUSSIAN;
+    @Getter
+    private final double bandwidth = 0.4;
+
+    @Getter
+    private int samplingSpace = 10000;
+
 
     public ProbabilityDensityFunctionUtilityFunction() {
-        super("Probability Density Function (PDF) Utility Function", "TODO -- Redempta - Write description in ProbabilityDensityFunctionUtilityFunction class");
+        super("pique.evaluation.ProbabilityDensityFunctionUtilityFunction", "TODO - Write description in ProbabilityDensityFunctionUtilityFunction class");
     }
 
     @Override
     public BigDecimal utilityFunction(BigDecimal inValue, BigDecimal[] thresholds, boolean positive) {
-        //are all values the same?
-        BigDecimalWithContext score;
+        BigDecimal score;
+
+        //are all values the same? - in O(n) apparently, said someone on stack overflow
         if (Arrays.stream(thresholds).distinct().count() == 1) {
             //one distinct value across the entire array
             BigDecimal compareValue = thresholds[0];
@@ -60,40 +75,57 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
                 }
             }
         }else {
-            //python call here
-            try (Interpreter interp = new SharedInterpreter()) {
-                interp.exec("from java.lang import System");
-                interp.exec("import sys");
-                interp.exec("import math");
-                interp.exec("import numpy as np");
-                interp.exec("import pandas as pd");
-                interp.exec("import seaborn as sns");
-                interp.exec("import matplotlib.pyplot as plt");
-                interp.exec("from scipy import stats");
-                interp.exec("from sklearn.preprocessing import MinMaxScaler");
-                interp.exec("from IPython.display import Image");
 
-                /// start code here
-                interp.set("thresholds", thresholds);
-                Object a = interp.getValue("thresholds");
-                //this works, surprisingly
-                for (Object b : (BigDecimal[]) a){
-                    System.out.println(b);
-                }
-                interp.exec("System.out.println(type(thresholds))");
-                interp.exec("ax = sns.kdeplot(thresholds)");
-                interp.exec("System.out.println(ax)");
+            //potential FIXME: if we run into performance issues during runtime or my json is too large, we need to offload
+            BigDecimal[] evaluationDomain = generateEvaluationDomain(thresholds);
+            BigDecimal[] densityArray = getDensityArray(evaluationDomain, thresholds);
 
+            int closestIndex = PDFUtils.searchSorted(evaluationDomain, inValue);
+            // tedious because java
+            BigDecimal[] leftSideOfEvaluationDomain = Arrays.copyOfRange(evaluationDomain, 0, closestIndex);
+            BigDecimal[] leftSideOfDensity = Arrays.copyOfRange(densityArray, 0, closestIndex);
+            BigDecimal aucAtValueZero = PDFUtils.manualTrapezoidalRule(leftSideOfEvaluationDomain, leftSideOfDensity);
 
-                interp.close();
-
-            }catch (Exception e){
-                e.printStackTrace();
-                System.out.println("unable to initialize python interpreter call");
+            if (!positive){
+                //negative relationship with quality (majority of cases)
+                score = new BigDecimalWithContext(1.0).subtract(aucAtValueZero);;
+            }else{
+                //positive relationship with quality
+                score = aucAtValueZero;
             }
-            score = new BigDecimalWithContext(-10000);
         }
 
         return score;
     }
+
+    private BigDecimal[] generateEvaluationDomain(BigDecimal[] measureValues){
+        //min and max for evaluation domain generation strategies - performance improvement instead of Collections.min/max
+        BigDecimal min = new BigDecimalWithContext(Double.MAX_VALUE);
+        BigDecimal max = new BigDecimalWithContext(Double.MIN_VALUE);
+        for (int i = 0; i < measureValues.length; i++){
+            BigDecimal myValue = measureValues[i];
+            //min and max calculations, more efficient to do this in the for loop
+            if (min.compareTo(myValue) == 1){
+                min = myValue;
+            }
+            if (max.compareTo(myValue) == -1){
+                max = myValue;
+            }
+        }
+        // generate evaluation domain
+        // FIXME better strategies for size of evaluation domain (Affects ability to generate accurate AUCs at the expense of time)
+        BigDecimal[] evaluationDomain = generationStrategy.generateValues(min.intValue(), max.intValue(), measureValues.length);
+        return evaluationDomain;
+    }
+
+    private BigDecimal[] getDensityArray(BigDecimal[] evaluationDomain, BigDecimal[] measureValues) {
+        BigDecimal[] toRet = new BigDecimal[measureValues.length];
+
+        for (int i = 0; i < toRet.length; i++){
+            toRet[i] = PDFUtils.kernelDensityEstimator(evaluationDomain[i], measureValues, bandwidth, kernelFunction);
+        }
+        return toRet;
+    }
+
+
 }

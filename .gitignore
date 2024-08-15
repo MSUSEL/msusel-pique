@@ -207,4 +207,5 @@ $RECYCLE.BIN/
 /.idea
 src/test/java/pique/Scratch.java
 src/test/out
-
+# python venv for data vis scripts
+src/test/java/experiments/pdf/venv
