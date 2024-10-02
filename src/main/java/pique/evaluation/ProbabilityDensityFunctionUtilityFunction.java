@@ -44,12 +44,15 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
 
     public ProbabilityDensityFunctionUtilityFunction() {
-        super("pique.evaluation.ProbabilityDensityFunctionUtilityFunction", "TODO - Write description in ProbabilityDensityFunctionUtilityFunction class");
+        super("pique.evaluation.ProbabilityDensityFunctionUtilityFunction", "A Probability Density Function to model the distribution of findings");
     }
 
     @Override
     public BigDecimal utilityFunction(BigDecimal inValue, BigDecimal[] thresholds, boolean positive) {
         BigDecimal score;
+
+        // If no thresholds yet, currently dealing with a non-derived model. Just return 0.
+        if (thresholds == null) return new BigDecimalWithContext("0.0");
 
         //are all values the same? - in O(n) apparently, said someone on stack overflow
         if (Arrays.stream(thresholds).distinct().count() == 1) {

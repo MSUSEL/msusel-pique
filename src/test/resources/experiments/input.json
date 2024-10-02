@@ -11,6 +11,6 @@
     "endIndices": [100],
     "counts": [100, 500, 1000, 2500, 5000, 10000]
   },
-  "kernelFunctions": ["GAUSSIAN"],
+  "kernelFunctions": ["GAUSSIAN", ""],
   "bandwidths": "[0.1-10.0:0.1]"
 }

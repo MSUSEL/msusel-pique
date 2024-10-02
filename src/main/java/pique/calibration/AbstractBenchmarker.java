@@ -174,7 +174,7 @@ public abstract class AbstractBenchmarker implements IBenchmarker {
     	Set<Path> projectRoots = null;
     	//Check if projectRootFlag has been set. If null or blank, we are looking for binaries or will accept all non-
     	//directory files.
-    	if (projectRootFlag==null ||projectRootFlag.equals("")) {
+    	if (projectRootFlag==null || projectRootFlag.equals("")) {
             projectRoots = new HashSet<>();
             File[] binaryFiles = benchmarkRepository.toFile().listFiles();
             for (File file : binaryFiles) {

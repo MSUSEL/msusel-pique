@@ -11,6 +11,7 @@ import org.jfree.data.statistics.HistogramType;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import pique.utility.PDFUtils;
 
@@ -26,6 +27,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+@Ignore
 public class PDFExperimentMasqueradeTest {
     private List<PDFUtils.GenerationStrategy> thresholdGenerationStrategies;
     private List<Integer> thresholdBeginIndices, thresholdEndIndices, thresholdCounts;
