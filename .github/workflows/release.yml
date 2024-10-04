@@ -2,7 +2,7 @@ name: "Release"
 
 on:
   push:
-    branches: [ release ]
+    branches: release
 
 jobs:
   # This job will run a regression test suite. Future work will
@@ -42,6 +42,6 @@ jobs:
         # Then grab the version number from the POM file
       - run: |
           sed -i -e 's/=in/=\/in/g' -e 's/=out/=\/out/g' *.properties
-  
+
         #
 
