@@ -1,0 +1,47 @@
+name: "Release"
+
+on:
+  push:
+    branches: [ release ]
+
+jobs:
+  # This job will run a regression test suite. Future work will
+  # include dynamic insertion of test suites or further job steps
+  # to accomodate more test coverage.
+  regression-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 11 for x64
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          architecture: x64
+      - name: Run Regression Tests
+      - run: mvn test -Dtest="RegressionTests"
+
+  # Creates a GitHub Release with the given tag and title
+  # Depends on the successful completeion of the regression-test job.
+  github-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create a Release
+      - uses: elgohr/Github-Release-Action@v5
+        env:
+          GH_TOKEN${{  }}
+
+  # Builds a docker image and deploys to Docker Hub
+  docker-build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare repo for docker build
+        # Edit the properties file to have correct path. (non-persistent)
+        # Then grab the version number from the POM file
+      - run: |
+          sed -i -e 's/=in/=\/in/g' -e 's/=out/=\/out/g' *.properties
+  
+        #
+
