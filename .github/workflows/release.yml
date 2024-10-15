@@ -4,6 +4,13 @@ on:
   push:
     branches: release
 
+  jobs:
+    regression-test:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+
+
 # jobs:
 #   # This job will run a regression test suite. Future work will
 #   # include dynamic insertion of test suites or further job steps
