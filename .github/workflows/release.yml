@@ -1,0 +1,75 @@
+name: "Release"
+
+on:
+  push:
+    branches: [ prototypenorun ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # java/maven setup
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4.4.0
+        with:
+          distribution: temurin
+          java-version: 11
+
+      - name: Run Regression Tests
+        run: |
+          mvn --batch-mode -f msusel-pique/pom.xml clean test 
+
+  deploy_to_maven:
+    needs: build_and_test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # java/maven setup
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4.4.0
+        with:
+          distribution: temurin
+          java-version: 11
+
+      - name: deploy to MSUSEL maven repository
+        run: |
+          mvn --batch-mode -f msusel-pique/pom.xml clean deploy -Dmaven.test.skip=true
+
+  deploy_to_dockerhub:
+    needs: build_and_test
+    uses: MSUSEL/msusel-pique-cicd/.github/workflows/docker-build-push.yml@prototype
+    with:
+      tag-name: 1.0.0
+
+          
+
+
+# -Dtest="RegressionTests"
+
+  ## Creates a GitHub Release with the given tag and title
+  ## Depends on the successful completeion of the regression-test job.
+  #github-release:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - uses: actions/checkout@v4
+  #    - name: Create a Release
+  #    - uses: elgohr/Github-Release-Action@v5
+  #      env:
+  #        GH_TOKEN${{  }}
+
+  ## Builds a docker image and deploys to Docker Hub
+  #docker-build-and-test:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - uses: actions/checkout@v4
+  #    - name: Prepare repo for docker build
+  #      # Edit the properties file to have correct path. (non-persistent)
+  #      # Then grab the version number from the POM file
+  #    - run: |
+  #        sed -i -e 's/=in/=\/in/g' -e 's/=out/=\/out/g' *.properties
+
+  #      #
+
