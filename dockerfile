@@ -1,6 +1,5 @@
 FROM alpine:3.19
 
-ARG PIQUE_CORE_VERSION=v1.0.0
 ARG MAVEN_VERSION=3.9.6
 
 RUN apk update && apk upgrade && apk add \
@@ -22,5 +21,5 @@ ENV PATH "/opt/apache-maven-"$MAVEN_VERSION"/bin:$PATH"
 WORKDIR "/home"
 RUN git clone https://github.com/MSUSEL/msusel-pique.git
 WORKDIR "/home/msusel-pique"
-RUN git checkout "tags/"$PIQUE_CORE_VERSION
+RUN git checkout "tags/release"
 RUN mvn install -Dmaven.test.skip -Dlicense.skip=true
