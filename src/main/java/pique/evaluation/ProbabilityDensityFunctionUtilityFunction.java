@@ -24,6 +24,7 @@ package pique.evaluation;
 
 
 import lombok.Getter;
+import lombok.Setter;
 import pique.utility.BigDecimalWithContext;
 import pique.utility.PDFUtils;
 
@@ -32,14 +33,14 @@ import java.util.Arrays;
 
 public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
-    @Getter
+    @Getter @Setter
     private final PDFUtils.GenerationStrategy generationStrategy = PDFUtils.GenerationStrategy.EVEN_UNIFORM_SPACING;
-    @Getter
+    @Getter @Setter
     private final PDFUtils.KernelFunction kernelFunction = PDFUtils.KernelFunction.GAUSSIAN;
-    @Getter
+    @Getter @Setter
     private final double bandwidth = 0.4;
 
-    @Getter
+    @Getter @Setter
     private int samplingSpace = 10000;
 
 

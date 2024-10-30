@@ -61,21 +61,18 @@ public abstract class AQualityModelDeriver {
         Map<String, BigDecimal[]> measureNameThresholdMappings = benchmarker.deriveThresholds(
             benchmarkRepository, qmDesign, tools, projectRootFlag);
 
-        // (2) Elicitate weights
-        IWeighter weighter = qmDesign.getWeighter();
-        // TODO (1.0): Consider, instead of weighting all nodes in one sweep here, dynamically assigning IWeighter
-        //  ojbects to each node to have them weight using JIT evaluation functions.
-        Set<WeightResult> weights = weighter.elicitateWeights(qmDesign);
-        // TODO: assert WeightResult names match expected TQI, QualityAspect, and ProductFactor names from quality model description
-
-        // (3) Apply results to nodes in quality model by matching names
-        // Thresholds (ProductFactor nodes)
-        // TODO (1.0): Support now in place to apply thresholds to all nodes (if they exist), not just measures. Just
-        //  need to implement.
+        // (2) set thresholds
         measureNameThresholdMappings.forEach((measureName, thresholds) -> {
             Measure measure = (Measure)qmDesign.getMeasure(measureName);
             measure.setThresholds(thresholds);
         });
+
+
+        // (3) Elicitate weights
+        IWeighter weighter = qmDesign.getWeighter();
+        // TODO (1.0): Consider, instead of weighting all nodes in one sweep here, dynamically assigning IWeighter
+        //  ojbects to each node to have them weight using JIT evaluation functions.
+        Set<WeightResult> weights = weighter.elicitateWeights(qmDesign);
 
         // Weights (TQI and QualityAspect nodes)
         weights.forEach(weightResult -> {

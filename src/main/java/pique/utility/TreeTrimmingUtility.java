@@ -75,6 +75,5 @@ public class TreeTrimmingUtility {
     	}
     	node.setChildren(newChildren);
     	return node;
-    	
     }
 }
