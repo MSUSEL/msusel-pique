@@ -38,7 +38,7 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
     @Getter @Setter
     private final PDFUtils.KernelFunction kernelFunction = PDFUtils.KernelFunction.GAUSSIAN;
     @Getter @Setter
-    private final double bandwidth = 0.4;
+    private double bandwidth = 0.4;
 
     @Getter @Setter
     private int samplingSpace = 10000;
