@@ -46,7 +46,7 @@ jobs:
       #   run: |
       #     mvn --batch-mode -f msusel-pique/pom.xml clean test
 
-  deploy_to_maven:
+  publish_maven_artifact:
     needs: build_and_test
     runs-on: ubuntu-latest
     steps:
@@ -64,6 +64,8 @@ jobs:
       - name: deploy to MSUSEL maven repository
         run: |
           mvn --batch-mode -f pom.xml clean deploy -Dmaven.test.skip=true
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   # deploy_to_dockerhub:
   #   needs: build_and_test
