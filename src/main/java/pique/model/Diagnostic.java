@@ -92,6 +92,14 @@ public class Diagnostic extends ModelNode {
         super(value, name, description, evaluator, normalizer, utilityFunction, weights, thresholds, children);
     }
 
+    //including toolname
+    public Diagnostic(BigDecimal value, String name, String description, String toolName, IEvaluator evaluator, INormalizer normalizer,
+                      IUtilityFunction utilityFunction, Map<String, BigDecimal> weights, BigDecimal[] thresholds, Map<String,
+            ModelNode> children) {
+        super(value, name, description, evaluator, normalizer, utilityFunction, weights, thresholds, children);
+        this.toolName = toolName;
+    }
+
     // Methods
 
     @Override
@@ -100,7 +108,7 @@ public class Diagnostic extends ModelNode {
         Map<String, ModelNode> clonedChildren = new HashMap<>();
         getChildren().forEach((k, v) -> clonedChildren.put(k, v.clone()));
 
-        return new Diagnostic(getValue(), getName(), getDescription(), this.getEval_strategyObj(), this.getNormalizerObj(),
+        return new Diagnostic(getValue(), getName(), getDescription(), this.toolName, this.getEval_strategyObj(), this.getNormalizerObj(),
                 this.getUtility_function(), getWeights(), getThresholds(), clonedChildren);
     }
 

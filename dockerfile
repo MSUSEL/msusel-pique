@@ -1,9 +1,9 @@
-FROM alpine:3.19
+FROM alpine:3.20.3
 
 ARG MAVEN_VERSION=3.9.6
 
 RUN apk update && apk upgrade && apk add \
-    git openjdk8
+    git openjdk11
 
 #pip install jep numpy pandas seaborn matplotlib scipy scikit-learn IPython
 
@@ -21,5 +21,5 @@ ENV PATH "/opt/apache-maven-"$MAVEN_VERSION"/bin:$PATH"
 WORKDIR "/home"
 RUN git clone https://github.com/MSUSEL/msusel-pique.git
 WORKDIR "/home/msusel-pique"
-RUN git checkout "tags/release"
+RUN git checkout "tags/v1.0.1"
 RUN mvn install -Dmaven.test.skip -Dlicense.skip=true

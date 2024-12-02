@@ -25,6 +25,7 @@ package pique.evaluation;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import pique.utility.BigDecimalWithContext;
 import pique.utility.PDFUtils;
 
@@ -50,6 +51,8 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
 
     @Override
     public BigDecimal utilityFunction(BigDecimal inValue, BigDecimal[] thresholds, boolean positive) {
+        bandwidth = calculateBandwidth(thresholds);
+        samplingSpace = calculateNumberOfXPoints(thresholds);
         BigDecimal score;
 
         // If no thresholds yet, currently dealing with a non-derived model. Just return 0.
@@ -60,6 +63,9 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
             //one distinct value across the entire array
             BigDecimal compareValue = thresholds[0];
             //clean up if I get time
+            //FIXME - if negatively associated with quality, if the thresholds are the same, if our input value is LESS THAN one threshold, good thing
+            //FIXME - if positively associated with quality, if the thresholds are the same, if our input value is MORE THAN one threshold, good thing
+            // can never get worst than thresholds[same_value] if
             if (inValue.compareTo(compareValue) == -1){
                 //invalue is less than compareValue
                 if (positive){
@@ -99,7 +105,57 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
         return score;
     }
 
-    private BigDecimal[] generateEvaluationDomain(BigDecimal[] measureValues){
+
+    protected int calculateNumberOfXPoints(BigDecimal[] thresholds){
+        //experiment more, find functions for how many points
+        if (thresholds == null || thresholds.length == 0) {
+            return 1;
+        }
+        return thresholds.length * 5;
+    }
+
+    protected double calculateBandwidth(BigDecimal[] thresholds){
+        //bandwidth will calculate to NaN if thresholds are all zero, so we need logic to set bandwidth to 0 if we have all zero thresholds.
+        //the pdf function itself it responsible for skipping these values
+        double newBandwidth = 0.0;
+        if (doThresholdsHaveNonZero(thresholds)) {
+            double nFactor = Math.pow(thresholds.length, -0.2);
+            double iqr = getIQR(thresholds);
+            double sigma = calculateSampleStandardDeviation(thresholds);
+            if (iqr == 0){
+                newBandwidth = 1.06 * sigma * nFactor;
+            }else {
+                newBandwidth = 0.9 * (Math.min(sigma, (iqr / 1.34))) * nFactor;
+            }
+        }
+        return newBandwidth;
+    }
+
+    private double getIQR(BigDecimal[] data){
+        double[] doubleData = Arrays.stream(data).mapToDouble(BigDecimal::doubleValue).toArray();
+        DescriptiveStatistics descriptiveStatistics = new DescriptiveStatistics(doubleData);
+        double iqr = descriptiveStatistics.getPercentile(75) - descriptiveStatistics.getPercentile(25);
+        return iqr;
+    }
+
+    private double calculateSampleStandardDeviation(BigDecimal[] data){
+        double[] doubleData = Arrays.stream(data).mapToDouble(BigDecimal::doubleValue).toArray();
+
+        double sum  = 0.0;
+        for (double d : doubleData) {
+            sum += d;
+        }
+        double mean = sum / doubleData.length;
+
+        double sumOfSquaredDeviations = 0.0;
+        for (double d : doubleData){
+            sumOfSquaredDeviations += Math.pow(d - mean, 2);
+        }
+        double asDouble = Math.sqrt(sumOfSquaredDeviations / doubleData.length);
+        return asDouble;
+    }
+
+    protected BigDecimal[] generateEvaluationDomain(BigDecimal[] measureValues){
         //min and max for evaluation domain generation strategies - performance improvement instead of Collections.min/max
         BigDecimal min = new BigDecimalWithContext(Double.MAX_VALUE);
         BigDecimal max = new BigDecimalWithContext(Double.MIN_VALUE);
@@ -126,6 +182,19 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
             toRet[i] = PDFUtils.kernelDensityEstimator(evaluationDomain[i], measureValues, bandwidth, kernelFunction);
         }
         return toRet;
+    }
+
+    private boolean doThresholdsHaveNonZero(BigDecimal[] thresholds){
+        if (thresholds != null) {
+            //will be null when evaluate is called on a non measures node
+            for (BigDecimal threshold : thresholds) {
+                if (threshold.compareTo(BigDecimal.ZERO) != 0) {
+                    //found a nonZero
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 

@@ -36,6 +36,7 @@ import pique.evaluation.BenchmarkMeasureEvaluator;
 import pique.evaluation.Project;
 import pique.model.Diagnostic;
 import pique.model.Measure;
+import pique.model.ModelNode;
 import pique.model.QualityModel;
 import pique.utility.FileUtility;
 
