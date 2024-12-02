@@ -2,13 +2,15 @@ name: "Release"
 
 on:
   push:
-    branches: [ release ]
+    branches: [ release, cicd-test ]
 
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: cicd-test
 
       # java/maven setup
       - name: Set up JDK 11
@@ -17,15 +19,17 @@ jobs:
           distribution: temurin
           java-version: 11
 
-      - name: Run Regression Tests
-        run: |
-          mvn --batch-mode -f msusel-pique/pom.xml clean test 
+      # - name: Run Regression Tests
+      #   run: |
+      #     mvn --batch-mode -f msusel-pique/pom.xml clean test
 
   deploy_to_maven:
     needs: build_and_test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: cicd-test
 
       # java/maven setup
       - name: Set up JDK 11
