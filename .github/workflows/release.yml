@@ -66,6 +66,8 @@ jobs:
 
       - name: deploy to MSUSEL maven repository
         run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           mvn --batch-mode -f pom.xml clean deploy -Dmaven.test.skip=true
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
