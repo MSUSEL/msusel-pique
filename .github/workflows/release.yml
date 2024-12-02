@@ -47,3 +47,4 @@ jobs:
     uses: MSUSEL/msusel-pique/.github/workflows/docker-build-push.yml@cicd-test
     with:
       tag-name: cicd-test
+    secrets: inherit
