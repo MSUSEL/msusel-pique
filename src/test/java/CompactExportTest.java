@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  * Copyright (c) 2019 Montana State University Software Engineering Labs
  *
@@ -20,7 +20,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import org.junit.Before;
 import org.junit.Test;
 import pique.model.QualityModel;

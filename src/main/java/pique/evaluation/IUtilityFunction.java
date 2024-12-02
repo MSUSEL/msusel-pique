@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  * Copyright (c) 2019 Montana State University Software Engineering Labs
  *
