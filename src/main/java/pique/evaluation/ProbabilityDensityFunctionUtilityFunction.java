@@ -155,7 +155,7 @@ public class ProbabilityDensityFunctionUtilityFunction extends UtilityFunction{
         return asDouble;
     }
 
-    private BigDecimal[] generateEvaluationDomain(BigDecimal[] measureValues){
+    protected BigDecimal[] generateEvaluationDomain(BigDecimal[] measureValues){
         //min and max for evaluation domain generation strategies - performance improvement instead of Collections.min/max
         BigDecimal min = new BigDecimalWithContext(Double.MAX_VALUE);
         BigDecimal max = new BigDecimalWithContext(Double.MIN_VALUE);
