@@ -30,13 +30,13 @@
   <parent>
     <groupId>edu.montana.gsoc.msusel</groupId>
     <artifactId>msusel-parent</artifactId>
-    <version>1.1.1</version>
+    <version>1.2.1</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>msusel-pique</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.1</version>
+  <version>1.2.0-alpha1</version>
   <name>msusel-pique</name>
   <description>MSU PIQUE quality framework</description>
   <url>https://msusel.github.io</url>
