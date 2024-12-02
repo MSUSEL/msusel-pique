@@ -29,7 +29,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Edit properties file for docker
-        run: sed -i -e 's/=in/=\/in/g' -e 's/=out/=\/out/g' *.properties
+        run: sed -i -e 's/=in/=\/in/g' -e 's/=out/=\/out/g' src/main/resources/*.properties
 
       - name: Build and Push
         uses: docker/build-push-action@v5
