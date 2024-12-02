@@ -12,9 +12,9 @@ jobs:
   build_and_push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: cicd-test
+      # - uses: actions/checkout@v4
+      #   with:
+      #     ref: cicd-test
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -32,7 +32,7 @@ jobs:
         run: sed -i -e 's/=in/=\/in/g' -e 's/=out/=\/out/g' src/main/resources/*.properties
 
       - name: Build and Push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           push: true
           tags: ${{ inputs.tag-name }}

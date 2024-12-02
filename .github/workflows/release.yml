@@ -45,6 +45,6 @@ jobs:
   deploy_to_dockerhub:
     needs: build_and_test
     uses: MSUSEL/msusel-pique/.github/workflows/docker-build-push.yml@cicd-test
-    with:
-      tag-name: cicd-test
     secrets: inherit
+    with:
+      tag-name: msusel/pique-core:cicd-test
