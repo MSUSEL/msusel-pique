@@ -23,27 +23,27 @@ jobs:
       #   run: |
       #     mvn --batch-mode -f msusel-pique/pom.xml clean test
 
-  deploy_to_maven:
-    needs: build_and_test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: cicd-test
+  # deploy_to_maven:
+  #   needs: build_and_test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         ref: cicd-test
 
-      # java/maven setup
-      - name: Set up JDK 11
-        uses: actions/setup-java@v4.4.0
-        with:
-          distribution: temurin
-          java-version: 11
+  #     # java/maven setup
+  #     - name: Set up JDK 11
+  #       uses: actions/setup-java@v4.4.0
+  #       with:
+  #         distribution: temurin
+  #         java-version: 11
 
-      - name: deploy to MSUSEL maven repository
-        run: |
-          mvn --batch-mode -f msusel-pique/pom.xml clean deploy -Dmaven.test.skip=true
+  #     - name: deploy to MSUSEL maven repository
+  #       run: |
+  #         mvn --batch-mode -f msusel-pique/pom.xml clean deploy -Dmaven.test.skip=true
 
   deploy_to_dockerhub:
     needs: build_and_test
     uses: MSUSEL/msusel-pique/.github/workflows/docker-build-push.yml@cicd-test
     with:
-      tag-name: 1.0.0
+      tag-name: cicd-test
