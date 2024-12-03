@@ -72,6 +72,7 @@ jobs:
           # ssh-keyscan github.com >> ~/.ssh/known_hosts
           # eval $(ssh-agent -s)
           # ssh-add ~/.ssh/msusel_ci_bot_key
+          gh config set git_protocol ssh
           gh auth login --with-token < ~/.ssh/msusel_ci_bot_key
 
 
