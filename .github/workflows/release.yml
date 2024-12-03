@@ -74,7 +74,10 @@ jobs:
           # performed at the org level.
           git config --global user.email "ryan.cummings1@montana.edu"
           git config --global init.defaultBranch master
-          mvn --batch-mode -f pom.xml clean deploy -Dmaven.test.skip=true -Dusername="RyanJCummings" -Dpassword="${{ secrets.PAT }}"
+          mvn --batch-mode -f pom.xml clean deploy -Dmaven.test.skip=true
+        env:
+          "${{ secrets.PAT }}"
+
 
   # deploy_to_dockerhub:
   #   needs: build_and_test
