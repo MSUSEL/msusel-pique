@@ -69,12 +69,9 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.MSUSEL_CI_BOT_SSH_KEY }}" > ~/.ssh/msusel_ci_bot_key
           chmod 600 ~/.ssh/msusel_ci_bot_key
-          # ssh-keyscan github.com >> ~/.ssh/known_hosts
-          # eval $(ssh-agent -s)
-          # ssh-add ~/.ssh/msusel_ci_bot_key
-          gh config set git_protocol ssh
-          gh auth login --with-token < ~/.ssh/msusel_ci_bot_key
-
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          eval $(ssh-agent -s)
+          ssh-add ~/.ssh/msusel_ci_bot_key
 
       - name: deploy to MSUSEL maven repository
         run: |
