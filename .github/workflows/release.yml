@@ -73,9 +73,8 @@ jobs:
           # FIX ME!!! need to migrate to github packages so authentication can be
           # performed at the org level.
           git config --global user.email "ryan.cummings1@montana.edu"
-          mvn --batch-mode -f pom.xml clean deploy -Dmaven.test.skip=true
-        env:
-          GITHUB_TOKEN: ${{secrets.PAT}}
+          git config --global init.defaultBranch master
+          mvn --batch-mode -f pom.xml clean deploy -Dmaven.test.skip=true -Dusername="RyanJCummings" -Dpassword="${{ secrets.PAT }}"
 
   # deploy_to_dockerhub:
   #   needs: build_and_test
