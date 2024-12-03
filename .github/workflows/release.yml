@@ -56,6 +56,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: cicd-test
+          ssh-key: "${{ secrets.MSUSEL_CI_BOT_SSH_KEY }}"
 
       # java/maven setup
       - name: Set up JDK 11
@@ -64,15 +65,11 @@ jobs:
           distribution: temurin
           java-version: 11
 
+
       - name: deploy to MSUSEL maven repository
         run: |
-          # git config --global user.name "${{ github.actor }}"
-          # git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git config --global user.name "SECL Developers"
-
-          # FIX ME!!! need to migrate to github packages so authentication can be
-          # performed at the org level.
-          git config --global user.email "ryan.cummings1@montana.edu"
+          git config --global user.name "${{ secrets.CI_BOT_USERNAME }}
+          git config --global user.email "${{ secrets.CI_BOT_EMAIL }}"
           git config --global init.defaultBranch master
           mvn --batch-mode -f pom.xml clean deploy -Dmaven.test.skip=true
 
