@@ -96,7 +96,7 @@ jobs:
 
       - name: deploy to MSUSEL maven repository
         run: |
-          mvn --batch-mode -f pom.xml clean deploy -Dmaven.test.skip=true
+          mvn --batch-mode -f pom.xml clean deploy -X -Dmaven.test.skip=true
 
 
   # deploy_to_dockerhub:
