@@ -72,6 +72,9 @@ jobs:
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           eval $(ssh-agent -s)
           ssh-add ~/.ssh/msusel_ci_bot_key
+          ssh -T -i ~/.ssh/msusel_ci_bot_key git@github.com || true
+          ssh-add -l || true
+
 
       - name: Create Maven settings.xml for SSH authentication
         run: |
