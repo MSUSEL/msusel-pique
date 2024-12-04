@@ -73,6 +73,21 @@ jobs:
           eval $(ssh-agent -s)
           ssh-add ~/.ssh/msusel_ci_bot_key
 
+      - name: Create Maven settings.xml for SSH authentication
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<EOF
+          <settings>
+            <servers>
+              <server>
+                <id>msusel-maven-repo</id>
+                <username>git</username> <!-- Use "git" as the username for SSH-based authentication -->
+                <privateKey>${env.HOME}/.ssh/msusel_ci_bot_key</privateKey>
+              </server>
+            </servers>
+          </settings>
+          EOF
+
       - name: deploy to MSUSEL maven repository
         run: |
           # git config --global user.name "${{ secrets.CI_BOT_USERNAME }}"
