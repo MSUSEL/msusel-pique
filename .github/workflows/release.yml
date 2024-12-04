@@ -82,7 +82,7 @@ jobs:
               <server>
                 <id>msusel-maven-repo</id>
                 <username>git</username> <!-- Use "git" as the username for SSH-based authentication -->
-                <privateKey>${env.HOME}/.ssh/msusel_ci_bot_key</privateKey>
+                <privateKey>~/.ssh/msusel_ci_bot_key</privateKey>
               </server>
             </servers>
           </settings>
