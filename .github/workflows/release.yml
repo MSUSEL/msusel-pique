@@ -73,9 +73,6 @@ jobs:
           eval $(ssh-agent -s)
           ssh-add ~/.ssh/msusel_ci_bot_key
 
-          # verify ssh access to github
-          ssh -T git@github.com
-
       - name: Create Maven settings.xml for SSH authentication
         run: |
           mkdir -p ~/.m2
