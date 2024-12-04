@@ -88,11 +88,14 @@ jobs:
           </settings>
           EOF
 
+      - name: configure git in runner environment
+        run: |
+          git config --global user.name "${{ secrets.CI_BOT_USERNAME }}"
+          git config --global user.email "${{ secrets.CI_BOT_EMAIL }}"
+          git config --global init.defaultBranch master
+
       - name: deploy to MSUSEL maven repository
         run: |
-          # git config --global user.name "${{ secrets.CI_BOT_USERNAME }}"
-          # git config --global user.email "${{ secrets.CI_BOT_EMAIL }}"
-          # git config --global init.defaultBranch master
           mvn --batch-mode -f pom.xml clean deploy -Dmaven.test.skip=true
 
 
