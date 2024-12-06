@@ -44,5 +44,5 @@ ENV PATH "/opt/apache-maven-"$MAVEN_VERSION"/bin:$PATH"
 WORKDIR "/home"
 RUN git clone https://github.com/MSUSEL/msusel-pique.git
 WORKDIR "/home/msusel-pique"
-RUN git checkout "tags/v1.0.1"
+RUN git checkout "cicd-test"
 RUN mvn install -Dmaven.test.skip -Dlicense.skip=true

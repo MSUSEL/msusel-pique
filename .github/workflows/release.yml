@@ -25,7 +25,7 @@ name: "Release"
 
 on:
   push:
-    branches: [ release, cicd-test ]
+    branches: [ release ]
 
 jobs:
   build_and_test:
