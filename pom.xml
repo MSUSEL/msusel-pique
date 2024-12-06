@@ -36,7 +36,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>msusel-pique</artifactId>
   <packaging>jar</packaging>
-  <version>1.2.0-alpha1</version>
+  <version>cicd-test</version>
   <name>msusel-pique</name>
   <description>MSU PIQUE quality framework</description>
   <url>https://msusel.github.io</url>
